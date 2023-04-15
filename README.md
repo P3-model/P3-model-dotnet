@@ -28,7 +28,7 @@ If you haven't check out main [**P3 Model**](https://github.com/P3-model/P3-mode
 
 ## Usage
 
-To use P3 Model Annotations simply add NuGet package to your C# project and start annotating your code.
+To use P3 Model Annotations simply add [NuGet package](https://www.nuget.org/packages/P3Model.Annotations/) to your C# project and start annotating your code.
 
 Project with examples is coming soon so stay tuned.
 
