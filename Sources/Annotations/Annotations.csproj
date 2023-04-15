@@ -1,15 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
-        <RootNamespace>P3.Model.Annotations</RootNamespace>
+        <RootNamespace>P3Model.Annotations</RootNamespace>
+        <PackageId>P3Model.Annotations</PackageId>
+        <Version>0.1.0</Version>
+        <Authors>Marcin Markowski</Authors>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>P3 Model Annotations</Title>
+        <Description>P3 Model Annotations is a set of metadata attributes that you can use in you .net code to enrich it with information about domain model, people aspects, used patterns and more.</Description>
+        <PackageProjectUrl>https://github.com/P3-model/P3-model-annotations-dotnet</PackageProjectUrl>
+        <PackageLicenseExpression>CC-BY-SA-4.0</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/P3-model/P3-model-annotations-dotnet</RepositoryUrl>
+        <Company>P3 Model</Company>
+        <AssemblyVersion>0.1.0</AssemblyVersion>
+        <FileVersion>0.1.0</FileVersion>
+        <PackageReleaseNotes>basic annotations for domain perspective</PackageReleaseNotes>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <AssemblyName>P3Model.Annotations</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../../README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>

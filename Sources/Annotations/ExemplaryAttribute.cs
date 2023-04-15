@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace P3.Model.Annotations;
+namespace P3Model.Annotations;
 
 [PublicAPI]
 [AttributeUsage(AttributeTargets.Class |

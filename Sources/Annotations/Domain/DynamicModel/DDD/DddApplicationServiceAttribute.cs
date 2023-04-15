@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace P3.Model.Annotations.Domain.DynamicModel.DDD;
+namespace P3Model.Annotations.Domain.DynamicModel.DDD;
 
 [PublicAPI]
 public class DddApplicationServiceAttribute : ProcessStepAttribute
