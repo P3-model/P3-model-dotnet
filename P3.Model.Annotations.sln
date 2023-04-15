@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P3.Model.Annotations", "Sources/P3.Model.Annotations/P3.Model.Annotations.csproj", "{4CC48DCC-FAAE-4D58-B996-09A71F4FC968}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Annotations", "Sources\Annotations\Annotations.csproj", "{4CC48DCC-FAAE-4D58-B996-09A71F4FC968}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{3B0D37A9-930D-42B4-959F-0F19ADB44165}"
 EndProject
