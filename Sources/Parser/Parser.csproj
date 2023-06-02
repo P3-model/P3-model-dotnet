@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>default</LangVersion>
+        <Nullable>enable</Nullable>
+        <AssemblyName>P3Model.Parser</AssemblyName>
+        <RootNamespace>P3Model.Parser</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Basic.Reference.Assemblies.Net60" Version="1.4.2" />
+      <PackageReference Include="Microsoft.Build.Locator" Version="1.5.5" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.5.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.5.0" />
+      <PackageReference Include="P3Model.Annotations" Version="0.1.0" />
+      <PackageReference Include="System.Reflection.MetadataLoadContext" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Annotations\Annotations.csproj" />
+    </ItemGroup>
+
+</Project>
