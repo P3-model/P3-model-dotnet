@@ -7,7 +7,7 @@
         <LangVersion>default</LangVersion>
         <RootNamespace>P3Model.Annotations</RootNamespace>
         <PackageId>P3Model.Annotations</PackageId>
-        <Version>0.2.0-preview1</Version>
+        <Version>0.2.0-preview2</Version>
         <Authors>Marcin Markowski</Authors>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>P3 Model Annotations</Title>
