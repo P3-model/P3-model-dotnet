@@ -7,6 +7,6 @@ namespace P3Model.Annotations.Technology;
 public class TierAttribute : Attribute
 {
     public string Name { get; }
-    
-    protected TierAttribute(string name) => Name = name;
+
+    public TierAttribute(string name) => Name = name;
 }

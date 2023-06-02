@@ -9,7 +9,7 @@ public class LayerAttribute : Attribute, NamespaceApplicable
     public string Name { get; }
     public bool ApplyOnNamespace { get; }
 
-    protected LayerAttribute(string name, bool applyOnNamespace = false)
+    public LayerAttribute(string name, bool applyOnNamespace = false)
     {
         Name = name;
         ApplyOnNamespace = applyOnNamespace;
