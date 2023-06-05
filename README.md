@@ -1,4 +1,4 @@
-# P3 Model Annotations for .net
+# P3 Model tools and libraries for .net
 
 [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
 
