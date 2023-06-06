@@ -10,6 +10,6 @@ public class DddRepositoryAnalyzer : DddBuildingBlockAnalyzer
 {
     protected override Type AttributeType => typeof(DddRepositoryAttribute);
 
-    protected override BuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile) =>
+    protected override DomainBuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile) =>
         new DddRepository(name, descriptionFile);
 }

@@ -10,6 +10,6 @@ public class DddDomainServiceAnalyzer : DddBuildingBlockAnalyzer
 {
     protected override Type AttributeType => typeof(DddDomainServiceAttribute);
 
-    protected override BuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile) =>
+    protected override DomainBuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile) =>
         new DddDomainService(name, descriptionFile);
 }

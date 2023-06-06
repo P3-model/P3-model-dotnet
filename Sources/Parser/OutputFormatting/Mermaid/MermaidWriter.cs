@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,31 +11,56 @@ public class MermaidWriter : IAsyncDisposable
 {
     private readonly StreamWriter _streamWriter;
 
-    public MermaidWriter(string outputDirectory, string relativeFilePath)
+    public MermaidWriter(string path) => _streamWriter =
+        new StreamWriter(path,
+            Encoding.UTF8,
+            new FileStreamOptions
+            {
+                Access = FileAccess.ReadWrite,
+                Mode = FileMode.Create,
+                Share = FileShare.None
+            });
+
+    [PublicAPI]
+    public void WriteInline(string text) => _streamWriter.Write(text);
+
+    [PublicAPI]
+    public void WriteLine(string text) => _streamWriter.WriteLine($"{text.TrimEnd()}  ");
+
+    [PublicAPI]
+    public void WriteLineBreak() => _streamWriter.WriteLine();
+
+    [PublicAPI]
+    public void WriteHeading(string text, int level)
     {
-        if (!relativeFilePath.EndsWith(".md"))
-            relativeFilePath = $"{relativeFilePath}.md";
-        var path = Path.Combine(outputDirectory, relativeFilePath);
-        _streamWriter = new StreamWriter(path, Encoding.UTF8, new FileStreamOptions
-        {
-            Access = FileAccess.ReadWrite,
-            Mode = FileMode.Create,
-            Share = FileShare.None
-        });
+        _streamWriter.WriteLine($"{new string('#', level)} {text}");
+        _streamWriter.WriteLine();
     }
 
     [PublicAPI]
-    public void WriteHeading(string text, int level) => _streamWriter.WriteLine($"{new string('#', level)} {text}");
-    
-    [PublicAPI]
-    public void WriteText(string text) => _streamWriter.Write(text);
+    public void WriteParagraph(string text)
+    {
+        _streamWriter.WriteLine(text);
+        _streamWriter.WriteLine();
+    }
 
     [PublicAPI]
-    public void WriteLink(string text, string url) => _streamWriter.Write($"[{text}]({url})");
-    
+    public void WriteLinkInline(string text, string url) => _streamWriter.Write($"[{text}]({url})");
+
     [PublicAPI]
-    public void WriteEmptyLine() => _streamWriter.WriteLine();
-    
+    public void WriteOrderedList(IEnumerable<string> values)
+    {
+        var no = 1;
+        foreach (var value in values)
+            _streamWriter.WriteLine($"{no++}. {value}");
+    }
+
+    [PublicAPI]
+    public void WriteUnorderedList(IEnumerable<string> values)
+    {
+        foreach (var value in values)
+            _streamWriter.WriteLine($"- {value}");
+    }
 
     [PublicAPI]
     public void WriteFlowchart(Action<FlowchartElementsWriter> writeElements)

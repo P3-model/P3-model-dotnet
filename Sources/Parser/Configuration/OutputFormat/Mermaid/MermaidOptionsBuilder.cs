@@ -7,7 +7,7 @@ namespace P3Model.Parser.Configuration.OutputFormat.Mermaid;
 
 public class MermaidOptionsBuilder : MermaidOptionsBuilder.DirectoryStep, MermaidOptionsBuilder.PagesStep
 {
-    private readonly List<MermaidPage> _formatters = new();
+    private readonly List<MermaidPageFactory> _pageFactories = new();
     private string? _directoryPath;
 
     PagesStep DirectoryStep.Directory(string path)
@@ -18,18 +18,17 @@ public class MermaidOptionsBuilder : MermaidOptionsBuilder.DirectoryStep, Mermai
 
     MermaidOptionsBuilder PagesStep.UseDefaultPages()
     {
-        _formatters.Add(new ModelBoundaryMermaidPage());
-        _formatters.Add(new DomainModulesMermaidPage());
-        _formatters.Add(new DomainBuildingBlocksMermaidPage());
-        _formatters.Add(new DomainGlossaryMermaidPage());
+        _pageFactories.Add(new DomainModulesPageFactory());
+        _pageFactories.Add(new DomainBuildingBlocksPageFactory());
+        _pageFactories.Add(new DomainGlossaryPageFactory());
         return this;
     }
 
-    public MermaidPages Build()
+    public MermaidFormatter Build()
     {
         if (_directoryPath is null)
             throw new InvalidOperationException();
-        return new MermaidPages(_directoryPath, _formatters.AsReadOnly());
+        return new MermaidFormatter(_directoryPath, _pageFactories.AsReadOnly());
     }
 
     public interface DirectoryStep

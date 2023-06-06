@@ -10,6 +10,6 @@ public class DddAggregateAnalyzer : DddBuildingBlockAnalyzer
 {
     protected override Type AttributeType => typeof(DddAggregateAttribute);
 
-    protected override BuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile) =>
+    protected override DomainBuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile) =>
         new DddAggregate(name, descriptionFile);
 }

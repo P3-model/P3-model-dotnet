@@ -37,16 +37,16 @@ public abstract class DddBuildingBlockAnalyzer : SymbolAnalyzer<INamedTypeSymbol
         })
         .SingleOrDefault(file => file.Exists);
 
-    protected abstract BuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile);
+    protected abstract DomainBuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile);
     
-    private static IEnumerable<Relation> GetRelations(ISymbol symbol, BuildingBlock buildingBlock,
+    private static IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
         ElementsProvider elements)
     {
         var module = elements.For(symbol.ContainingNamespace)
             .OfType<DomainModule>()
             .SingleOrDefault();
         if (module != null)
-            yield return new ModuleContainsBuildingBlock(module, buildingBlock);
+            yield return new DomainModule.ContainsBuildingBlock(module, buildingBlock);
     }
 
 }
