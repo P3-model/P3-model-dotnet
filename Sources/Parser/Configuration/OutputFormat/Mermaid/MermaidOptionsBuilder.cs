@@ -18,6 +18,7 @@ public class MermaidOptionsBuilder : MermaidOptionsBuilder.DirectoryStep, Mermai
 
     MermaidOptionsBuilder PagesStep.UseDefaultPages()
     {
+        _pageFactories.Add(new MainPageFactory());
         _pageFactories.Add(new DomainModulesPageFactory());
         _pageFactories.Add(new DomainBuildingBlocksPageFactory());
         _pageFactories.Add(new DomainGlossaryPageFactory());

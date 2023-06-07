@@ -25,4 +25,21 @@ public static class SymbolExtensions
         .Where(attributeData =>
             attributeData.AttributeClass?.Name == type.Name &&
             attributeData.AttributeClass?.ContainingNamespace.ToDisplayString() == type.Namespace);
+
+    public static T GetConstructorParameterValue<T>(this AttributeData attributeData) =>
+        (T)attributeData.ConstructorArguments[0].Value!;
+    
+    public static bool TryGetConstructorParameterValue<T>(this AttributeData attributeData, 
+        [NotNullWhen(true)] out T? value)
+    {
+        var valueAsObject = attributeData.ConstructorArguments[0].Value;
+        if (valueAsObject is null)
+        {
+            value = default;
+            return false;
+        }
+
+        value = (T)valueAsObject;
+        return true;
+    }
 }

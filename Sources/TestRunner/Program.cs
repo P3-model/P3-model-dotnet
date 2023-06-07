@@ -10,6 +10,8 @@ var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.Development.json")
     .Build();
 await P3
+    .Product(product => product
+        .UseName("MyCompany e-commerce"))
     .Repositories(repositories => repositories
         .Use(configuration["RepositoryPath"]!))
     .Analyzers(analyzers => analyzers

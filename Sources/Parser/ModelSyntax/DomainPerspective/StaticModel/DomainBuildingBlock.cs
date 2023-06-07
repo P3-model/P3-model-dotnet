@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace P3Model.Parser.ModelSyntax.DomainPerspective;
+namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 public record DomainBuildingBlock(string Name, FileInfo? DescriptionFile) : Element
 {

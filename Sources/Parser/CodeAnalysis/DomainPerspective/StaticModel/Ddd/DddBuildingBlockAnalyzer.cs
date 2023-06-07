@@ -4,20 +4,21 @@ using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.DomainPerspective;
+using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-namespace P3Model.Parser.CodeAnalysis.DomainPerspective.Ddd;
+namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel.Ddd;
 
 public abstract class DddBuildingBlockAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
 {
     protected abstract Type AttributeType { get; }
-    
+
     public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder)
     {
         // TODO: Support for duplicated symbols (partial classes)
         if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
             return;
-        var name = buildingBlockAttribute.ConstructorArguments[0].Value?.ToString() ?? symbol.Name;
+        if (!buildingBlockAttribute.TryGetConstructorParameterValue<string>(out var name))
+            name = symbol.Name;
         var descriptionFile = GetDescriptionFile(symbol);
         var buildingBlock = CreateBuildingBlock(name, descriptionFile);
         modelBuilder.Add(buildingBlock, symbol);
@@ -38,7 +39,7 @@ public abstract class DddBuildingBlockAnalyzer : SymbolAnalyzer<INamedTypeSymbol
         .SingleOrDefault(file => file.Exists);
 
     protected abstract DomainBuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile);
-    
+
     private static IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
         ElementsProvider elements)
     {
@@ -48,5 +49,4 @@ public abstract class DddBuildingBlockAnalyzer : SymbolAnalyzer<INamedTypeSymbol
         if (module != null)
             yield return new DomainModule.ContainsBuildingBlock(module, buildingBlock);
     }
-
 }

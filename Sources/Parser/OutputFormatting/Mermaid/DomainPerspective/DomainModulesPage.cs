@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.DomainPerspective;
+using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
@@ -9,6 +8,8 @@ public class DomainModulesPage : MermaidPageBase
 {
     private readonly DomainModulesHierarchy _modulesHierarchy;
 
+    public override string Header => "Domain Modules";
+    
     public override string RelativeFilePath => "Modules.md";
 
     public override Element MainElement => null;
@@ -17,9 +18,7 @@ public class DomainModulesPage : MermaidPageBase
         : base(outputDirectory) =>
         _modulesHierarchy = modulesHierarchy;
 
-    public override void LinkWith(IReadOnlyCollection<MermaidPage> otherPages) { }
-
-    protected override void WriteTo(MermaidWriter mermaidWriter)
+    protected override void WriteBody(MermaidWriter mermaidWriter)
     {
         mermaidWriter.WriteHeading("Modules", 1);
         foreach (var module in _modulesHierarchy.FromLevel(0).OrderBy(m => m.Name))
@@ -42,4 +41,8 @@ public class DomainModulesPage : MermaidPageBase
             Write(child, childId, flowchartWriter);
         }
     }
+    
+    protected override bool IncludeInZoomInPages(MermaidPage page) => false;
+
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
 }

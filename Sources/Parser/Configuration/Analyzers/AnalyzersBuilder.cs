@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using P3Model.Parser.CodeAnalysis;
-using P3Model.Parser.CodeAnalysis.DomainPerspective;
-using P3Model.Parser.CodeAnalysis.DomainPerspective.Ddd;
+using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
+using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel.Ddd;
+using P3Model.Parser.CodeAnalysis.People;
 
 namespace P3Model.Parser.Configuration.Analyzers;
 
@@ -29,6 +30,7 @@ public class AnalyzersBuilder
         _symbolAnalyzers.Add(new DddDomainServiceAnalyzer());
         _symbolAnalyzers.Add(new DddFactoryAnalyzer());
         _symbolAnalyzers.Add(new DddRepositoryAnalyzer());
+        _symbolAnalyzers.Add(new ActorAnalyzer());
         return this;
     }
     

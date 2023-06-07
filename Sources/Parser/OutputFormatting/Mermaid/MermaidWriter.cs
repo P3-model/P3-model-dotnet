@@ -29,10 +29,19 @@ public class MermaidWriter : IAsyncDisposable
 
     [PublicAPI]
     public void WriteLineBreak() => _streamWriter.WriteLine();
+    
+    [PublicAPI]
+    public void WriteHorizontalRule()
+    {
+        _streamWriter.WriteLine();
+        _streamWriter.WriteLine("---");
+        _streamWriter.WriteLine();
+    }
 
     [PublicAPI]
     public void WriteHeading(string text, int level)
     {
+        _streamWriter.WriteLine();
         _streamWriter.WriteLine($"{new string('#', level)} {text}");
         _streamWriter.WriteLine();
     }
@@ -45,7 +54,10 @@ public class MermaidWriter : IAsyncDisposable
     }
 
     [PublicAPI]
-    public void WriteLinkInline(string text, string url) => _streamWriter.Write($"[{text}]({url})");
+    public void WriteLinkInline(string text, string url) => _streamWriter.Write(FormatLink(text, url));
+    
+    [PublicAPI]
+    public static string FormatLink(string text, string url) => $"[{text}]({url})";
 
     [PublicAPI]
     public void WriteOrderedList(IEnumerable<string> values)
@@ -54,12 +66,27 @@ public class MermaidWriter : IAsyncDisposable
         foreach (var value in values)
             _streamWriter.WriteLine($"{no++}. {value}");
     }
+    
+    [PublicAPI]
+    public void WriteOrderedList<T>(IEnumerable<T> items, Func<T, string> valueFactory)
+    {
+        var no = 1;
+        foreach (var item in items)
+            _streamWriter.WriteLine($"{no++}. {valueFactory(item)}");
+    }
 
     [PublicAPI]
     public void WriteUnorderedList(IEnumerable<string> values)
     {
         foreach (var value in values)
             _streamWriter.WriteLine($"- {value}");
+    }
+    
+    [PublicAPI]
+    public void WriteUnorderedList<T>(IEnumerable<T> items, Func<T, string> valueFactory)
+    {
+        foreach (var item in items) 
+            _streamWriter.WriteLine($"- {valueFactory(item)}");
     }
 
     [PublicAPI]

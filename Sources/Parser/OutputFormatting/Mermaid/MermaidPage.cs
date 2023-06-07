@@ -6,6 +6,8 @@ namespace P3Model.Parser.OutputFormatting.Mermaid;
 
 public interface MermaidPage
 {
+    string Header { get; }
+    string LinkText { get; }
     string RelativeFilePath { get; }
     Element MainElement { get; }
     

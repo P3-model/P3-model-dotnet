@@ -1,9 +1,9 @@
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.DomainPerspective;
+using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-namespace P3Model.Parser.CodeAnalysis.DomainPerspective;
+namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
 public class ModelBoundaryAnalyzer : SymbolAnalyzer<IAssemblySymbol>
 {

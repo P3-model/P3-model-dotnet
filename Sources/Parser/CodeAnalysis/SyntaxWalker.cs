@@ -58,6 +58,27 @@ internal class SyntaxWalker : CSharpSyntaxWalker
         base.VisitStructDeclaration(node);
     }
 
+    public override void VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
+    {
+        var symbol = _semanticModel.GetDeclaredSymbol(node) ?? throw new InvalidOperationException();
+        Analyze(symbol);
+        base.VisitInterfaceDeclaration(node);
+    }
+
+    public override void VisitDelegateDeclaration(DelegateDeclarationSyntax node)
+    {
+        var symbol = _semanticModel.GetDeclaredSymbol(node) ?? throw new InvalidOperationException();
+        Analyze(symbol);
+        base.VisitDelegateDeclaration(node);
+    }
+
+    public override void VisitMethodDeclaration(MethodDeclarationSyntax node)
+    {
+        var symbol = _semanticModel.GetDeclaredSymbol(node) ?? throw new InvalidOperationException();
+        Analyze(symbol);
+        base.VisitMethodDeclaration(node);
+    }
+
     private void Analyze<TSymbol>(TSymbol symbol)
         where TSymbol : ISymbol
     {

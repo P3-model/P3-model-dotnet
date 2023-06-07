@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace P3Model.Parser.ModelSyntax.DomainPerspective;
+namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 public record DomainModule(string ModulesHierarchy) : Element
 {

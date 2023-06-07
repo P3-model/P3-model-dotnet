@@ -12,4 +12,7 @@ public interface ElementsProvider
 
     [PublicAPI]
     IEnumerable<Element> Where(Func<ISymbol, bool> predicate);
+    
+    [PublicAPI]
+    IEnumerable<TElement> OfType<TElement>() where TElement : Element;
 }

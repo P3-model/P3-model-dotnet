@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.DomainPerspective;
+using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
@@ -10,6 +9,8 @@ public class DomainGlossaryPage : MermaidPageBase
     private readonly DomainModulesHierarchy _modulesHierarchy;
     private readonly DomainBuildingBlocks _buildingBlocks;
 
+    public override string Header => "Domain Glossary";
+    
     public override string RelativeFilePath => "Domain_Glossary.md";
 
     public override Element MainElement => null;
@@ -23,9 +24,7 @@ public class DomainGlossaryPage : MermaidPageBase
         _buildingBlocks = buildingBlocks;
     }
 
-    public override void LinkWith(IReadOnlyCollection<MermaidPage> otherPages) { }
-
-    protected override void WriteTo(MermaidWriter mermaidWriter)
+    protected override void WriteBody(MermaidWriter mermaidWriter)
     {
         mermaidWriter.WriteHeading("Domain Glossary", 1);
         foreach (var module in _modulesHierarchy.FromLevel(0).OrderBy(m => m.Name))
@@ -56,4 +55,8 @@ public class DomainGlossaryPage : MermaidPageBase
         mermaidWriter.WriteLinkInline("Long description", buildingBlock.DescriptionFile.FullName);
         mermaidWriter.WriteLineBreak();
     }
+    
+    protected override bool IncludeInZoomInPages(MermaidPage page) => false;
+
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
 }

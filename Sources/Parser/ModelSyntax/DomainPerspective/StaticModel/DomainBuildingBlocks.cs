@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace P3Model.Parser.ModelSyntax.DomainPerspective;
+namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 public class DomainBuildingBlocks
 {

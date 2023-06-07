@@ -18,20 +18,22 @@ public record RepositoryToAnalyze(string Path, IReadOnlyCollection<string> SlnPa
 
 public class RootAnalyzer
 {
+    private readonly string _productName;
     private readonly IReadOnlyCollection<RepositoryToAnalyze> _repositories;
     private readonly IReadOnlyCollection<FileAnalyzer> _fileAnalyzers;
     private readonly IReadOnlyCollection<SymbolAnalyzer> _symbolAnalyzers;
     private readonly IReadOnlyCollection<OutputFormatter> _outputFormatters;
 
-    internal RootAnalyzer(IReadOnlyCollection<RepositoryToAnalyze> repositories,
+    internal RootAnalyzer(string productName,
+        IReadOnlyCollection<RepositoryToAnalyze> repositories, 
         IReadOnlyCollection<FileAnalyzer> fileAnalyzers, 
-        IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers, 
-        IReadOnlyCollection<OutputFormatter> outputFormatters)
+        IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers, IReadOnlyCollection<OutputFormatter> outputFormatters)
     {
         _repositories = repositories;
         _fileAnalyzers = fileAnalyzers;
         _symbolAnalyzers = symbolAnalyzers;
         _outputFormatters = outputFormatters;
+        _productName = productName;
     }
 
     public async Task Analyze()
@@ -39,6 +41,7 @@ public class RootAnalyzer
         var sw = Stopwatch.StartNew();
         MSBuildLocator.RegisterDefaults();
         var modelBuilder = new ModelBuilder();
+        modelBuilder.Add(new Product(_productName));
         foreach (var repository in _repositories) 
             await Analyze(repository, modelBuilder);
         var model = modelBuilder.Build();

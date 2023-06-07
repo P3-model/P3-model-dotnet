@@ -14,5 +14,4 @@ public class Model
         Relations = relations;
         Cache = new ModelCache(this);
     }
-    
 }

@@ -9,13 +9,21 @@ namespace P3Model.Parser.ModelSyntax;
 
 public class ModelBuilder : ElementsProvider
 {
+    private readonly HashSet<Element> _elements = new();
     private readonly ConcurrentDictionary<Element, HashSet<ISymbol>> _elementToSymbols = new();
+
     private readonly ConcurrentDictionary<ISymbol, HashSet<Element>> _symbolToElements =
         new(SymbolEqualityComparer.Default);
+
     private readonly ConcurrentDictionary<Relation, byte> _relations = new();
-    private readonly ConcurrentDictionary<Func<ElementsProvider, IEnumerable<Relation>>, byte> _relationFactories = new();
+
+    private readonly ConcurrentDictionary<Func<ElementsProvider, IEnumerable<Relation>>, byte> _relationFactories =
+        new();
+
     private readonly ConcurrentDictionary<Trait, byte> _traits = new();
     private readonly ConcurrentDictionary<Func<ElementsProvider, IEnumerable<Trait>>, byte> _traitFactories = new();
+
+    public void Add(Element element) => _elements.Add(element);
 
     public void Add(Element element, ISymbol symbol)
     {
@@ -39,19 +47,21 @@ public class ModelBuilder : ElementsProvider
 
     public void Add(Func<ElementsProvider, IEnumerable<Relation>> relationFactory) =>
         _relationFactories.TryAdd(relationFactory, default);
-    
+
     public void Add(Trait trait) => _traits.TryAdd(trait, default);
-    
+
     public void Add(Func<ElementsProvider, IEnumerable<Trait>> traitFactory) =>
         _traitFactories.TryAdd(traitFactory, default);
 
-    public IEnumerable<Element> For(ISymbol symbol) => _symbolToElements.TryGetValue(symbol, out var elements) 
-        ? elements 
+    IEnumerable<Element> ElementsProvider.For(ISymbol symbol) => _symbolToElements.TryGetValue(symbol, out var elements)
+        ? elements
         : Enumerable.Empty<Element>();
 
-    public IEnumerable<Element> Where(Func<ISymbol, bool> predicate) => _symbolToElements
+    IEnumerable<Element> ElementsProvider.Where(Func<ISymbol, bool> predicate) => _symbolToElements
         .Where(pair => predicate(pair.Key))
         .SelectMany(pair => pair.Value);
+
+    IEnumerable<TElement> ElementsProvider.OfType<TElement>() => GetAllElements().OfType<TElement>();
 
     public Model Build()
     {
@@ -59,7 +69,9 @@ public class ModelBuilder : ElementsProvider
         foreach (var relation in relationsFactory(this))
             Add(relation);
 
-        return new Model(_elementToSymbols.Keys.ToImmutableArray(),
+        return new Model(GetAllElements().ToImmutableArray(),
             _relations.Keys.ToImmutableArray());
     }
+
+    private IEnumerable<Element> GetAllElements() => _elements.Union(_elementToSymbols.Keys);
 }
