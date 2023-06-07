@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using P3Model.Parser.CodeAnalysis;
+using P3Model.Parser.CodeAnalysis.DomainPerspective;
 using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel.Ddd;
 using P3Model.Parser.CodeAnalysis.People;
