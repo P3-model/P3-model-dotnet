@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.CodeAnalysis;
 using P3Model.Parser.CodeAnalysis.DomainPerspective;
-using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
-using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel.Ddd;
-using P3Model.Parser.CodeAnalysis.People;
 
 namespace P3Model.Parser.Configuration.Analyzers;
 
@@ -20,18 +18,21 @@ public class AnalyzersBuilder
     {
         var builder = new DefaultAnalyzersOptionsBuilder();
         configure?.Invoke(builder);
+        var analyzersWithParameterlessConstructor = typeof(SymbolAnalyzer).Assembly
+            .GetTypes()
+            .Where(t => typeof(SymbolAnalyzer).IsAssignableFrom(t))
+            .Where(t =>
+            {
+                var constructors = t.GetConstructors();
+                return constructors.Length == 1 && constructors[0].GetParameters().Length == 0;
+            })
+            .Select(Activator.CreateInstance)
+            .Cast<SymbolAnalyzer>();
+        _symbolAnalyzers.AddRange(analyzersWithParameterlessConstructor);
         var options = builder.Build();
         _symbolAnalyzers.Add(new DomainModuleAnalyzer(
             options.NamespaceOptions.Predicate,
             options.NamespaceOptions.Filter));
-        _symbolAnalyzers.Add(new ModelBoundaryAnalyzer());
-        _symbolAnalyzers.Add(new DddValueObjectAnalyzer());
-        _symbolAnalyzers.Add(new DddEntityAnalyzer());
-        _symbolAnalyzers.Add(new DddAggregateAnalyzer());
-        _symbolAnalyzers.Add(new DddDomainServiceAnalyzer());
-        _symbolAnalyzers.Add(new DddFactoryAnalyzer());
-        _symbolAnalyzers.Add(new DddRepositoryAnalyzer());
-        _symbolAnalyzers.Add(new ActorAnalyzer());
         return this;
     }
     

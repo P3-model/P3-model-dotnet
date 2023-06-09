@@ -1,3 +1,7 @@
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 
-public record ProcessStep(string Name) : Element;
+// TODO: unique names across hierarchy
+public record ProcessStep(string Name) : Element
+{
+    public record HasNextStep(ProcessStep Current, ProcessStep Next) : Relation;
+}

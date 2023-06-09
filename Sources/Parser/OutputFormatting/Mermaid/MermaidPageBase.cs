@@ -59,12 +59,21 @@ public abstract class MermaidPageBase : MermaidPage
             mermaidWriter.WriteUnorderedList(_zoomInPages,
                 p => MermaidWriter.FormatLink(p.LinkText, p.RelativeFilePath));
         }
+
         if (_zoomOutPages is { Count: > 0 })
         {
             mermaidWriter.WriteHeading("Zoom-out", 3);
             mermaidWriter.WriteUnorderedList(_zoomOutPages,
-                p => MermaidWriter.FormatLink(p.LinkText, p.RelativeFilePath));
+                p => MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)));
         }
+    }
+
+    private string GetRelativePathFor(MermaidPage linkedPage)
+    {
+        var currentPageDirectory = Path.GetDirectoryName(RelativeFilePath);
+        return string.IsNullOrEmpty(currentPageDirectory)
+            ? linkedPage.RelativeFilePath 
+            : Path.GetRelativePath(currentPageDirectory, linkedPage.RelativeFilePath);
     }
 
     private static void WriteFooter(MermaidWriter mermaidWriter)

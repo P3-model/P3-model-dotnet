@@ -17,8 +17,7 @@ public abstract class DddBuildingBlockAnalyzer : SymbolAnalyzer<INamedTypeSymbol
         // TODO: Support for duplicated symbols (partial classes)
         if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
             return;
-        if (!buildingBlockAttribute.TryGetConstructorParameterValue<string>(out var name))
-            name = symbol.Name;
+        var name = buildingBlockAttribute.GetConstructorArgumentValue<string?>() ?? symbol.Name;
         var descriptionFile = GetDescriptionFile(symbol);
         var buildingBlock = CreateBuildingBlock(name, descriptionFile);
         modelBuilder.Add(buildingBlock, symbol);

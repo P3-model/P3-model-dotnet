@@ -21,8 +21,4 @@
       <ProjectReference Include="..\Annotations\Annotations.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="CodeAnalysis\DomainPerspective\DynamicModel\" />
-    </ItemGroup>
-
 </Project>

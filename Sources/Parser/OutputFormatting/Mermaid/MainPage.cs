@@ -78,7 +78,10 @@ public class MainPage : MermaidPageBase
         mermaidWriter.WriteLine("TODO");
     }
 
-    protected override bool IncludeInZoomInPages(MermaidPage page) => page is DomainGlossaryPage or DomainModulesPage;
+    protected override bool IncludeInZoomInPages(MermaidPage page) => page is
+        DomainGlossaryPage or
+        DomainModulesPage or
+        ProcessesPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => false;
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using P3Model.Parser.OutputFormatting.Mermaid;
-using P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
 namespace P3Model.Parser.Configuration.OutputFormat.Mermaid;
 
@@ -18,10 +18,17 @@ public class MermaidOptionsBuilder : MermaidOptionsBuilder.DirectoryStep, Mermai
 
     MermaidOptionsBuilder PagesStep.UseDefaultPages()
     {
-        _pageFactories.Add(new MainPageFactory());
-        _pageFactories.Add(new DomainModulesPageFactory());
-        _pageFactories.Add(new DomainBuildingBlocksPageFactory());
-        _pageFactories.Add(new DomainGlossaryPageFactory());
+        var factories = typeof(MermaidPageFactory).Assembly
+            .GetTypes()
+            .Where(t => typeof(MermaidPageFactory).IsAssignableFrom(t))
+            .Where(t =>
+            {
+                var constructors = t.GetConstructors();
+                return constructors.Length == 1 && constructors[0].GetParameters().Length == 0;
+            })
+            .Select(Activator.CreateInstance)
+            .Cast<MermaidPageFactory>();
+        _pageFactories.AddRange(factories);
         return this;
     }
 

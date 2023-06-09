@@ -18,7 +18,7 @@ public class ActorAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnalyzer<IM
     {
         if (!symbol.TryGetAttribute(typeof(ActorAttribute), out var actorAttribute))
             return;
-        var name = actorAttribute.GetConstructorParameterValue<string>();
+        var name = actorAttribute.GetConstructorArgumentValue<string>();
         var actor = new Actor(name);
         modelBuilder.Add(actor, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, actor, elements));

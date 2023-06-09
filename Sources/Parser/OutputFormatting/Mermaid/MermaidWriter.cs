@@ -11,8 +11,12 @@ public class MermaidWriter : IAsyncDisposable
 {
     private readonly StreamWriter _streamWriter;
 
-    public MermaidWriter(string path) => _streamWriter =
-        new StreamWriter(path,
+    public MermaidWriter(string path)
+    {
+        var directory = Path.GetDirectoryName(path);
+        if (directory != null)
+            Directory.CreateDirectory(directory);
+        _streamWriter = new StreamWriter(path,
             Encoding.UTF8,
             new FileStreamOptions
             {
@@ -20,6 +24,7 @@ public class MermaidWriter : IAsyncDisposable
                 Mode = FileMode.Create,
                 Share = FileShare.None
             });
+    }
 
     [PublicAPI]
     public void WriteInline(string text) => _streamWriter.Write(text);
@@ -29,7 +34,7 @@ public class MermaidWriter : IAsyncDisposable
 
     [PublicAPI]
     public void WriteLineBreak() => _streamWriter.WriteLine();
-    
+
     [PublicAPI]
     public void WriteHorizontalRule()
     {
@@ -55,7 +60,7 @@ public class MermaidWriter : IAsyncDisposable
 
     [PublicAPI]
     public void WriteLinkInline(string text, string url) => _streamWriter.Write(FormatLink(text, url));
-    
+
     [PublicAPI]
     public static string FormatLink(string text, string url) => $"[{text}]({url})";
 
@@ -66,7 +71,7 @@ public class MermaidWriter : IAsyncDisposable
         foreach (var value in values)
             _streamWriter.WriteLine($"{no++}. {value}");
     }
-    
+
     [PublicAPI]
     public void WriteOrderedList<T>(IEnumerable<T> items, Func<T, string> valueFactory)
     {
@@ -81,11 +86,11 @@ public class MermaidWriter : IAsyncDisposable
         foreach (var value in values)
             _streamWriter.WriteLine($"- {value}");
     }
-    
+
     [PublicAPI]
     public void WriteUnorderedList<T>(IEnumerable<T> items, Func<T, string> valueFactory)
     {
-        foreach (var item in items) 
+        foreach (var item in items)
             _streamWriter.WriteLine($"- {valueFactory(item)}");
     }
 
