@@ -57,7 +57,7 @@ public abstract class MermaidPageBase : MermaidPage
         {
             mermaidWriter.WriteHeading("Zoom-in", 3);
             mermaidWriter.WriteUnorderedList(_zoomInPages,
-                p => MermaidWriter.FormatLink(p.LinkText, p.RelativeFilePath));
+                p => MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)));
         }
 
         if (_zoomOutPages is { Count: > 0 })
