@@ -113,4 +113,6 @@ public class ProcessPage : MermaidPageBase
         _steps.Contains(stepPage.MainElement);
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is ProcessesPage;
+    
+    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

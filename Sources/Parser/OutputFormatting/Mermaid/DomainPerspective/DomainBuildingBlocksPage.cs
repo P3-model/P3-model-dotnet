@@ -48,4 +48,6 @@ public class DomainBuildingBlocksPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => false;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
+
+    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

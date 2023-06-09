@@ -11,6 +11,7 @@ public abstract class MermaidPageBase : MermaidPage
     private readonly string _outputDirectory;
     private IReadOnlyCollection<MermaidPage>? _zoomInPages;
     private IReadOnlyCollection<MermaidPage>? _zoomOutPages;
+    private IReadOnlyCollection<MermaidPage>? _changePerspectivePages;
 
     public abstract string Header { get; }
     protected virtual string? Description => null;
@@ -24,10 +25,12 @@ public abstract class MermaidPageBase : MermaidPage
     {
         _zoomInPages = otherPages.Where(IncludeInZoomInPages).ToList().AsReadOnly();
         _zoomOutPages = otherPages.Where(IncludeInZoomOutPages).ToList().AsReadOnly();
+        _zoomOutPages = otherPages.Where(IncludeInChangePerspectivePages).ToList().AsReadOnly();
     }
 
     protected abstract bool IncludeInZoomInPages(MermaidPage page);
     protected abstract bool IncludeInZoomOutPages(MermaidPage page);
+    protected abstract bool IncludeInChangePerspectivePages(MermaidPage page);
 
     public async Task WriteToFile()
     {
@@ -64,6 +67,13 @@ public abstract class MermaidPageBase : MermaidPage
         {
             mermaidWriter.WriteHeading("Zoom-out", 3);
             mermaidWriter.WriteUnorderedList(_zoomOutPages,
+                p => MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)));
+        }
+        
+        if (_changePerspectivePages is { Count: > 0 })
+        {
+            mermaidWriter.WriteHeading("Change perspective", 3);
+            mermaidWriter.WriteUnorderedList(_changePerspectivePages,
                 p => MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)));
         }
     }

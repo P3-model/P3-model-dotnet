@@ -84,4 +84,6 @@ public class MainPage : MermaidPageBase
         ProcessesPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => false;
+    
+    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }
