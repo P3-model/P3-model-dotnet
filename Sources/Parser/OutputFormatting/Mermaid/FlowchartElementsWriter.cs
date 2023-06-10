@@ -11,7 +11,7 @@ public interface FlowchartElementsWriter
     public int WriteCylinder(string name);
     public int WriteCircle(string name);
     public int WriteRhombus(string name);
-    public void WriteOpenLink(int sourceId, int destinationId);
-    public void WriteArrow(int sourceId, int destinationId);
+    public void WriteOpenLink(int sourceId, int destinationId, LineStyle lineStyle = LineStyle.Normal);
+    public void WriteArrow(int sourceId, int destinationId, LineStyle lineStyle = LineStyle.Normal);
     void WriteSubgraph(string title, Action<FlowchartElementsWriter> writeElements);
 }

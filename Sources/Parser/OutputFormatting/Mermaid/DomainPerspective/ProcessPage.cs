@@ -11,8 +11,9 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 public class ProcessPage : MermaidPageBase
 {
     private readonly Process _process;
-    private readonly Process? _parentProcess;
-    private readonly IEnumerable<Process> _subProcesses;
+    private readonly Process? _parent;
+    private readonly IEnumerable<Process> _children;
+    private readonly IEnumerable<Process.HasNextSubProcess> _processHasNextSubProcessRelations;
     private readonly IEnumerable<ProcessStep> _steps;
     private readonly IEnumerable<DomainModule> _modules;
     private readonly IEnumerable<DeployableUnit> _deployableUnits;
@@ -20,15 +21,16 @@ public class ProcessPage : MermaidPageBase
     private readonly IEnumerable<DevelopmentTeam> _developmentTeams;
     private readonly IEnumerable<BusinessOrganizationalUnit> _organizationalUnits;
 
-    public ProcessPage(string outputDirectory, Process process, Process? parentProcess,
-        IEnumerable<Process> subProcesses, IEnumerable<ProcessStep> steps, IEnumerable<DomainModule> modules,
-        IEnumerable<DeployableUnit> deployableUnits, IEnumerable<Actor> actors,
-        IEnumerable<DevelopmentTeam> developmentTeams, IEnumerable<BusinessOrganizationalUnit> organizationalUnits) :
-        base(outputDirectory)
+    public ProcessPage(string outputDirectory, Process process, Process? parent, IEnumerable<Process> children,
+        IEnumerable<Process.HasNextSubProcess> processHasNextSubProcessRelations, IEnumerable<ProcessStep> steps,
+        IEnumerable<DomainModule> modules, IEnumerable<DeployableUnit> deployableUnits, IEnumerable<Actor> actors,
+        IEnumerable<DevelopmentTeam> developmentTeams, IEnumerable<BusinessOrganizationalUnit> organizationalUnits)
+        : base(outputDirectory)
     {
         _process = process;
-        _parentProcess = parentProcess;
-        _subProcesses = subProcesses;
+        _parent = parent;
+        _children = children;
+        _processHasNextSubProcessRelations = processHasNextSubProcessRelations;
         _steps = steps;
         _modules = modules;
         _deployableUnits = deployableUnits;
@@ -38,7 +40,10 @@ public class ProcessPage : MermaidPageBase
     }
 
     public override string Header => $"[*Business process*] {_process.Name}";
-    public override string RelativeFilePath => $"Processes/{_process.Name}.md";
+
+    public override string RelativeFilePath =>
+        $"Processes/{string.Join('/', _process.Hierarchy.Parts)}/{_process.Name}.md";
+
     public override Element MainElement => _process;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
@@ -47,16 +52,27 @@ public class ProcessPage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var processId = flowchartWriter.WriteRectangle(_process.Name);
-            if (_parentProcess != null)
+            if (_parent != null)
             {
-                var parentId = flowchartWriter.WriteStadiumShape(_parentProcess.Name);
+                var parentId = flowchartWriter.WriteStadiumShape(_parent.Name);
                 flowchartWriter.WriteArrow(parentId, processId);
             }
-            foreach (var subProcess in _subProcesses)
+
+            var subProcessIds = new Dictionary<Process, int>();
+            foreach (var subProcess in _children)
             {
                 var subProcessId = flowchartWriter.WriteStadiumShape(subProcess.Name);
+                subProcessIds.Add(subProcess, subProcessId);
                 flowchartWriter.WriteArrow(processId, subProcessId);
             }
+
+            foreach (var relation in _processHasNextSubProcessRelations)
+            {
+                var currentProcessId = subProcessIds[relation.Current];
+                var nextProcessId = subProcessIds[relation.Next];
+                flowchartWriter.WriteArrow(currentProcessId, nextProcessId, LineStyle.Dotted);
+            }
+
             foreach (var step in _steps)
             {
                 var stepId = flowchartWriter.WriteStadiumShape(step.Name);
@@ -68,7 +84,7 @@ public class ProcessPage : MermaidPageBase
             var processId = flowchartWriter.WriteRectangle(_process.Name);
             foreach (var module in _modules)
             {
-                var moduleId = flowchartWriter.WriteStadiumShape(module.ModulesHierarchy.Full);
+                var moduleId = flowchartWriter.WriteStadiumShape(module.Hierarchy.FullName);
                 flowchartWriter.WriteArrow(processId, moduleId);
             }
         });
@@ -108,11 +124,14 @@ public class ProcessPage : MermaidPageBase
         });
     }
 
-    protected override bool IncludeInZoomInPages(MermaidPage page) =>
-        page is ProcessStepPage stepPage &&
-        _steps.Contains(stepPage.MainElement);
+    protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
+    {
+        ProcessPage processesPage when _children.Contains(processesPage.MainElement) => true,
+        ProcessStepPage stepPage when _steps.Contains(stepPage.MainElement) => true,
+        _ => false
+    };
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is ProcessesPage;
-    
+
     protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

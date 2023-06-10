@@ -25,7 +25,7 @@ public abstract class MermaidPageBase : MermaidPage
     {
         _zoomInPages = otherPages.Where(IncludeInZoomInPages).ToList().AsReadOnly();
         _zoomOutPages = otherPages.Where(IncludeInZoomOutPages).ToList().AsReadOnly();
-        _zoomOutPages = otherPages.Where(IncludeInChangePerspectivePages).ToList().AsReadOnly();
+        _changePerspectivePages = otherPages.Where(IncludeInChangePerspectivePages).ToList().AsReadOnly();
     }
 
     protected abstract bool IncludeInZoomInPages(MermaidPage page);

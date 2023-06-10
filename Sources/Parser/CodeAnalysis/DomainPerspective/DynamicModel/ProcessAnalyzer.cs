@@ -15,22 +15,37 @@ public class ProcessAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
     {
         if (!symbol.TryGetAttribute(typeof(ProcessAttribute), out var processAttribute))
             return;
-        var name = processAttribute.GetConstructorArgumentValue<string?>(nameof(ProcessAttribute.Name)) ?? symbol.Name;
-        var process = new Process(name);
-        var applyOnNamespace = processAttribute.GetConstructorArgumentValue<bool>(
-            nameof(ProcessAttribute.ApplyOnNamespace));
+        var fullName = processAttribute.GetConstructorArgumentValues<string>(nameof(ProcessAttribute.FullName));
+        var process = new Process(HierarchyId.FromParts(fullName));
+        if (!processAttribute.TryGetNamedArgumentValue<bool>(nameof(ProcessAttribute.ApplyOnNamespace),
+                out var applyOnNamespace))
+            applyOnNamespace = false;
         modelBuilder.Add(process, applyOnNamespace ? symbol.ContainingNamespace : symbol);
-        modelBuilder.Add(elements => GetRelations(processAttribute, process, elements));
+        modelBuilder.Add(elements => GetRelations(process, processAttribute, elements));
     }
 
-    private static IEnumerable<Relation> GetRelations(AttributeData processAttribute, Process child,
+    private static IEnumerable<Relation> GetRelations(Process process, AttributeData processAttribute,
         ElementsProvider elements)
     {
-        if (!processAttribute.TryGetNamedArgumentValue<string?>(nameof(ProcessAttribute.Parent), out var parentName))
-            yield break;
-        var parent = elements.OfType<Process>().SingleOrDefault(p => p.Name == parentName);
+        var parent = process.Hierarchy.Level > 0
+            ? elements
+                .OfType<Process>()
+                .SingleOrDefault(p => p.Hierarchy.FullName == process.Hierarchy.ParentFullName)
+            : null;
         // TODO: warning logging if parent not found
         if (parent != null)
-            yield return new Process.ContainsSubProcess(parent, child);
+            yield return new Process.ContainsSubProcess(parent, process);
+        if (!processAttribute.TryGetNamedArgumentValues<string>(nameof(ProcessAttribute.NextSubProcesses),
+                out var nextSubProcesses))
+            yield break;
+        foreach (var nextSubProcessName in nextSubProcesses)
+        {
+            var nextSubProcess = elements
+                .OfType<Process>()
+                .SingleOrDefault(p => p.Hierarchy.Name == nextSubProcessName);
+            // TODO: warning logging if nextProcess not found
+            if (nextSubProcess != null)
+                yield return new Process.HasNextSubProcess(process, nextSubProcess);
+        }
     }
 }

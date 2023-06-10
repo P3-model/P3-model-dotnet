@@ -31,7 +31,9 @@ public class ProcessStepPage : MermaidPageBase
     }
 
     public override string Header => $"[*Process Step*] {_step.Name}";
-    public override string RelativeFilePath => $"Processes/{_step.Name}.md";
+    public override string RelativeFilePath => _process is null
+        ? $"Processes/Steps/{_step.Name}.md"
+        : $"Processes/{string.Join('/', _process.Hierarchy.Parts)}/Steps/{_step.Name}.md";
     public override Element MainElement => _step;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)

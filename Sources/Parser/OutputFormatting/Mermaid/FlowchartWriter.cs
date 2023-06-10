@@ -38,10 +38,28 @@ internal class FlowchartWriter : FlowchartElementsWriter
         return id;
     }
 
-    public void WriteOpenLink(int sourceId, int destinationId) => WriteLink(sourceId, destinationId, "---");
+    public void WriteOpenLink(int sourceId, int destinationId, LineStyle lineStyle = LineStyle.Normal) => 
+        WriteLink(sourceId, destinationId, GetOpenLinkSymbol(lineStyle));
 
-    public void WriteArrow(int sourceId, int destinationId) => WriteLink(sourceId, destinationId, "-->");
+    private static string GetOpenLinkSymbol(LineStyle lineStyle) => lineStyle switch
+    {
+        LineStyle.Normal => "---",
+        LineStyle.Dotted => "-.-",
+        LineStyle.Thick => "===",
+        _ => throw new ArgumentOutOfRangeException(nameof(lineStyle), lineStyle, null)
+    };
+    
+    public void WriteArrow(int sourceId, int destinationId, LineStyle lineStyle = LineStyle.Normal) => 
+        WriteLink(sourceId, destinationId, GetArrowSymbol(lineStyle));
 
+    private static string GetArrowSymbol(LineStyle lineStyle) => lineStyle switch
+    {
+        LineStyle.Normal => "-->",
+        LineStyle.Dotted => "-.->",
+        LineStyle.Thick => "==>",
+        _ => throw new ArgumentOutOfRangeException(nameof(lineStyle), lineStyle, null)
+    };
+    
     private void WriteLink(int sourceId, int destinationId, string linkSymbol) =>
         WriteLineIndented($"{sourceId}{linkSymbol}{destinationId}");
 

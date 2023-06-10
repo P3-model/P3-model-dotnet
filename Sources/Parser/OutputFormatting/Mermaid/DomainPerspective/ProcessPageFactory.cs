@@ -22,24 +22,32 @@ public class ProcessPageFactory : MermaidPageFactory
                     .OfType<Process.ContainsSubProcess>()
                     .SingleOrDefault(r => r.Child == process)
                     ?.Parent;
-                var subProcesses = model.Relations
+                var children = new HashSet<Process>(model.Relations
                     .OfType<Process.ContainsSubProcess>()
                     .Where(r => r.Parent == process)
-                    .Select(r => r.Child);
-                // TODO: recursive
-                var steps = new HashSet<ProcessStep>(model.Relations
+                    .Select(r => r.Child));
+                var processHasNextSubProcessRelations = model.Relations
+                    .OfType<Process.HasNextSubProcess>()
+                    .Where(r => children.Contains(r.Current) && children.Contains(r.Next));
+                var allSteps = new HashSet<ProcessStep>(model.Relations
                     .OfType<Process.ContainsProcessStep>()
-                    .Where(r => r.Process == process)
+                    .Where(r =>
+                        r.Process.Equals(process) ||
+                        r.Process.Hierarchy.IsDescendantOf(process.Hierarchy))
                     .Select(r => r.Step));
+                var directSteps = model.Relations
+                    .OfType<Process.ContainsProcessStep>()
+                    .Where(r => r.Process.Equals(process))
+                    .Select(r => r.Step);
                 var domainModules = model.Relations
                     .OfType<DomainModule.ContainsProcessStep>()
-                    .Where(r => steps.Contains(r.ProcessStep))
+                    .Where(r => allSteps.Contains(r.ProcessStep))
                     .Select(r => r.DomainModule)
                     .Distinct()
                     .ToList();
                 var deployableUnits = model.Relations
                     .OfType<CodeStructure.ImplementsProcessStep>()
-                    .Where(r => steps.Contains(r.ProcessStep))
+                    .Where(r => allSteps.Contains(r.ProcessStep))
                     .SelectMany(r => model.Relations
                         .OfType<DeployableUnit.ContainsCodeStructure>()
                         .Where(r2 => r2.CodeStructure.Equals(r.CodeStructure))
@@ -47,7 +55,7 @@ public class ProcessPageFactory : MermaidPageFactory
                     .Distinct();
                 var actors = model.Relations
                     .OfType<Actor.UsesProcessStep>()
-                    .Where(r => steps.Contains(r.ProcessStep))
+                    .Where(r => allSteps.Contains(r.ProcessStep))
                     .Select(r => r.Actor)
                     .Distinct();
                 var developmentTeams = domainModules
@@ -62,8 +70,8 @@ public class ProcessPageFactory : MermaidPageFactory
                         .Where(r => r.DomainModule == m)
                         .Select(r => r.Unit))
                     .Distinct();
-                return new ProcessPage(outputDirectory, process, parent, subProcesses, steps, domainModules,
-                    deployableUnits, actors, developmentTeams, organizationalUnits);
+                return new ProcessPage(outputDirectory, process, parent, children, processHasNextSubProcessRelations,
+                    directSteps, domainModules, deployableUnits, actors, developmentTeams, organizationalUnits);
             });
     }
 }

@@ -2,11 +2,11 @@ using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-public record DomainModule(HierarchyId ModulesHierarchy) : Element
+public record DomainModule(HierarchyId Hierarchy) : Element
 {
-    public string Name => ModulesHierarchy.Last;
+    public string Name => Hierarchy.Name;
 
-    public int Level => ModulesHierarchy.Level;
+    public int Level => Hierarchy.Level;
 
     public record ContainsDomainModule(DomainModule Parent, DomainModule Child) : Relation;
 

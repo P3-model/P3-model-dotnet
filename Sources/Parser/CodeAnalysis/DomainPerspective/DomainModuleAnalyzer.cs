@@ -26,7 +26,7 @@ public class DomainModuleAnalyzer : SymbolAnalyzer<INamespaceSymbol>
         var modulesHierarchy = _getModulesHierarchy(symbol);
         if (string.IsNullOrEmpty(modulesHierarchy))
             return;
-        var module = new DomainModule(new HierarchyId(modulesHierarchy));
+        var module = new DomainModule(HierarchyId.FromValue(modulesHierarchy));
         modelBuilder.Add(module, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, module, elements));
         var containingNamespace = symbol.ContainingNamespace;

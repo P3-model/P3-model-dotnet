@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -59,16 +58,16 @@ public static class SymbolExtensions
         return true;
     }
 
-    public static ImmutableArray<T> GetConstructorArgumentValues<T>(this AttributeData attributeData,
+    public static IEnumerable<T> GetConstructorArgumentValues<T>(this AttributeData attributeData,
         string argumentName)
     {
         if (!TryGetConstructorArgumentValues<T>(attributeData, argumentName, out var values))
             throw new InvalidOperationException();
-        return values.Value;
+        return values;
     }
 
     public static bool TryGetConstructorArgumentValues<T>(this AttributeData attributeData, string argumentName,
-        [NotNullWhen(true)] out ImmutableArray<T>? values)
+        [NotNullWhen(true)] out IEnumerable<T>? values)
     {
         var argumentIndex = attributeData.AttributeConstructor
             ?.Parameters
@@ -83,8 +82,7 @@ public static class SymbolExtensions
         values = attributeData.ConstructorArguments[argumentIndex.Value]
             .Values
             .Select(v => v.Value)
-            .Cast<T>()
-            .ToImmutableArray();
+            .Cast<T>();
         return true;
     }
 
@@ -106,7 +104,7 @@ public static class SymbolExtensions
     }
     
     public static bool TryGetNamedArgumentValues<T>(this AttributeData attributeData, string argumentName,
-        [NotNullWhen(true)] out ImmutableArray<T>? values)
+        [NotNullWhen(true)] out IEnumerable<T>? values)
     {
         var pair = attributeData.NamedArguments
             .SingleOrDefault(p => p.Key.Equals(argumentName, StringComparison.InvariantCultureIgnoreCase));
@@ -121,8 +119,7 @@ public static class SymbolExtensions
         values = pair.Value
             .Values
             .Select(v => v.Value)
-            .Cast<T>()
-            .ToImmutableArray();
+            .Cast<T>();
         return true;
     }
 }

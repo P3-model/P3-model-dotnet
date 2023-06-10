@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
@@ -61,7 +60,7 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
     }
     
     private static bool TryGetNextStepNames(AttributeData processStepAttribute, 
-        [NotNullWhen(true)] out ImmutableArray<string>? nextStepNames)
+        [NotNullWhen(true)] out IEnumerable<string>? nextStepNames)
     {
         if (processStepAttribute.TryGetConstructorArgumentValues(nameof(ProcessStepAttribute.NextSteps), out nextStepNames))
             return true;

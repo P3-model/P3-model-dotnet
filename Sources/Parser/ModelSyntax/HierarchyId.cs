@@ -1,27 +1,66 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
 namespace P3Model.Parser.ModelSyntax;
 
-public readonly struct HierarchyId
+public readonly struct HierarchyId : IEquatable<HierarchyId>
 {
-    [PublicAPI] public const char DefaultSeparator = '.';
+    [PublicAPI]
+    public const char DefaultSeparator = '.';
 
     private readonly char _separator;
     private readonly string _value;
 
-    public HierarchyId(params string[] parts) : this(string.Join(DefaultSeparator, parts)) { }
+    [PublicAPI]
+    public static HierarchyId FromParts(params string[] parts) => FromParts(DefaultSeparator, parts);
 
-    public HierarchyId(char separator, params string[] parts) : this(string.Join(separator, parts), separator) { }
+    [PublicAPI]
+    public static HierarchyId FromParts(IEnumerable<string> parts) => FromParts(DefaultSeparator, parts);
 
-    public HierarchyId(string value, char separator = DefaultSeparator)
+    [PublicAPI]
+    public static HierarchyId FromParts(char separator, params string[] parts) =>
+        FromParts(separator, (IEnumerable<string>)parts);
+
+    [PublicAPI]
+    public static HierarchyId FromParts(char separator, IEnumerable<string> parts) =>
+        new(string.Join(separator, parts), separator);
+
+    [PublicAPI]
+    public static HierarchyId FromValue(string value, char separator = DefaultSeparator) => new(value, separator);
+
+    private HierarchyId(string value, char separator = DefaultSeparator)
     {
         _separator = separator;
         _value = value;
     }
 
-    public string Last => _value[(_value.LastIndexOf(_separator) + 1)..];
-    public string Full => _value;
-    
-    public int Level => _value.Count(c => c == '.');
+    [PublicAPI] public string Name => _value[(_value.LastIndexOf(_separator) + 1)..];
+
+    [PublicAPI] public string ParentFullName => _value.LastIndexOf(_separator) == -1 
+        ? string.Empty 
+        : _value[.._value.LastIndexOf(_separator)];
+
+    [PublicAPI] public string FullName => _value;
+
+    [PublicAPI] public int Level => _value.Count(c => c == '.');
+
+    [PublicAPI]
+    public IEnumerable<string> Parts => _value.Split(_separator);
+
+    [PublicAPI]
+    public bool IsAncestorOf(HierarchyId other) => other._value.Length < _value.Length &&
+                                                   other._value.StartsWith(_value);
+
+    [PublicAPI]
+    public bool IsDescendantOf(HierarchyId other) => other.Level < Level && _value.StartsWith(other._value);
+
+    public override bool Equals(object? obj) => obj is HierarchyId other && Equals(other);
+    public bool Equals(HierarchyId other) => _value == other._value;
+    public override int GetHashCode() => _value.GetHashCode();
+
+    public static bool operator ==(HierarchyId left, HierarchyId right) => left.Equals(right);
+
+    public static bool operator !=(HierarchyId left, HierarchyId right) => !(left == right);
 }
