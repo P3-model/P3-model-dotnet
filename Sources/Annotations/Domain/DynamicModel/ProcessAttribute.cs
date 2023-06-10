@@ -6,15 +6,9 @@ namespace P3Model.Annotations.Domain.DynamicModel;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
 public class ProcessAttribute : Attribute, NamespaceApplicable
 {
-    public string? Name { get; }
-    public bool ApplyOnNamespace { get; }
-    public string? Parent { get; init; }
+    public string[] FullName { get; }
+    public bool ApplyOnNamespace { get; init; }
+    public string[]? NextSubProcesses { get; init; }
 
-    public ProcessAttribute(string? name = null, bool applyOnNamespace = false)
-    {
-        Name = name;
-        ApplyOnNamespace = applyOnNamespace;
-    }
-
-    public ProcessAttribute(bool applyOnNamespace) => ApplyOnNamespace = applyOnNamespace;
+    public ProcessAttribute(params string[] fullName) => FullName = fullName;
 }

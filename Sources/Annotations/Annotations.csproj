@@ -7,7 +7,7 @@
         <LangVersion>default</LangVersion>
         <RootNamespace>P3Model.Annotations</RootNamespace>
         <PackageId>P3Model.Annotations</PackageId>
-        <Version>0.2.0-preview2</Version>
+        <Version>0.2.0-preview3</Version>
         <Authors>Marcin Markowski</Authors>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>P3 Model Annotations</Title>
@@ -18,8 +18,7 @@
         <Company>P3 Model</Company>
         <AssemblyVersion>0.1.0</AssemblyVersion>
         <FileVersion>0.1.0</FileVersion>
-        <PackageReleaseNotes>new properties for business process annotations
-first annotations for people and technology perspectives</PackageReleaseNotes>
+        <PackageReleaseNotes>new syntax for business process annotation</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <AssemblyName>P3Model.Annotations</AssemblyName>
     </PropertyGroup>
