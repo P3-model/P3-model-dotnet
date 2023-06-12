@@ -55,6 +55,7 @@ public class ProcessPage : MermaidPageBase
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
         mermaidWriter.WriteHeading("Domain Perspective", 2);
+        mermaidWriter.WriteHeading("Related processes and steps", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var processId = flowchartWriter.WriteRectangle(_process.Name);
@@ -85,6 +86,7 @@ public class ProcessPage : MermaidPageBase
                 flowchartWriter.WriteArrow(processId, stepId);
             }
         });
+        mermaidWriter.WriteHeading("Related modules", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var processId = flowchartWriter.WriteRectangle(_process.Name);
@@ -96,6 +98,7 @@ public class ProcessPage : MermaidPageBase
         });
 
         mermaidWriter.WriteHeading("Technology Perspective", 2);
+        mermaidWriter.WriteHeading("Related deployable units", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var processId = flowchartWriter.WriteRectangle(_process.Name);
@@ -107,6 +110,7 @@ public class ProcessPage : MermaidPageBase
         });
 
         mermaidWriter.WriteHeading("People Perspective", 2);
+        mermaidWriter.WriteHeading("Engaged people", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var processId = flowchartWriter.WriteRectangle(_process.Name);
