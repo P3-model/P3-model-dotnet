@@ -36,15 +36,23 @@ public readonly struct HierarchyId : IEquatable<HierarchyId>
         _value = value;
     }
 
-    [PublicAPI] public string Name => _value[(_value.LastIndexOf(_separator) + 1)..];
+    [PublicAPI]
+    public string FullName => _value;
 
-    [PublicAPI] public string ParentFullName => _value.LastIndexOf(_separator) == -1 
-        ? string.Empty 
-        : _value[.._value.LastIndexOf(_separator)];
+    [PublicAPI]
+    public string Name => _value[(_value.LastIndexOf(_separator) + 1)..];
 
-    [PublicAPI] public string FullName => _value;
+    [PublicAPI]
+    public string ParentFullName => _value.Contains(_separator)
+        ? _value[.._value.LastIndexOf(_separator)]
+        : string.Empty;
 
-    [PublicAPI] public int Level => _value.Count(c => c == '.');
+    public string RootFullName => _value.Contains(_separator)
+        ? _value[.._value.IndexOf(_separator)]
+        : _value;
+
+    [PublicAPI]
+    public int Level => _value.Count(c => c == '.');
 
     [PublicAPI]
     public IEnumerable<string> Parts => _value.Split(_separator);
@@ -63,4 +71,6 @@ public readonly struct HierarchyId : IEquatable<HierarchyId>
     public static bool operator ==(HierarchyId left, HierarchyId right) => left.Equals(right);
 
     public static bool operator !=(HierarchyId left, HierarchyId right) => !(left == right);
+
+    public override string ToString() => _value;
 }

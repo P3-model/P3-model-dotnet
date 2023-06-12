@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Domain.DynamicModel;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
+using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 namespace P3Model.Parser.CodeAnalysis.DomainPerspective.DynamicModel;
 
@@ -24,10 +25,10 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
                    ?? symbol.Name;
         var processStep = new ProcessStep(name);
         modelBuilder.Add(processStep, symbol);
-        modelBuilder.Add(elements => GetRelations(processStepAttribute, processStep, elements));
+        modelBuilder.Add(elements => GetRelations(symbol, processStepAttribute, processStep, elements));
     }
 
-    private static IEnumerable<Relation> GetRelations(AttributeData processStepAttribute, ProcessStep step,
+    private static IEnumerable<Relation> GetRelations(ISymbol symbol, AttributeData processStepAttribute, ProcessStep step,
         ElementsProvider elements)
     {
         if (TryGetProcessName(processStepAttribute, out var processName))
@@ -47,6 +48,13 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
                     yield return new ProcessStep.HasNextStep(step, nextStep);
             }
         }
+
+        var module = elements
+            .For(symbol.ContainingNamespace)
+            .OfType<DomainModule>()
+            .SingleOrDefault();
+        if (module != null)
+            yield return new ProcessStep.BelongsToDomainModule(step, module);
     }
 
     private static bool TryGetProcessName(AttributeData processStepAttribute, 

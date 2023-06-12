@@ -57,7 +57,7 @@ public class ProcessStepPage : MermaidPageBase
 
             if (_domainModule != null)
             {
-                var moduleId = flowchartWriter.WriteStadiumShape(_domainModule.Name);
+                var moduleId = flowchartWriter.WriteCircle(_domainModule.Name);
                 flowchartWriter.WriteArrow(stepId, moduleId);
             }
         });

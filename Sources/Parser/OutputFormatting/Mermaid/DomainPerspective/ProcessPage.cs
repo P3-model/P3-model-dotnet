@@ -92,7 +92,7 @@ public class ProcessPage : MermaidPageBase
             var processId = flowchartWriter.WriteRectangle(_process.Name);
             foreach (var module in _modules)
             {
-                var moduleId = flowchartWriter.WriteStadiumShape(module.Hierarchy.FullName);
+                var moduleId = flowchartWriter.WriteCircle(module.Name);
                 flowchartWriter.WriteArrow(processId, moduleId);
             }
         });

@@ -26,9 +26,14 @@ public class ProcessStepPageFactory : MermaidPageFactory
                     // TODO: unique names across hierarchy
                     .FirstOrDefault();
                 var domainModule = model.Relations
-                    .OfType<DomainModule.ContainsProcessStep>()
-                    .SingleOrDefault(r => r.ProcessStep == step)
-                    ?.DomainModule;
+                    .OfType<ProcessStep.BelongsToDomainModule>()
+                    .Where(r => r.Step == step)
+                    .Select(r => r.DomainModule)
+                    .Select(m => model.Elements
+                        .OfType<DomainModule>()
+                        .Single(m2 => m2.Hierarchy.FullName == m.Hierarchy.RootFullName))
+                    .Distinct()
+                    .SingleOrDefault();
                 var deployableUnit = model.Relations
                     .OfType<CodeStructure.ImplementsProcessStep>()
                     .Where(r => r.ProcessStep == step)

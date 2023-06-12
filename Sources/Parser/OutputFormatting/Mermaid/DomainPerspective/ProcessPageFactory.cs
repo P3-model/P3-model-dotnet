@@ -40,9 +40,12 @@ public class ProcessPageFactory : MermaidPageFactory
                     .Where(r => r.Process.Equals(process))
                     .Select(r => r.Step);
                 var domainModules = model.Relations
-                    .OfType<DomainModule.ContainsProcessStep>()
-                    .Where(r => allSteps.Contains(r.ProcessStep))
+                    .OfType<ProcessStep.BelongsToDomainModule>()
+                    .Where(r => allSteps.Contains(r.Step))
                     .Select(r => r.DomainModule)
+                    .Select(m => model.Elements
+                        .OfType<DomainModule>()
+                        .Single(m2 => m2.Hierarchy.FullName == m.Hierarchy.RootFullName))
                     .Distinct()
                     .ToList();
                 var deployableUnits = model.Relations
