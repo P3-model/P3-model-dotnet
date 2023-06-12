@@ -47,8 +47,11 @@ public abstract class MermaidPageBase : MermaidPage
     private void WriteHeader(MermaidWriter mermaidWriter)
     {
         mermaidWriter.WriteHeading(Header, 1);
-        if (Description != null)
-            mermaidWriter.WriteLine(Description);
+        if (Description == null) 
+            return;
+        mermaidWriter.WriteLine(Description);
+        mermaidWriter.WriteHorizontalRule();
+        mermaidWriter.WriteLineBreak();
     }
 
     protected abstract void WriteBody(MermaidWriter mermaidWriter);

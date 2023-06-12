@@ -17,6 +17,7 @@ public class ProcessesPage : MermaidPageBase
     }
 
     public override string Header => "Business processes";
+    protected override string Description => "This view contains all business processes with their sub-processes.";
     public override string RelativeFilePath => "Business_Processes.md";
     public override Element MainElement => _product;
 

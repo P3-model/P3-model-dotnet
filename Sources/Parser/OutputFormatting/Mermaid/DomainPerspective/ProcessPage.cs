@@ -40,6 +40,12 @@ public class ProcessPage : MermaidPageBase
     }
 
     public override string Header => $"[*Business process*] {_process.Name}";
+    protected override string Description => @$"This view contains details information about {_process.Name} business process, including:
+- other related processes
+- process steps
+- related domain modules
+- related deployable units
+- engaged people: actors, development teams, business stakeholders";
 
     public override string RelativeFilePath =>
         $"Processes/{string.Join('/', _process.Hierarchy.Parts)}/{_process.Name}.md";

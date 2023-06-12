@@ -1,3 +1,4 @@
+using System.Linq;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
@@ -9,6 +10,9 @@ public class ModelCache
 
     public ModelCache(Model model) => _model = model;
 
+    private Product? _product;
+    public Product Product => _product ??= _model.Elements.OfType<Product>().Single();
+    
     private DomainModulesHierarchy? _domainModulesHierarchy;
     public DomainModulesHierarchy DomainModulesHierarchy => _domainModulesHierarchy ??= new DomainModulesHierarchy(
         _model.Relations.OfType<DomainModule.ContainsDomainModule>());

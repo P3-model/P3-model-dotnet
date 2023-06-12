@@ -31,6 +31,13 @@ public class ProcessStepPage : MermaidPageBase
     }
 
     public override string Header => $"[*Process Step*] {_step.Name}";
+    protected override string Description => @$"This view contains details information about {_step.Name} business processes step, including:
+- related process
+- next process steps
+- related domain module
+- related deployable unit
+- engaged people: actors, development teams, business stakeholders";
+    
     public override string RelativeFilePath => _process is null
         ? $"Processes/Steps/{_step.Name}.md"
         : $"Processes/{string.Join('/', _process.Hierarchy.Parts)}/Steps/{_step.Name}.md";

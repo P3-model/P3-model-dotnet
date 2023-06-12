@@ -7,6 +7,8 @@ public class DomainModulesPageFactory : MermaidPageFactory
 {
     public IEnumerable<MermaidPage> Create(string outputDirectory, Model model)
     {
-        yield return new DomainModulesPage(outputDirectory, model.Cache.DomainModulesHierarchy);
+        yield return new DomainModulesPage(outputDirectory,
+            model.Cache.Product,
+            model.Cache.DomainModulesHierarchy);
     }
 }
