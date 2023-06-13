@@ -1,0 +1,69 @@
+using System.Collections.Generic;
+using P3Model.Parser.ModelSyntax;
+using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
+using P3Model.Parser.ModelSyntax.People;
+using P3Model.Parser.ModelSyntax.Technology;
+using P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
+
+namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
+
+public class DevelopmentTeamPage : MermaidPageBase
+{
+    private readonly DevelopmentTeam _team;
+    private readonly IEnumerable<DomainModule> _modules;
+    private readonly IEnumerable<DeployableUnit> _deployableUnits;
+
+    public DevelopmentTeamPage(string outputDirectory, DevelopmentTeam team, IEnumerable<DomainModule> modules, 
+        IEnumerable<DeployableUnit> deployableUnits) : base(outputDirectory)
+    {
+        _team = team;
+        _modules = modules;
+        _deployableUnits = deployableUnits;
+    }
+
+    public override string Header => $"[*Development team*] {_team.Name}";
+    protected override string Description => @$"This view contains details information about {_team.Name} team, including:
+- related domain modules
+- related deployable units";
+
+    public override string RelativeFilePath => $"Teams/{_team.Name}.md";
+
+    public override Element MainElement => _team;
+
+    protected override void WriteBody(MermaidWriter mermaidWriter)
+    {
+        mermaidWriter.WriteHeading("Domain Perspective", 2);
+        mermaidWriter.WriteHeading("Related domain modules", 3);
+        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        {
+            var teamId = flowchartWriter.WriteRectangle(_team.Name);
+            foreach (var module in _modules)
+            {
+                var moduleId = flowchartWriter.WriteStadiumShape(module.Name);
+                flowchartWriter.WriteArrow(teamId, moduleId);
+            }
+            
+        });
+
+        mermaidWriter.WriteHeading("Technology Perspective", 2);
+        mermaidWriter.WriteHeading("Related deployable units", 3);
+        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        {
+            var processId = flowchartWriter.WriteRectangle(_team.Name);
+            foreach (var deployableUnit in _deployableUnits)
+            {
+                var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name);
+                flowchartWriter.WriteArrow(processId, deployableUnitId);
+            }
+        });
+    }
+
+    protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
+    {
+        _ => false
+    };
+
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is DevelopmentTeamsPage;
+
+    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
+}

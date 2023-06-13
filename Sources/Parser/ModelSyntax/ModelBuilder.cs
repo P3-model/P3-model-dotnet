@@ -9,7 +9,7 @@ namespace P3Model.Parser.ModelSyntax;
 
 public class ModelBuilder : ElementsProvider
 {
-    private readonly HashSet<Element> _elements = new();
+    private readonly ConcurrentDictionary<Element, byte> _elements = new();
     private readonly ConcurrentDictionary<Element, HashSet<ISymbol>> _elementToSymbols = new();
 
     private readonly ConcurrentDictionary<ISymbol, HashSet<Element>> _symbolToElements =
@@ -23,7 +23,7 @@ public class ModelBuilder : ElementsProvider
     private readonly ConcurrentDictionary<Trait, byte> _traits = new();
     private readonly ConcurrentDictionary<Func<ElementsProvider, IEnumerable<Trait>>, byte> _traitFactories = new();
 
-    public void Add(Element element) => _elements.Add(element);
+    public void Add(Element element) => _elements.TryAdd(element, default);
 
     public void Add(Element element, ISymbol symbol)
     {
@@ -78,7 +78,7 @@ public class ModelBuilder : ElementsProvider
             _traits.Keys.ToImmutableArray());
     }
 
-    private IEnumerable<Element> GetAllElements() => _elements
+    private IEnumerable<Element> GetAllElements() => _elements.Keys
         .Union(_elementToSymbols.Keys)
         .Distinct();
 }
