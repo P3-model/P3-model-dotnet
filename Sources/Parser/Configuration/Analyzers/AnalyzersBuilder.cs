@@ -18,24 +18,26 @@ public class AnalyzersBuilder
     {
         var builder = new DefaultAnalyzersOptionsBuilder();
         configure?.Invoke(builder);
-        var analyzersWithParameterlessConstructor = typeof(SymbolAnalyzer).Assembly
-            .GetTypes()
-            .Where(t => typeof(SymbolAnalyzer).IsAssignableFrom(t))
-            .Where(t =>
-            {
-                var constructors = t.GetConstructors();
-                return constructors.Length == 1 && constructors[0].GetParameters().Length == 0;
-            })
-            .Select(Activator.CreateInstance)
-            .Cast<SymbolAnalyzer>();
-        _symbolAnalyzers.AddRange(analyzersWithParameterlessConstructor);
+        _symbolAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<SymbolAnalyzer>());
         var options = builder.Build();
         _symbolAnalyzers.Add(new DomainModuleAnalyzer(
             options.NamespaceOptions.Predicate,
             options.NamespaceOptions.Filter));
+        _fileAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<FileAnalyzer>());
         return this;
     }
     
+    private static IEnumerable<T> CreateAnalyzersWithParameterlessConstructor<T>() => typeof(T).Assembly
+        .GetTypes()
+        .Where(t => typeof(T).IsAssignableFrom(t))
+        .Where(t =>
+        {
+            var constructors = t.GetConstructors();
+            return constructors.Length == 1 && constructors[0].GetParameters().Length == 0;
+        })
+        .Select(Activator.CreateInstance)
+        .Cast<T>();
+
     [PublicAPI]
     public AnalyzersBuilder Including(params FileAnalyzer[] analyzers)
     {

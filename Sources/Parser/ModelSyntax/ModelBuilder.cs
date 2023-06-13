@@ -73,5 +73,7 @@ public class ModelBuilder : ElementsProvider
             _relations.Keys.ToImmutableArray());
     }
 
-    private IEnumerable<Element> GetAllElements() => _elements.Union(_elementToSymbols.Keys);
+    private IEnumerable<Element> GetAllElements() => _elements
+        .Union(_elementToSymbols.Keys)
+        .Distinct();
 }

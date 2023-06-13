@@ -18,6 +18,7 @@ public record RepositoryToAnalyze(string Path, IReadOnlyCollection<string> SlnPa
 
 public class RootAnalyzer
 {
+    private static readonly string[] SupportedFileTypes = { "json", "md" };
     private readonly string _productName;
     private readonly IReadOnlyCollection<RepositoryToAnalyze> _repositories;
     private readonly IReadOnlyCollection<FileAnalyzer> _fileAnalyzers;
@@ -25,8 +26,8 @@ public class RootAnalyzer
     private readonly IReadOnlyCollection<OutputFormatter> _outputFormatters;
 
     internal RootAnalyzer(string productName,
-        IReadOnlyCollection<RepositoryToAnalyze> repositories, 
-        IReadOnlyCollection<FileAnalyzer> fileAnalyzers, 
+        IReadOnlyCollection<RepositoryToAnalyze> repositories,
+        IReadOnlyCollection<FileAnalyzer> fileAnalyzers,
         IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers, IReadOnlyCollection<OutputFormatter> outputFormatters)
     {
         _repositories = repositories;
@@ -42,7 +43,7 @@ public class RootAnalyzer
         MSBuildLocator.RegisterDefaults();
         var modelBuilder = new ModelBuilder();
         modelBuilder.Add(new Product(_productName));
-        foreach (var repository in _repositories) 
+        foreach (var repository in _repositories)
             await Analyze(repository, modelBuilder);
         var model = modelBuilder.Build();
         foreach (var outputFormatter in _outputFormatters)
@@ -62,14 +63,17 @@ public class RootAnalyzer
     private async Task AnalyzeMarkdownFiles(RepositoryToAnalyze repository, ModelBuilder modelBuilder)
     {
         var directoryInfo = new DirectoryInfo(repository.Path);
-        await Parallel.ForEachAsync(directoryInfo.EnumerateFiles("*.md", SearchOption.AllDirectories), 
-            async (fileInfo, _) =>
-            {
-                foreach (var fileAnalyzer in _fileAnalyzers) 
-                    await fileAnalyzer.Analyze(fileInfo, modelBuilder);
-            });
+        await Parallel.ForEachAsync(GetAllSupportedFiles(directoryInfo), async (fileInfo, _) =>
+        {
+            foreach (var fileAnalyzer in _fileAnalyzers)
+                await fileAnalyzer.Analyze(fileInfo, modelBuilder);
+        });
     }
-    
+
+    private static IEnumerable<FileInfo> GetAllSupportedFiles(DirectoryInfo directoryInfo) => SupportedFileTypes
+        .SelectMany(fileType => directoryInfo
+            .EnumerateFiles($"*.{fileType}", SearchOption.AllDirectories));
+
     private static async IAsyncEnumerable<Solution> GetSolutionsFor(RepositoryToAnalyze repository)
     {
         if (repository.SlnPaths.Count == 0)
