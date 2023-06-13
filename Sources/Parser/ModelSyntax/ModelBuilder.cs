@@ -68,9 +68,14 @@ public class ModelBuilder : ElementsProvider
         foreach (var relationsFactory in _relationFactories.Keys)
         foreach (var relation in relationsFactory(this))
             Add(relation);
+        
+        foreach (var traitFactory in _traitFactories.Keys)
+        foreach (var trait in traitFactory(this))
+            Add(trait);
 
         return new Model(GetAllElements().ToImmutableArray(),
-            _relations.Keys.ToImmutableArray());
+            _relations.Keys.ToImmutableArray(),
+            _traits.Keys.ToImmutableArray());
     }
 
     private IEnumerable<Element> GetAllElements() => _elements

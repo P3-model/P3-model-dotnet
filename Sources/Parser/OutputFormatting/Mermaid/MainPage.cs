@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using P3Model.Parser.ModelSyntax;
+using P3Model.Parser.ModelSyntax.DomainPerspective;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
 using P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
@@ -12,16 +13,19 @@ public class MainPage : MermaidPageBase
     private readonly IReadOnlyCollection<Actor.UsesProduct> _actorUsesProductRelations;
     private readonly IReadOnlyCollection<Product.UsesExternalSystem> _productUsesExternalSystemRelations;
     private readonly IReadOnlyCollection<ExternalSystem.UsesProduct> _externalSystemUsesProductRelations;
+    private readonly DomainVisionStatement? _domainVisionStatement;
 
     public MainPage(string outputDirectory, Product product,
         IReadOnlyCollection<Actor.UsesProduct> actorUsesProductRelations,
         IReadOnlyCollection<Product.UsesExternalSystem> productUsesExternalSystemRelations,
-        IReadOnlyCollection<ExternalSystem.UsesProduct> externalSystemUsesProductRelations) : base(outputDirectory)
+        IReadOnlyCollection<ExternalSystem.UsesProduct> externalSystemUsesProductRelations,
+        DomainVisionStatement? domainVisionStatement) : base(outputDirectory)
     {
         _product = product;
         _actorUsesProductRelations = actorUsesProductRelations;
         _productUsesExternalSystemRelations = productUsesExternalSystemRelations;
         _externalSystemUsesProductRelations = externalSystemUsesProductRelations;
+        _domainVisionStatement = domainVisionStatement;
     }
 
     public override string Header => $"P3 Model documentation for {_product.Name}";
@@ -72,10 +76,12 @@ public class MainPage : MermaidPageBase
         });
     }
 
-    private static void WriteDomainVisionStatement(MermaidWriter mermaidWriter)
+    private void WriteDomainVisionStatement(MermaidWriter mermaidWriter)
     {
+        if (_domainVisionStatement is null)
+            return;
         mermaidWriter.WriteHeading("Domain Vision Statement", 2);
-        mermaidWriter.WriteLine("TODO");
+        mermaidWriter.WriteLinkInline("Link", _domainVisionStatement.FileInfo.FullName);
     }
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page is
@@ -84,6 +90,6 @@ public class MainPage : MermaidPageBase
         ProcessesPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => false;
-    
+
     protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

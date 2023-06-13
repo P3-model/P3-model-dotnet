@@ -6,12 +6,14 @@ public class Model
 {
     public ImmutableArray<Element> Elements { get; }
     public ImmutableArray<Relation> Relations { get; }
+    public ImmutableArray<Trait> Traits { get; }
     public ModelCache Cache { get; }
     
-    public Model(ImmutableArray<Element> elements, ImmutableArray<Relation> relations)
+    public Model(ImmutableArray<Element> elements, ImmutableArray<Relation> relations, ImmutableArray<Trait> traits)
     {
         Elements = elements;
         Relations = relations;
+        Traits = traits;
         Cache = new ModelCache(this);
     }
 }
