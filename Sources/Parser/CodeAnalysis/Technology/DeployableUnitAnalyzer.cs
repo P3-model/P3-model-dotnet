@@ -19,7 +19,7 @@ public class DeployableUnitAnalyzer : SymbolAnalyzer<IAssemblySymbol>
             return;
         var name = deployableUnitAttribute.GetConstructorArgumentValue<string>(nameof(DeployableUnitAttribute.Name));
         var deployableUnit = new DeployableUnit(name);
-        modelBuilder.Add(deployableUnit);
+        modelBuilder.Add(deployableUnit, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, deployableUnit, elements));
     }
 

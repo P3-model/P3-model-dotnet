@@ -12,6 +12,7 @@ public class DeployableUnitsPageFactory : MermaidPageFactory
     {
         yield return new DeployableUnitsPage(outputDirectory,
             model.Cache.Product,
-            model.Elements.OfType<DeployableUnit>());
+            model.Elements.OfType<DeployableUnit>(),
+            model.Relations.OfType<Tier.ContainsDeployableUnit>());
     }
 }

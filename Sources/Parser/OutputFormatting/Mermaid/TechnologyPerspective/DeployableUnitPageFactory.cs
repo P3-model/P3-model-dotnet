@@ -17,6 +17,10 @@ public class DeployableUnitPageFactory : MermaidPageFactory
             .OfType<DeployableUnit>()
             .Select(unit =>
             {
+                var tier = model.Relations
+                    .OfType<Tier.ContainsDeployableUnit>()
+                    .SingleOrDefault(r => r.DeployableUnit.Equals(unit))
+                    ?.Tier;
                 var domainModules = new HashSet<DomainModule>(model.Relations
                     .OfType<DomainModule.IsDeployedInDeployableUnit>()
                     .Where(r => r.DeployableUnit.Equals(unit))
@@ -27,7 +31,7 @@ public class DeployableUnitPageFactory : MermaidPageFactory
                     .Where(r => domainModules.Contains(r.DomainModule))
                     .Select(r => r.Team)
                     .Distinct();
-                return new DeployableUnitPage(outputDirectory, unit, domainModules, teams);
+                return new DeployableUnitPage(outputDirectory, unit, tier, domainModules, teams);
             });
     }
 }
