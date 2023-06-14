@@ -1,0 +1,48 @@
+using System.Collections.Generic;
+using P3Model.Parser.ModelSyntax;
+using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
+using P3Model.Parser.ModelSyntax.People;
+
+namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
+
+public class BusinessOrganizationalUnitPage : MermaidPageBase
+{
+    private readonly BusinessOrganizationalUnit _organizationalUnit;
+    private readonly IEnumerable<DomainModule> _modules;
+
+    public BusinessOrganizationalUnitPage(string outputDirectory, BusinessOrganizationalUnit organizationalUnit, 
+        IEnumerable<DomainModule> modules) : base(outputDirectory)
+    {
+        _organizationalUnit = organizationalUnit;
+        _modules = modules;
+    }
+
+    public override string Header => $"[*Business organizational unit*] {_organizationalUnit.Name}";
+    protected override string Description => @$"This view contains details information about {_organizationalUnit.Name}, including:
+- related domain modules";
+
+    public override string RelativeFilePath => $"BusinessOrganizationalUnits/{_organizationalUnit.Name}.md";
+
+    public override Element MainElement => _organizationalUnit;
+
+    protected override void WriteBody(MermaidWriter mermaidWriter)
+    {
+        mermaidWriter.WriteHeading("Domain Perspective", 2);
+        mermaidWriter.WriteHeading("Related domain modules", 3);
+        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        {
+            var unitId = flowchartWriter.WriteRectangle(_organizationalUnit.Name);
+            foreach (var module in _modules)
+            {
+                var moduleId = flowchartWriter.WriteStadiumShape(module.Name);
+                flowchartWriter.WriteArrow(unitId, moduleId);
+            }
+        });
+    }
+
+    protected override bool IncludeInZoomInPages(MermaidPage page) => false;
+
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is BusinessOrganizationalUnitsPage;
+
+    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
+}

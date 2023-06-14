@@ -17,12 +17,16 @@ public class DevelopmentTeamsPage : MermaidPageBase
     }
 
     public override string Header => "Development teams";
-    protected override string Description => $"This view contains all development teams that build and maintain {_product.Name} product";
+
+    protected override string Description =>
+        $"This view contains all development teams that build and maintain {_product.Name} product.";
+
     public override string RelativeFilePath => "Development_Teams.md";
     public override Element MainElement => _product;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
+        mermaidWriter.WriteHeading("Teams and their relations", 2);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             foreach (var team in _teams)
@@ -33,6 +37,6 @@ public class DevelopmentTeamsPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => page is DevelopmentTeamPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
-    
+
     protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

@@ -89,7 +89,8 @@ public class MainPage : MermaidPageBase
         DomainGlossaryPage or
         DomainModulesPage or
         ProcessesPage or
-        DevelopmentTeamsPage;
+        DevelopmentTeamsPage or
+        BusinessOrganizationalUnitsPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => false;
 

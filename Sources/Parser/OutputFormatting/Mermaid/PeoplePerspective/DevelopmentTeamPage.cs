@@ -3,7 +3,6 @@ using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
-using P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 
