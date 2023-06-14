@@ -5,6 +5,8 @@ using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
+using P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
+using P3Model.Parser.OutputFormatting.Mermaid.TechnologyPerspective;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
@@ -65,7 +67,7 @@ public class DomainModulePage : MermaidPageBase
                 flowchartWriter.WriteArrow(moduleId, childId, "contains");
             }
         });
-        mermaidWriter.WriteHeading("Related modules", 3);
+        mermaidWriter.WriteHeading("Related processes", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
@@ -117,5 +119,12 @@ public class DomainModulePage : MermaidPageBase
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is ProcessesPage;
 
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
+    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => page switch
+    {
+        ProcessPage processPage => _processes.Contains(processPage.MainElement),
+        DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
+        DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
+        BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage.MainElement),
+        _ => false
+    };
 }

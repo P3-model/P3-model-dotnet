@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
+using P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
+using P3Model.Parser.OutputFormatting.Mermaid.TechnologyPerspective;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
@@ -108,5 +111,13 @@ public class ProcessStepPage : MermaidPageBase
         page is ProcessPage processPage &&
         processPage.MainElement.Equals(_process);
     
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
+    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => page switch
+    {
+        ProcessPage processPage => _process?.Equals(processPage.MainElement) ?? false,
+        DomainModulePage modulePage => _domainModule?.Equals(modulePage.MainElement) ?? false,
+        DeployableUnitPage deployableUnitPage => _deployableUnit?.Equals(deployableUnitPage.MainElement) ?? false,
+        DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
+        BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage.MainElement),
+        _ => false
+    };
 }
