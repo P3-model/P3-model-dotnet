@@ -58,19 +58,19 @@ public class ProcessPage : MermaidPageBase
         mermaidWriter.WriteHeading("Related processes and steps", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var processId = flowchartWriter.WriteRectangle(_process.Name);
+            var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
             if (_parent != null)
             {
-                var parentId = flowchartWriter.WriteStadiumShape(_parent.Name);
+                var parentId = flowchartWriter.WriteStadiumShape(_parent.Name, Style.DomainPerspective);
                 flowchartWriter.WriteArrow(parentId, processId);
             }
 
             var subProcessIds = new Dictionary<Process, int>();
             foreach (var subProcess in _children)
             {
-                var subProcessId = flowchartWriter.WriteStadiumShape(subProcess.Name);
+                var subProcessId = flowchartWriter.WriteStadiumShape(subProcess.Name, Style.DomainPerspective);
                 subProcessIds.Add(subProcess, subProcessId);
-                flowchartWriter.WriteArrow(processId, subProcessId);
+                flowchartWriter.WriteArrow(processId, subProcessId, "contains");
             }
 
             foreach (var relation in _processHasNextSubProcessRelations)
@@ -82,18 +82,18 @@ public class ProcessPage : MermaidPageBase
 
             foreach (var step in _steps)
             {
-                var stepId = flowchartWriter.WriteStadiumShape(step.Name);
-                flowchartWriter.WriteArrow(processId, stepId);
+                var stepId = flowchartWriter.WriteStadiumShape(step.Name, Style.DomainPerspective);
+                flowchartWriter.WriteArrow(processId, stepId, "contains");
             }
         });
         mermaidWriter.WriteHeading("Related modules", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var processId = flowchartWriter.WriteRectangle(_process.Name);
+            var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
             foreach (var module in _modules)
             {
-                var moduleId = flowchartWriter.WriteCircle(module.Name);
-                flowchartWriter.WriteArrow(processId, moduleId);
+                var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
+                flowchartWriter.WriteArrow(processId, moduleId, "belongs to");
             }
         });
 
@@ -101,11 +101,12 @@ public class ProcessPage : MermaidPageBase
         mermaidWriter.WriteHeading("Related deployable units", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var processId = flowchartWriter.WriteRectangle(_process.Name);
+            var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
             foreach (var deployableUnit in _deployableUnits)
             {
-                var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name);
-                flowchartWriter.WriteArrow(processId, deployableUnitId);
+                var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name, 
+                    Style.TechnologyPerspective);
+                flowchartWriter.WriteArrow(processId, deployableUnitId, "is deployed in");
             }
         });
 
@@ -113,23 +114,24 @@ public class ProcessPage : MermaidPageBase
         mermaidWriter.WriteHeading("Engaged people", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var processId = flowchartWriter.WriteRectangle(_process.Name);
+            var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
             foreach (var actor in _actors)
             {
-                var actorId = flowchartWriter.WriteStadiumShape(actor.Name);
-                flowchartWriter.WriteArrow(actorId, processId);
+                var actorId = flowchartWriter.WriteStadiumShape(actor.Name, Style.PeoplePerspective);
+                flowchartWriter.WriteArrow(actorId, processId, "uses");
             }
 
             foreach (var team in _developmentTeams)
             {
-                var teamId = flowchartWriter.WriteStadiumShape(team.Name);
-                flowchartWriter.WriteArrow(teamId, processId);
+                var teamId = flowchartWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
+                flowchartWriter.WriteArrow(teamId, processId, "develops & maintains");
             }
 
             foreach (var organizationalUnit in _organizationalUnits)
             {
-                var organizationalUnitId = flowchartWriter.WriteStadiumShape(organizationalUnit.Name);
-                flowchartWriter.WriteArrow(organizationalUnitId, processId);
+                var organizationalUnitId = flowchartWriter.WriteStadiumShape(organizationalUnit.Name, 
+                    Style.PeoplePerspective);
+                flowchartWriter.WriteArrow(organizationalUnitId, processId, "owns");
             }
         });
     }

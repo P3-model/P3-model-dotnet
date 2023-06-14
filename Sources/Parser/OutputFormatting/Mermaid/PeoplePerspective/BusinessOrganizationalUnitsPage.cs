@@ -30,7 +30,7 @@ public class BusinessOrganizationalUnitsPage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             foreach (var organizationalUnit in _organizationalUnits)
-                flowchartWriter.WriteRectangle(organizationalUnit.Name);
+                flowchartWriter.WriteRectangle(organizationalUnit.Name, Style.PeoplePerspective);
         });
     }
 

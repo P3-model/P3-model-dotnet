@@ -31,7 +31,7 @@ All modules can be divided into sub-modules to reflect hierarchical structure of
             mermaidWriter.WriteHeading($"{module.Name}", 2);
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var moduleId = flowchartWriter.WriteRectangle(module.Name);
+                var moduleId = flowchartWriter.WriteRectangle(module.Name, Style.DomainPerspective);
                 Write(module, moduleId, flowchartWriter);
             });
         }
@@ -41,8 +41,8 @@ All modules can be divided into sub-modules to reflect hierarchical structure of
     {
         foreach (var child in _modulesHierarchy.GetChildrenFor(parent).OrderBy(r => r.Name))
         {
-            var childId = flowchartWriter.WriteRectangle(child.Name);
-            flowchartWriter.WriteArrow(parentId, childId);
+            var childId = flowchartWriter.WriteRectangle(child.Name, Style.DomainPerspective);
+            flowchartWriter.WriteArrow(parentId, childId, "contains");
             Write(child, childId, flowchartWriter);
         }
     }

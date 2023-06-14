@@ -30,7 +30,7 @@ public class DevelopmentTeamsPage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             foreach (var team in _teams)
-                flowchartWriter.WriteRectangle(team.Name);
+                flowchartWriter.WriteRectangle(team.Name, Style.PeoplePerspective);
         });
     }
 

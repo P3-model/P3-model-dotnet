@@ -34,10 +34,10 @@ public class DeployableUnitsPage : MermaidPageBase
         {
             foreach (var relation in _tierContainsDeploymentUnitRelations)
                 flowchartWriter.WriteSubgraph(relation.Tier.Name, elementsWriter => elementsWriter
-                    .WriteRectangle(relation.DeployableUnit.Name));
+                    .WriteRectangle(relation.DeployableUnit.Name, Style.TechnologyPerspective));
 
             foreach (var unit in _unitsWithoutTier)
-                flowchartWriter.WriteRectangle(unit.Name);
+                flowchartWriter.WriteRectangle(unit.Name, Style.TechnologyPerspective);
         });
     }
 

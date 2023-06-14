@@ -31,11 +31,11 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
         mermaidWriter.WriteHeading("Related domain modules", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var unitId = flowchartWriter.WriteRectangle(_organizationalUnit.Name);
+            var unitId = flowchartWriter.WriteRectangle(_organizationalUnit.Name, Style.PeoplePerspective);
             foreach (var module in _modules)
             {
-                var moduleId = flowchartWriter.WriteStadiumShape(module.Name);
-                flowchartWriter.WriteArrow(unitId, moduleId);
+                var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
+                flowchartWriter.WriteArrow(unitId, moduleId, "owns");
             }
         });
     }

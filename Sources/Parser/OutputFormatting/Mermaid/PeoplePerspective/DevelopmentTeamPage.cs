@@ -35,11 +35,11 @@ public class DevelopmentTeamPage : MermaidPageBase
         mermaidWriter.WriteHeading("Related domain modules", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var teamId = flowchartWriter.WriteRectangle(_team.Name);
+            var teamId = flowchartWriter.WriteRectangle(_team.Name, Style.PeoplePerspective);
             foreach (var module in _modules)
             {
-                var moduleId = flowchartWriter.WriteStadiumShape(module.Name);
-                flowchartWriter.WriteArrow(teamId, moduleId);
+                var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
+                flowchartWriter.WriteArrow(teamId, moduleId, "develops & maintains");
             }
             
         });
@@ -48,11 +48,11 @@ public class DevelopmentTeamPage : MermaidPageBase
         mermaidWriter.WriteHeading("Related deployable units", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var processId = flowchartWriter.WriteRectangle(_team.Name);
+            var teamId = flowchartWriter.WriteRectangle(_team.Name, Style.PeoplePerspective);
             foreach (var deployableUnit in _deployableUnits)
             {
-                var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name);
-                flowchartWriter.WriteArrow(processId, deployableUnitId);
+                var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name, Style.TechnologyPerspective);
+                flowchartWriter.WriteArrow(teamId, deployableUnitId, "maintains");
             }
         });
     }

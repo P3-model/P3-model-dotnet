@@ -28,7 +28,7 @@ public class ProcessesPage : MermaidPageBase
             mermaidWriter.WriteHeading(process.Name, 2);
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var processId = flowchartWriter.WriteRectangle(process.Name);
+                var processId = flowchartWriter.WriteRectangle(process.Name, Style.DomainPerspective);
                 Write(process, processId, flowchartWriter);
             });
         }
@@ -38,8 +38,8 @@ public class ProcessesPage : MermaidPageBase
     {
         foreach (var child in _processesHierarchy.GetChildrenFor(parent).OrderBy(r => r.Name))
         {
-            var childId = flowchartWriter.WriteRectangle(child.Name);
-            flowchartWriter.WriteArrow(parentId, childId);
+            var childId = flowchartWriter.WriteRectangle(child.Name, Style.DomainPerspective);
+            flowchartWriter.WriteArrow(parentId, childId, "contains");
             Write(child, childId, flowchartWriter);
         }
     }

@@ -48,22 +48,22 @@ public class DeployableUnitPage : MermaidPageBase
         mermaidWriter.WriteHeading("Related development teams", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var unitId = flowchartWriter.WriteRectangle(_unit.Name);
+            var unitId = flowchartWriter.WriteRectangle(_unit.Name, Style.TechnologyPerspective);
             foreach (var team in _teams)
             {
-                var teamId = flowchartWriter.WriteStadiumShape(team.Name);
-                flowchartWriter.WriteArrow(unitId, teamId);
+                var teamId = flowchartWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
+                flowchartWriter.WriteArrow(teamId, unitId, "maintains");
             }
         });
     }
 
     private void WriteUnitWithModules(FlowchartElementsWriter flowchartWriter)
     {
-        var unitId = flowchartWriter.WriteRectangle(_unit.Name);
+        var unitId = flowchartWriter.WriteRectangle(_unit.Name, Style.TechnologyPerspective);
         foreach (var module in _modules)
         {
-            var moduleId = flowchartWriter.WriteStadiumShape(module.Name);
-            flowchartWriter.WriteArrow(unitId, moduleId);
+            var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
+            flowchartWriter.WriteArrow(moduleId, unitId, "is deployed in");
         }
     }
 
