@@ -1,3 +1,5 @@
+using P3Model.Parser.ModelSyntax.Technology;
+
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 public record DomainModule(HierarchyId Hierarchy) : Element
@@ -9,4 +11,6 @@ public record DomainModule(HierarchyId Hierarchy) : Element
     public record ContainsDomainModule(DomainModule Parent, DomainModule Child) : Relation;
 
     public record ContainsBuildingBlock(DomainModule DomainModule, DomainBuildingBlock BuildingBlock) : Relation;
+
+    public record IsDeployedInDeployableUnit(DomainModule DomainModule, DeployableUnit DeployableUnit) : Relation;
 }

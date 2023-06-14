@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.ModelSyntax;
+using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
@@ -21,9 +22,13 @@ public class DevelopmentTeamPageFactory : MermaidPageFactory
                     .Select(r => r.DomainModule)
                     .Distinct();
                 var deployableUnits = model.Relations
-                    .OfType<DevelopmentTeam.OwnsDeployableUnit>()
+                    .OfType<DevelopmentTeam.OwnsDomainModule>()
                     .Where(r => r.Team.Equals(team))
-                    .Select(r => r.DeployableUnit)
+                    .Select(r => r.DomainModule)
+                    .SelectMany(m => model.Relations
+                        .OfType<DomainModule.IsDeployedInDeployableUnit>()
+                        .Where(r2 => r2.DomainModule.Equals(m))
+                        .Select(r2 => r2.DeployableUnit))
                     .Distinct();
                 return new DevelopmentTeamPage(outputDirectory, team, domainModules, deployableUnits);
             });

@@ -5,6 +5,7 @@ using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
 using P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 using P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
+using P3Model.Parser.OutputFormatting.Mermaid.TechnologyPerspective;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid;
 
@@ -90,7 +91,8 @@ public class MainPage : MermaidPageBase
         DomainModulesPage or
         ProcessesPage or
         DevelopmentTeamsPage or
-        BusinessOrganizationalUnitsPage;
+        BusinessOrganizationalUnitsPage or
+        DeployableUnitsPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => false;
 

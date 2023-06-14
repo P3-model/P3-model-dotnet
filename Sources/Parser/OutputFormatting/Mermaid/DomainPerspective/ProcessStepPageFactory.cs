@@ -35,13 +35,9 @@ public class ProcessStepPageFactory : MermaidPageFactory
                     .Distinct()
                     .SingleOrDefault();
                 var deployableUnit = model.Relations
-                    .OfType<CodeStructure.ImplementsProcessStep>()
-                    .Where(r => r.ProcessStep == step)
-                    .SelectMany(r => model.Relations
-                        .OfType<DeployableUnit.ContainsCodeStructure>()
-                        .Where(r2 => r2.CodeStructure == r.CodeStructure)
-                        .Select(r2 => r2.DeployableUnit))
-                    .Distinct()
+                    .OfType<DomainModule.IsDeployedInDeployableUnit>()
+                    .Where(r => r.DomainModule.Equals(domainModule))
+                    .Select(r => r.DeployableUnit)
                     .SingleOrDefault();
                 var actors = model.Relations
                     .OfType<Actor.UsesProcessStep>()
