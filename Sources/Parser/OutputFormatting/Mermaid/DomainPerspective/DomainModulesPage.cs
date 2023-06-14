@@ -47,7 +47,7 @@ All modules can be divided into sub-modules to reflect hierarchical structure of
         }
     }
     
-    protected override bool IncludeInZoomInPages(MermaidPage page) => false;
+    protected override bool IncludeInZoomInPages(MermaidPage page) => page is DomainModulePage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
     
