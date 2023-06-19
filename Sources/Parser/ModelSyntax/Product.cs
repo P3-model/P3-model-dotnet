@@ -4,5 +4,6 @@ namespace P3Model.Parser.ModelSyntax;
 
 public record Product(string Name) : Element
 {
-    public record UsesExternalSystem(Product System, ExternalSystem ExternalSystem) : Relation;
+    public record UsesExternalSystem(Product Source, ExternalSystem Destination) 
+        : Relation<Product, ExternalSystem>;
 }

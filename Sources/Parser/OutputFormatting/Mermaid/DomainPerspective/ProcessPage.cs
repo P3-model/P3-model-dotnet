@@ -77,8 +77,8 @@ public class ProcessPage : MermaidPageBase
 
             foreach (var relation in _processHasNextSubProcessRelations)
             {
-                var currentProcessId = subProcessIds[relation.Current];
-                var nextProcessId = subProcessIds[relation.Next];
+                var currentProcessId = subProcessIds[relation.Source];
+                var nextProcessId = subProcessIds[relation.Destination];
                 flowchartWriter.WriteArrow(currentProcessId, nextProcessId, LineStyle.Dotted);
             }
 

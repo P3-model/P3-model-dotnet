@@ -1,64 +1,59 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using P3Model.Parser.ModelSyntax;
+using P3Model.Parser.ModelQuerying;
+using P3Model.Parser.ModelQuerying.Queries;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
+using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
 [UsedImplicitly]
 public class ProcessStepPageFactory : MermaidPageFactory
 {
-    public IEnumerable<MermaidPage> Create(string outputDirectory, Model model)
-    {
-        return model.Elements
-            .OfType<ProcessStep>()
+    public IEnumerable<MermaidPage> Create(string outputDirectory, ModelGraph modelGraph) =>
+        modelGraph.Execute(Query
+                .Elements<ProcessStep>()
+                .All())
             .Select(step =>
             {
-                var process = model.Relations
-                    .OfType<Process.ContainsProcessStep>()
-                    .Where(r => r.Step == step)
-                    .Select(r => r.Process)
-                    .Distinct()
+                var process = modelGraph.Execute(Query
+                        .Elements<Process>()
+                        .RelatedTo(step)
+                        .ByRelation<Process.ContainsProcessStep>())
                     // TODO: unique names across hierarchy
                     .FirstOrDefault();
-                var domainModule = model.Relations
-                    .OfType<ProcessStep.BelongsToDomainModule>()
-                    .Where(r => r.Step == step)
-                    .Select(r => r.DomainModule)
-                    .Select(m => model.Elements
-                        .OfType<DomainModule>()
-                        .Single(m2 => m2.Hierarchy.FullName == m.Hierarchy.RootFullName))
-                    .Distinct()
-                    .SingleOrDefault();
-                var deployableUnit = model.Relations
-                    .OfType<DomainModule.IsDeployedInDeployableUnit>()
-                    .Where(r => r.DomainModule.Equals(domainModule))
-                    .Select(r => r.DeployableUnit)
-                    .SingleOrDefault();
-                var actors = model.Relations
-                    .OfType<Actor.UsesProcessStep>()
-                    .Where(r => r.ProcessStep == step)
-                    .Select(r => r.Actor)
-                    .Distinct();
+                var domainModule = modelGraph.Execute(Query
+                        .Elements<DomainModule>()
+                        .RelatedTo(step)
+                        .ByReverseRelation<ProcessStep.BelongsToDomainModule>())
+                    .SingleOrDefault(m => m.Level == 0);
+                var deployableUnit = domainModule is null
+                    ? null
+                    : modelGraph.Execute(Query
+                            .Elements<DeployableUnit>()
+                            .RelatedTo(domainModule)
+                            .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>())
+                        .SingleOrDefault();
+                var actors = modelGraph.Execute(Query
+                    .Elements<Actor>()
+                    .RelatedTo(step)
+                    .ByRelation<Actor.UsesProcessStep>());
                 var developmentTeams = domainModule is null
                     ? Enumerable.Empty<DevelopmentTeam>()
-                    : model.Relations
-                        .OfType<DevelopmentTeam.OwnsDomainModule>()
-                        .Where(r => r.DomainModule == domainModule)
-                        .Select(r => r.Team)
-                        .Distinct();
+                    : modelGraph.Execute(Query
+                        .Elements<DevelopmentTeam>()
+                        .RelatedTo(domainModule)
+                        .ByRelation<DevelopmentTeam.OwnsDomainModule>());
                 var organizationalUnits = domainModule is null
                     ? Enumerable.Empty<BusinessOrganizationalUnit>()
-                    : model.Relations
-                        .OfType<BusinessOrganizationalUnit.OwnsDomainModule>()
-                        .Where(r => r.DomainModule == domainModule)
-                        .Select(r => r.Unit)
-                        .Distinct();
+                    : modelGraph.Execute(Query
+                        .Elements<BusinessOrganizationalUnit>()
+                        .RelatedTo(domainModule)
+                        .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>());
                 return new ProcessStepPage(outputDirectory, step, process, domainModule, deployableUnit, actors,
                     developmentTeams, organizationalUnits);
             });
-    }
 }

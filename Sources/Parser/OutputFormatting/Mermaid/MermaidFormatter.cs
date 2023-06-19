@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using P3Model.Parser.ModelQuerying;
 using P3Model.Parser.ModelSyntax;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid;
@@ -18,8 +19,9 @@ public class MermaidFormatter : OutputFormatter
 
     async Task OutputFormatter.Write(Model model)
     {
+        var modelGraph = ModelGraph.From(model);
         var pages = _pageFactories
-            .SelectMany(f => f.Create(_basePath, model))
+            .SelectMany(f => f.Create(_basePath, modelGraph))
             .ToList()
             .AsReadOnly();
         foreach (var page in pages)

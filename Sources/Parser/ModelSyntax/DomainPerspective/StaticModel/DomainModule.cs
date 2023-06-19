@@ -8,9 +8,12 @@ public record DomainModule(HierarchyId Hierarchy) : Element
 
     public int Level => Hierarchy.Level;
 
-    public record ContainsDomainModule(DomainModule Parent, DomainModule Child) : Relation;
+    public record ContainsDomainModule(DomainModule Source, DomainModule Destination) 
+        : Relation<DomainModule, DomainModule>;
 
-    public record ContainsBuildingBlock(DomainModule DomainModule, DomainBuildingBlock BuildingBlock) : Relation;
+    public record ContainsBuildingBlock(DomainModule Source, DomainBuildingBlock Destination) 
+        : Relation<DomainModule, DomainBuildingBlock>;
 
-    public record IsDeployedInDeployableUnit(DomainModule DomainModule, DeployableUnit DeployableUnit) : Relation;
+    public record IsDeployedInDeployableUnit(DomainModule Source, DeployableUnit Destination) 
+        : Relation<DomainModule, DeployableUnit>;
 }

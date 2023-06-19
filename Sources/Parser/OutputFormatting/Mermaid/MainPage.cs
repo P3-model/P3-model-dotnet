@@ -49,17 +49,17 @@ public class MainPage : MermaidPageBase
             var productId = flowchartWriter.WriteRectangle(_product.Name);
             foreach (var actorUsesProduct in _actorUsesProductRelations)
             {
-                var actorId = flowchartWriter.WriteCircle(actorUsesProduct.Actor.Name);
+                var actorId = flowchartWriter.WriteCircle(actorUsesProduct.Source.Name);
                 flowchartWriter.WriteArrow(actorId, productId);
             }
 
             var externalSystemIds = new Dictionary<ExternalSystem, int>();
             foreach (var productUsesExternalSystem in _productUsesExternalSystemRelations)
             {
-                if (!externalSystemIds.TryGetValue(productUsesExternalSystem.ExternalSystem, out var externalSystemId))
+                if (!externalSystemIds.TryGetValue(productUsesExternalSystem.Destination, out var externalSystemId))
                 {
-                    externalSystemId = flowchartWriter.WriteRectangle(productUsesExternalSystem.ExternalSystem.Name);
-                    externalSystemIds.Add(productUsesExternalSystem.ExternalSystem, externalSystemId);
+                    externalSystemId = flowchartWriter.WriteRectangle(productUsesExternalSystem.Destination.Name);
+                    externalSystemIds.Add(productUsesExternalSystem.Destination, externalSystemId);
                 }
 
                 flowchartWriter.WriteArrow(productId, externalSystemId);
@@ -67,10 +67,10 @@ public class MainPage : MermaidPageBase
 
             foreach (var externalSystemUsesProduct in _externalSystemUsesProductRelations)
             {
-                if (!externalSystemIds.TryGetValue(externalSystemUsesProduct.ExternalSystem, out var externalSystemId))
+                if (!externalSystemIds.TryGetValue(externalSystemUsesProduct.Source, out var externalSystemId))
                 {
-                    externalSystemId = flowchartWriter.WriteRectangle(externalSystemUsesProduct.ExternalSystem.Name);
-                    externalSystemIds.Add(externalSystemUsesProduct.ExternalSystem, externalSystemId);
+                    externalSystemId = flowchartWriter.WriteRectangle(externalSystemUsesProduct.Source.Name);
+                    externalSystemIds.Add(externalSystemUsesProduct.Source, externalSystemId);
                 }
 
                 flowchartWriter.WriteArrow(externalSystemId, productId);

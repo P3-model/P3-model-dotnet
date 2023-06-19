@@ -4,9 +4,11 @@ public record Process(HierarchyId Hierarchy) : Element
 {
     public string Name => Hierarchy.Name;
 
-    public record ContainsSubProcess(Process Parent, Process Child) : Relation;
+    public record ContainsSubProcess(Process Source, Process Destination) : Relation<Process, Process>;
 
-    public record ContainsProcessStep(Process Process, ProcessStep Step) : Relation;
+    public record ContainsProcessStep(Process Source, ProcessStep Destination) : Relation<Process, ProcessStep>;
+    
+    public record DirectlyContainsProcessStep(Process Source, ProcessStep Destination) : Relation<Process, ProcessStep>;
 
-    public record HasNextSubProcess(Process Current, Process Next) : Relation;
+    public record HasNextSubProcess(Process Source, Process Destination) : Relation<Process, Process>;
 }

@@ -1,15 +1,17 @@
 using System.Collections.Generic;
-using P3Model.Parser.ModelSyntax;
+using JetBrains.Annotations;
+using P3Model.Parser.ModelQuerying;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
+[UsedImplicitly]
 public class DomainBuildingBlocksPageFactory : MermaidPageFactory
 {
-    public IEnumerable<MermaidPage> Create(string outputDirectory, Model model)
+    public IEnumerable<MermaidPage> Create(string outputDirectory, ModelGraph modelGraph)
     {
         yield return new DomainBuildingBlocksPage(outputDirectory,
-            model.Cache.DomainModulesHierarchy,
-            model.Cache.DomainBuildingBlocks
+            modelGraph.Cache.DomainModulesHierarchy,
+            modelGraph.Cache.DomainBuildingBlocks
         );
     }
 }

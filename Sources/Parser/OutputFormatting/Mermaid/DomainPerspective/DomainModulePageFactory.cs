@@ -1,56 +1,56 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using P3Model.Parser.ModelSyntax;
+using P3Model.Parser.ModelQuerying;
+using P3Model.Parser.ModelQuerying.Queries;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
+using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
 [UsedImplicitly]
 public class DomainModulePageFactory : MermaidPageFactory
 {
-    public IEnumerable<MermaidPage> Create(string outputDirectory, Model model)
+    public IEnumerable<MermaidPage> Create(string outputDirectory, ModelGraph modelGraph)
     {
-        return model.Elements
-            .OfType<DomainModule>()
+        return modelGraph.Execute(Query
+                .Elements<DomainModule>()
+                .All())
             .Select(module =>
             {
-                var parent = model.Relations
-                    .OfType<DomainModule.ContainsDomainModule>()
-                    .SingleOrDefault(r => r.Child == module)
-                    ?.Parent;
-                var children = new HashSet<DomainModule>(model.Relations
-                    .OfType<DomainModule.ContainsDomainModule>()
-                    .Where(r => r.Parent == module)
-                    .Select(r => r.Child));
-                var processes = model.Relations
-                    .OfType<ProcessStep.BelongsToDomainModule>()
-                    .Where(r => r.DomainModule.Equals(module))
-                    .Select(r => r.Step)
-                    .SelectMany(s => model.Relations
-                        .OfType<Process.ContainsProcessStep>()
-                        .Where(r2 => r2.Step.Equals(s))
-                        .Select(r2 => r2.Process))
-                    .Distinct();
-                var deployableUnits = model.Relations
-                    .OfType<DomainModule.IsDeployedInDeployableUnit>()
-                    .Where(r => r.DomainModule.Equals(module))
-                    .Select(r => r.DeployableUnit)
-                    .Distinct();
+                var parent = modelGraph.Execute(Query
+                    .Elements<DomainModule>()
+                    .RelatedTo(module)
+                    .ByRelation<DomainModule.ContainsDomainModule>())
+                    .SingleOrDefault();
+                var children = modelGraph.Execute(Query
+                    .Elements<DomainModule>()
+                    .RelatedTo(module)
+                    .ByReverseRelation<DomainModule.ContainsDomainModule>());
+                var steps = modelGraph.Execute(Query
+                    .Elements<ProcessStep>()
+                    .RelatedTo(module)
+                    .ByRelation<ProcessStep.BelongsToDomainModule>());
+                var processes = modelGraph.Execute(Query
+                    .Elements<Process>()
+                    .RelatedTo(steps)
+                    .ByRelation<Process.ContainsProcessStep>());
+                var deployableUnits = modelGraph.Execute(Query
+                    .Elements<DeployableUnit>()
+                    .RelatedTo(module)
+                    .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>());
                 // TODO: relation to owners from all hierarchy levels
-                var developmentTeams = model.Relations
-                    .OfType<DevelopmentTeam.OwnsDomainModule>()
-                    .Where(r => r.DomainModule == module)
-                    .Select(r => r.Team)
-                    .Distinct();
-                var organizationalUnits = model.Relations
-                    .OfType<BusinessOrganizationalUnit.OwnsDomainModule>()
-                    .Where(r => r.DomainModule == module)
-                    .Select(r => r.Unit)
-                    .Distinct();
-                return new DomainModulePage(outputDirectory, module, parent, children, processes, deployableUnits, 
+                var developmentTeams = modelGraph.Execute(Query
+                    .Elements<DevelopmentTeam>()
+                    .RelatedTo(module)
+                    .ByRelation<DevelopmentTeam.OwnsDomainModule>());
+                var organizationalUnits = modelGraph.Execute(Query
+                    .Elements<BusinessOrganizationalUnit>()
+                    .RelatedTo(module)
+                    .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>());
+                return new DomainModulePage(outputDirectory, module, parent, children, processes, deployableUnits,
                     developmentTeams, organizationalUnits);
             });
     }

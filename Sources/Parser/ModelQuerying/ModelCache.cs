@@ -1,8 +1,9 @@
 using System.Linq;
+using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-namespace P3Model.Parser.ModelSyntax;
+namespace P3Model.Parser.ModelQuerying;
 
 public class ModelCache
 {

@@ -4,5 +4,6 @@ namespace P3Model.Parser.ModelSyntax.People;
 
 public record DevelopmentTeam(string Name) : Element
 {
-    public record OwnsDomainModule(DevelopmentTeam Team, DomainModule DomainModule) : Relation;
+    public record OwnsDomainModule(DevelopmentTeam Source, DomainModule Destination) 
+        : Relation<DevelopmentTeam, DomainModule>;
 }

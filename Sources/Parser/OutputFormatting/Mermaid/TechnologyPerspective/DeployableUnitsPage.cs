@@ -18,7 +18,7 @@ public class DeployableUnitsPage : MermaidPageBase
         _product = product;
         _unitsWithoutTier = units
             .Where(u => tierContainsDeploymentUnitRelations
-                .All(r => !r.DeployableUnit.Equals(u)));
+                .All(r => !r.Destination.Equals(u)));
         _tierContainsDeploymentUnitRelations = tierContainsDeploymentUnitRelations;
     }
 
@@ -33,8 +33,8 @@ public class DeployableUnitsPage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             foreach (var relation in _tierContainsDeploymentUnitRelations)
-                flowchartWriter.WriteSubgraph(relation.Tier.Name, elementsWriter => elementsWriter
-                    .WriteRectangle(relation.DeployableUnit.Name, Style.TechnologyPerspective));
+                flowchartWriter.WriteSubgraph(relation.Source.Name, elementsWriter => elementsWriter
+                    .WriteRectangle(relation.Destination.Name, Style.TechnologyPerspective));
 
             foreach (var unit in _unitsWithoutTier)
                 flowchartWriter.WriteRectangle(unit.Name, Style.TechnologyPerspective);

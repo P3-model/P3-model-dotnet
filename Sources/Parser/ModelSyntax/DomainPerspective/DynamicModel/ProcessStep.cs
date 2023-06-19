@@ -5,7 +5,8 @@ namespace P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 // TODO: unique names across hierarchy
 public record ProcessStep(string Name) : Element
 {
-    public record HasNextStep(ProcessStep Current, ProcessStep Next) : Relation;
+    public record HasNextStep(ProcessStep Source, ProcessStep Destination) : Relation<ProcessStep, ProcessStep>;
     
-    public record BelongsToDomainModule(ProcessStep Step, DomainModule DomainModule) : Relation;
+    public record BelongsToDomainModule(ProcessStep Source, DomainModule Destination) 
+        : Relation<ProcessStep, DomainModule>;
 }

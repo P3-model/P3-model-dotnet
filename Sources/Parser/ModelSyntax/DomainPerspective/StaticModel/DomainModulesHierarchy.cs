@@ -10,7 +10,7 @@ public class DomainModulesHierarchy
 
     public DomainModulesHierarchy(IEnumerable<DomainModule.ContainsDomainModule> relations) => _parentToChildren =
         relations
-            .GroupBy(r => r.Parent, r => r.Child,
+            .GroupBy(r => r.Source, r => r.Destination,
                 (parent, children) => (Parent: parent, Children: children))
             .ToDictionary(g => g.Parent, g => g.Children.ToList());
 

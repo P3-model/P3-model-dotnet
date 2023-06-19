@@ -10,7 +10,7 @@ public class ProcessesHierarchy
 
     public ProcessesHierarchy(IEnumerable<Process.ContainsSubProcess> relations) => _parentToChildren =
         relations
-            .GroupBy(r => r.Parent, r => r.Child,
+            .GroupBy(r => r.Source, r => r.Destination,
                 (parent, children) => (Parent: parent, Children: children))
             .ToDictionary(g => g.Parent, g => g.Children.ToList());
 

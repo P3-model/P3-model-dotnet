@@ -10,8 +10,8 @@ public class DomainBuildingBlocks
 
     public DomainBuildingBlocks(IEnumerable<DomainModule.ContainsBuildingBlock> relations) =>
         _moduleToBuildingBlocks = relations
-            .GroupBy(r => r.DomainModule,
-                r => r.BuildingBlock,
+            .GroupBy(r => r.Source,
+                r => r.Destination,
                 (module, buildingBlocks) => (Module: module, BuildingBlock: buildingBlocks))
             .ToDictionary(g => g.Module,
                 g => g.BuildingBlock.ToList());
