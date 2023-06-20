@@ -7,7 +7,7 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 public class DomainModulesPage : MermaidPageBase
 {
     private readonly Product _product;
-    private readonly DomainModulesHierarchy _modulesHierarchy;
+    private readonly Hierarchy<DomainModule> _modulesHierarchy;
 
     public override string Header => "Domain Modules";
     protected override string Description => @"This view shows domain model modularization.  
@@ -16,7 +16,7 @@ All modules can be divided into sub-modules to reflect hierarchical structure of
     public override string RelativeFilePath => "Modules.md";
     public override Element MainElement => _product;
 
-    public DomainModulesPage(string outputDirectory, Product product, DomainModulesHierarchy modulesHierarchy) 
+    public DomainModulesPage(string outputDirectory, Product product, Hierarchy<DomainModule> modulesHierarchy) 
         : base(outputDirectory)
     {
         _product = product;

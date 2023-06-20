@@ -2,14 +2,14 @@ using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-public record DomainModule(HierarchyId Hierarchy) : Element
+public record DomainModule(HierarchyId Id) : HierarchyElement
 {
-    public string Name => Hierarchy.Name;
+    public string Name => Id.Name;
 
-    public int Level => Hierarchy.Level;
+    public int Level => Id.Level;
 
     public record ContainsDomainModule(DomainModule Source, DomainModule Destination) 
-        : Relation<DomainModule, DomainModule>;
+        : HierarchyRelation<DomainModule>;
 
     public record ContainsBuildingBlock(DomainModule Source, DomainBuildingBlock Destination) 
         : Relation<DomainModule, DomainBuildingBlock>;

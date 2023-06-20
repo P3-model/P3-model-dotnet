@@ -14,8 +14,8 @@ public class ModelCache
     private Product? _product;
     public Product Product => _product ??= _model.Elements.OfType<Product>().Single();
     
-    private DomainModulesHierarchy? _domainModulesHierarchy;
-    public DomainModulesHierarchy DomainModulesHierarchy => _domainModulesHierarchy ??= new DomainModulesHierarchy(
+    private Hierarchy<DomainModule>? _domainModulesHierarchy;
+    public Hierarchy<DomainModule> DomainModulesHierarchy => _domainModulesHierarchy ??= Hierarchy<DomainModule>.Create(
         _model.Relations.OfType<DomainModule.ContainsDomainModule>());
     
     private DomainBuildingBlocks? _domainBuildingBlocks;

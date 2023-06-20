@@ -44,7 +44,7 @@ public class DomainModulePage : MermaidPageBase
 - engaged people: actors, development teams, business stakeholders";
 
     public override string RelativeFilePath =>
-        $"Modules/{string.Join('/', _module.Hierarchy.Parts)}/{_module.Name}.md";
+        $"Modules/{string.Join('/', _module.Id.Parts)}/{_module.Name}.md";
 
     public override Element MainElement => _module;
 

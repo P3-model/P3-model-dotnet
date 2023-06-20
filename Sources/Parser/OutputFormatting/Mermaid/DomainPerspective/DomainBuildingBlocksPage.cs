@@ -6,7 +6,7 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
 public class DomainBuildingBlocksPage : MermaidPageBase
 {
-    private readonly DomainModulesHierarchy _modulesHierarchy;
+    private readonly Hierarchy<DomainModule> _modulesHierarchy;
     private readonly DomainBuildingBlocks _buildingBlocks;
 
     public override string Header => "Domain Building Blocks";
@@ -15,7 +15,7 @@ public class DomainBuildingBlocksPage : MermaidPageBase
     public override Element MainElement => null;
 
     public DomainBuildingBlocksPage(string outputDirectory,
-        DomainModulesHierarchy modulesHierarchy,
+        Hierarchy<DomainModule> modulesHierarchy,
         DomainBuildingBlocks buildingBlocks) 
         : base(outputDirectory)
     {
