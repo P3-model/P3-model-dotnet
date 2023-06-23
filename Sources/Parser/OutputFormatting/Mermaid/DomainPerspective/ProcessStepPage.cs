@@ -42,8 +42,8 @@ public class ProcessStepPage : MermaidPageBase
 - engaged people: actors, development teams, business stakeholders";
     
     public override string RelativeFilePath => _process is null
-        ? $"Processes/Steps/{_step.Name}.md"
-        : $"Processes/{string.Join('/', _process.Id.Parts)}/Steps/{_step.Name}.md";
+        ? $"ProcessSteps/{_step.Name}.md"
+        : $"ProcessSteps/{string.Join('/', _process.Id.Parts)}/{_step.Name}.md";
     public override Element MainElement => _step;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
