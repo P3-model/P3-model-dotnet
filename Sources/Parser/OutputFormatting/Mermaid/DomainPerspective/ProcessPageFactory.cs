@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -32,9 +31,14 @@ public class ProcessPageFactory : MermaidPageFactory
                                                            children.Contains(r.Destination)));
             var allSteps = modelGraph.Execute(query => query
                 .Elements<ProcessStep>()
+                .RelatedToAny(subQuery => subQuery
+                    .DescendantsAndSelf<Process, Process.ContainsSubProcess>(process))
+                .ByReverseRelation<Process.ContainsProcessStep>()
+                .GetAll());
+            var directSteps = modelGraph.Execute(query => query
+                .Elements<ProcessStep>()
                 .RelatedTo(process)
                 .ByReverseRelation<Process.ContainsProcessStep>());
-            var directSteps = Array.Empty<ProcessStep>();
             var domainModules = modelGraph.Execute(query => query
                     .Elements<DomainModule>()
                     .RelatedToAny(allSteps)

@@ -9,12 +9,17 @@ public class GetDescendants<TElement, TRelation> : ElementsQuery<TElement>
     where TRelation : HierarchyRelation<TElement>
 {
     private readonly TElement _element;
-    
-    public GetDescendants(TElement element) => _element = element;
+    private readonly bool _includeSelf;
+
+    public GetDescendants(TElement element, bool includeSelf)
+    {
+        _element = element;
+        _includeSelf = includeSelf;
+    }
 
     public IReadOnlySet<TElement> ExecuteFor(ModelGraph modelGraph)
     {
         var hierarchy = modelGraph.HierarchyFor<TElement, TRelation>();
-        return hierarchy.GetDescendantsFor(_element);
+        return hierarchy.GetDescendantsFor(_element, _includeSelf);
     }
 }

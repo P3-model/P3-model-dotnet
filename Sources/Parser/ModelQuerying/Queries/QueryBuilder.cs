@@ -33,12 +33,22 @@ public class QueryBuilder
     [PublicAPI]
     public GetAncestors<TElement, TRelation> Ancestors<TElement, TRelation>(TElement element)
         where TElement : HierarchyElement
-        where TRelation : HierarchyRelation<TElement> => new(element);
+        where TRelation : HierarchyRelation<TElement> => new(element, false);
+    
+    [PublicAPI]
+    public GetAncestors<TElement, TRelation> AncestorsAndSelf<TElement, TRelation>(TElement element)
+        where TElement : HierarchyElement
+        where TRelation : HierarchyRelation<TElement> => new(element, true);
     
     [PublicAPI]
     public GetDescendants<TElement, TRelation> Descendants<TElement, TRelation>(TElement element)
         where TElement : HierarchyElement
-        where TRelation : HierarchyRelation<TElement> => new(element);
+        where TRelation : HierarchyRelation<TElement> => new(element, false);
+    
+    [PublicAPI]
+    public GetDescendants<TElement, TRelation> DescendantsAndSelf<TElement, TRelation>(TElement element)
+        where TElement : HierarchyElement
+        where TRelation : HierarchyRelation<TElement> => new(element, true);
 
     [PublicAPI]
     public GetRelations<TRelation> Relations<TRelation>(Func<TRelation, bool>? predicate = null)
