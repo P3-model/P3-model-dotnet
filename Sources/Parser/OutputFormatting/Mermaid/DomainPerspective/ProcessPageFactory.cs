@@ -33,8 +33,7 @@ public class ProcessPageFactory : MermaidPageFactory
                 .Elements<ProcessStep>()
                 .RelatedToAny(subQuery => subQuery
                     .DescendantsAndSelf<Process, Process.ContainsSubProcess>(process))
-                .ByReverseRelation<Process.ContainsProcessStep>()
-                .GetAll());
+                .ByReverseRelation<Process.ContainsProcessStep>());
             var directSteps = modelGraph.Execute(query => query
                 .Elements<ProcessStep>()
                 .RelatedTo(process)
@@ -42,30 +41,25 @@ public class ProcessPageFactory : MermaidPageFactory
             var domainModules = modelGraph.Execute(query => query
                     .Elements<DomainModule>()
                     .RelatedToAny(allSteps)
-                    .ByReverseRelation<ProcessStep.BelongsToDomainModule>()
-                    .GetAll())
+                    .ByReverseRelation<ProcessStep.BelongsToDomainModule>())
                 .Where(m => m.Level == 0)
                 .ToHashSet();
             var deployableUnits = modelGraph.Execute(query => query
                 .Elements<DeployableUnit>()
                 .RelatedToAny(domainModules)
-                .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>()
-                .GetAll());
+                .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>());
             var actors = modelGraph.Execute(query => query
                 .Elements<Actor>()
                 .RelatedToAny(allSteps)
-                .ByRelation<Actor.UsesProcessStep>()
-                .GetAll());
+                .ByRelation<Actor.UsesProcessStep>());
             var developmentTeams = modelGraph.Execute(query => query
                 .Elements<DevelopmentTeam>()
                 .RelatedToAny(domainModules)
-                .ByRelation<DevelopmentTeam.OwnsDomainModule>()
-                .GetAll());
+                .ByRelation<DevelopmentTeam.OwnsDomainModule>());
             var organizationalUnits = modelGraph.Execute(query => query
                 .Elements<BusinessOrganizationalUnit>()
                 .RelatedToAny(domainModules)
-                .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>()
-                .GetAll());
+                .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>());
             return new ProcessPage(outputDirectory, process, parent, children, processHasNextSubProcessRelations,
                 directSteps, domainModules, deployableUnits, actors, developmentTeams, organizationalUnits);
         });

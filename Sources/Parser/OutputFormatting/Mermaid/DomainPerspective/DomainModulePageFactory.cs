@@ -34,8 +34,7 @@ public class DomainModulePageFactory : MermaidPageFactory
                 var processes = modelGraph.Execute(query => query
                     .Elements<Process>()
                     .RelatedToAny(steps)
-                    .ByRelation<Process.ContainsProcessStep>()
-                    .GetAll());
+                    .ByRelation<Process.ContainsProcessStep>());
                 var deployableUnits = modelGraph.Execute(query => query
                     .Elements<DeployableUnit>()
                     .RelatedTo(module)

@@ -113,55 +113,23 @@ public class QueryBuilder
             _destinationQuery = destinationQuery;
 
         [PublicAPI]
-        public SelectResult<TSource, TDestination, TRelation> ByRelation<TRelation>()
-            where TRelation : Relation<TSource, TDestination> => new(_destinationQuery);
-
-        [PublicAPI]
-        public SelectResultForReverseRelation<TSource, TDestination, TRelation> ByReverseRelation<TRelation>(
-            Func<TRelation, bool>? predicate = null)
-            where TRelation : Relation<TDestination, TSource> => new(_destinationQuery);
-    }
-    
-    public readonly struct SelectResult<TSource, TDestination, TRelation>
-        where TSource : class, Element
-        where TDestination : Element, IEquatable<TDestination>
-        where TRelation : Relation<TSource, TDestination>
-    {
-        private readonly ElementsQuery<TDestination> _destinationQuery;
+        public GetElementsRelatedToAny<TSource, TDestination, TRelation> ByRelation<TRelation>(
+            Func<IEnumerable<TRelation>, IEnumerable<TRelation>>? filter = null)
+            where TRelation : Relation<TSource, TDestination> => new(_destinationQuery, filter);
         
-        public SelectResult(ElementsQuery<TDestination> destinationQuery) => _destinationQuery = destinationQuery;
+        [PublicAPI]
+        public GetElementRelatedToAny<TSource, TDestination, TRelation> ByRelation<TRelation>(
+            Func<IEnumerable<TRelation>, TRelation?> filter)
+            where TRelation : Relation<TSource, TDestination> => new(_destinationQuery, filter);
 
         [PublicAPI]
-        public GetElementsRelatedToAny<TSource, TDestination, TRelation> GetAll() => new(_destinationQuery, null);
-
-        [PublicAPI]
-        public GetElementsRelatedToAny<TSource, TDestination, TRelation> Filter(
-            Func<IEnumerable<TRelation>, IEnumerable<TRelation>> filter) => new(_destinationQuery, filter);
-
-        [PublicAPI]
-        public GetElementRelatedToAny<TSource, TDestination, TRelation> Filter(
-            Func<IEnumerable<TRelation>, TRelation?> filter) => new(_destinationQuery, filter);
-    }
-    
-    public readonly struct SelectResultForReverseRelation<TSource, TDestination, TRelation>
-        where TSource : class, Element
-        where TDestination : Element, IEquatable<TDestination>
-        where TRelation : Relation<TDestination, TSource>
-    {
-        private readonly ElementsQuery<TDestination> _destinationQuery;
+        public GetElementsBackRelatedToAny<TSource, TDestination, TRelation> ByReverseRelation<TRelation>(
+            Func<IEnumerable<TRelation>, IEnumerable<TRelation>>? filter = null)
+            where TRelation : Relation<TDestination, TSource> => new(_destinationQuery, filter);
         
-        public SelectResultForReverseRelation(ElementsQuery<TDestination> destinationQuery) => 
-            _destinationQuery = destinationQuery;
-
         [PublicAPI]
-        public GetElementsBackRelatedToAny<TSource, TDestination, TRelation> GetAll() => new(_destinationQuery, null);
-
-        [PublicAPI]
-        public GetElementsBackRelatedToAny<TSource, TDestination, TRelation> Filter(
-            Func<IEnumerable<TRelation>, IEnumerable<TRelation>> filter) => new(_destinationQuery, filter);
-
-        [PublicAPI]
-        public GetElementBackRelatedToAny<TSource, TDestination, TRelation> Filter(
-            Func<IEnumerable<TRelation>, TRelation?> filter) => new(_destinationQuery, filter);
+        public GetElementBackRelatedToAny<TSource, TDestination, TRelation> ByReverseRelation<TRelation>(
+            Func<IEnumerable<TRelation>, TRelation?> filter)
+            where TRelation : Relation<TDestination, TSource> => new(_destinationQuery, filter);
     }
 }

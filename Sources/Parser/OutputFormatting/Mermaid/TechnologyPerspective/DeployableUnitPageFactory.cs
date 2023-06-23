@@ -30,8 +30,7 @@ public class DeployableUnitPageFactory : MermaidPageFactory
             var teams = modelGraph.Execute(query => query
                 .Elements<DevelopmentTeam>()
                 .RelatedToAny(domainModules)
-                .ByRelation<DevelopmentTeam.OwnsDomainModule>()
-                .GetAll());
+                .ByRelation<DevelopmentTeam.OwnsDomainModule>());
             return new DeployableUnitPage(outputDirectory, unit, tier, domainModules, teams);
         });
 }
