@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -8,19 +9,20 @@ public class DomainGlossaryPage : MermaidPageBase
 {
     private readonly Product _product;
     private readonly Hierarchy<DomainModule> _modulesHierarchy;
-    private readonly DomainBuildingBlocks _buildingBlocks;
+    private readonly IReadOnlySet<DomainModule.ContainsBuildingBlock> _containsBuildingBlockRelations;
 
     public override string Header => "Domain Glossary";
     protected override string Description => "This view contains definitions of key domain terms.";
     public override string RelativeFilePath => "Domain_Glossary.md";
     public override Element MainElement => _product;
 
-    public DomainGlossaryPage(string outputDirectory, Product product, Hierarchy<DomainModule> modulesHierarchy, 
-        DomainBuildingBlocks buildingBlocks) : base(outputDirectory)
+    public DomainGlossaryPage(string outputDirectory, Product product, Hierarchy<DomainModule> modulesHierarchy,
+        IReadOnlySet<DomainModule.ContainsBuildingBlock> containsBuildingBlockRelations)
+        : base(outputDirectory)
     {
         _product = product;
         _modulesHierarchy = modulesHierarchy;
-        _buildingBlocks = buildingBlocks;
+        _containsBuildingBlockRelations = containsBuildingBlockRelations;
     }
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
@@ -37,7 +39,10 @@ public class DomainGlossaryPage : MermaidPageBase
         foreach (var childModule in _modulesHierarchy.GetChildrenFor(parentModule).OrderBy(r => r.Name))
             Write(childModule, mermaidWriter, level + 1);
 
-        foreach (var buildingBlock in _buildingBlocks.GetFor(parentModule).OrderBy(r => r.Name))
+        foreach (var buildingBlock in _containsBuildingBlockRelations
+                     .Where(r => r.Source.Equals(parentModule))
+                     .Select(r => r.Destination)
+                     .OrderBy(r => r.Name))
         {
             mermaidWriter.WriteInline($"**{buildingBlock.Name}**");
             WriteDescriptionLink(mermaidWriter, buildingBlock);
@@ -54,10 +59,10 @@ public class DomainGlossaryPage : MermaidPageBase
         mermaidWriter.WriteLinkInline("Long description", buildingBlock.DescriptionFile.FullName);
         mermaidWriter.WriteLineBreak();
     }
-    
+
     protected override bool IncludeInZoomInPages(MermaidPage page) => false;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
-    
+
     protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

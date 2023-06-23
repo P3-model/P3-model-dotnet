@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using P3Model.Parser.ModelQuerying;
-using P3Model.Parser.ModelQuerying.Queries;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Technology;
 
@@ -13,13 +12,11 @@ public class DeployableUnitsPageFactory : MermaidPageFactory
     public IEnumerable<MermaidPage> Create(string outputDirectory, ModelGraph modelGraph)
     {
         yield return new DeployableUnitsPage(outputDirectory,
-            modelGraph.Execute(Query
-                .Elements<Product>()
-                .Single()),
-            modelGraph.Execute(Query
-                .Elements<DeployableUnit>()
-                .All()),
-            modelGraph.Execute(Query
+            modelGraph.Execute(query => query
+                .SingleElement<Product>())!,
+            modelGraph.Execute(query => query
+                .AllElements<DeployableUnit>()),
+            modelGraph.Execute(query => query
                 .Relations<Tier.ContainsDeployableUnit>()));
     }
 }

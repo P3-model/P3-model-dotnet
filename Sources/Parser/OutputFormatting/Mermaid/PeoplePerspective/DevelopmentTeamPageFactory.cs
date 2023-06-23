@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.ModelQuerying;
-using P3Model.Parser.ModelQuerying.Queries;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
@@ -13,19 +12,19 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 public class DevelopmentTeamPageFactory : MermaidPageFactory
 {
     public IEnumerable<MermaidPage> Create(string outputDirectory, ModelGraph modelGraph) => modelGraph
-        .Execute(Query
-            .Elements<DevelopmentTeam>()
-            .All())
+        .Execute(query => query
+            .AllElements<DevelopmentTeam>())
         .Select(team =>
         {
-            var domainModules = modelGraph.Execute(Query
+            var domainModules = modelGraph.Execute(query => query
                 .Elements<DomainModule>()
                 .RelatedTo(team)
                 .ByReverseRelation<DevelopmentTeam.OwnsDomainModule>());
-            var deployableUnits = modelGraph.Execute(Query
+            var deployableUnits = modelGraph.Execute(query => query
                 .Elements<DeployableUnit>()
-                .RelatedTo(domainModules)
-                .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>());;
+                .RelatedToAny(domainModules)
+                .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>()
+                .GetAll());
             return new DevelopmentTeamPage(outputDirectory, team, domainModules, deployableUnits);
         });
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,10 +18,20 @@ public class Hierarchy<TElement>
                 (parent, children) => (Parent: parent, Children: children))
             .ToDictionary(g => g.Parent, g => g.Children.ToList()));
 
+    public IReadOnlySet<TElement> GetAncestorsFor(TElement element)
+    {
+        throw new NotImplementedException();
+    }
+    
     public IEnumerable<TElement> GetChildrenFor(TElement parent) => 
         _parentToChildren.TryGetValue(parent, out var children) 
             ? children 
             : Enumerable.Empty<TElement>();
+
+    public IReadOnlySet<TElement> GetDescendantsFor(TElement element)
+    {
+        throw new NotImplementedException();
+    }
 
     public IEnumerable<TElement> FromLevel(int level) => _parentToChildren.Keys
         .Where(module => module.Id.Level == level);

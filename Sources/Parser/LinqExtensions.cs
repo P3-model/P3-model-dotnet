@@ -18,4 +18,11 @@ public static class LinqExtensions
                 stack.Push(child);
         }
     }
+
+    public static IEnumerable<T> Apply<T>(
+        this IEnumerable<T> enumerable, Func<IEnumerable<T>, IEnumerable<T>> filter) =>
+        filter(enumerable);
+    
+    public static T? Apply<T>(this IEnumerable<T> enumerable, Func<IEnumerable<T>, T?> filter) =>
+        filter(enumerable);
 }

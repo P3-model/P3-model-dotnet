@@ -7,9 +7,9 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 public class ProcessesPage : MermaidPageBase
 {
     private readonly Product _product;
-    private readonly ProcessesHierarchy _processesHierarchy;
+    private readonly Hierarchy<Process> _processesHierarchy;
 
-    public ProcessesPage(string outputDirectory, Product product, ProcessesHierarchy processesHierarchy)
+    public ProcessesPage(string outputDirectory, Product product, Hierarchy<Process> processesHierarchy)
         : base(outputDirectory)
     {
         _product = product;
@@ -23,7 +23,7 @@ public class ProcessesPage : MermaidPageBase
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
-        foreach (var process in _processesHierarchy.FromFirstLevel())
+        foreach (var process in _processesHierarchy.FromLevel(0))
         {
             mermaidWriter.WriteHeading(process.Name, 2);
             mermaidWriter.WriteFlowchart(flowchartWriter =>

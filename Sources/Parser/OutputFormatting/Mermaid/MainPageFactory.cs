@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.ModelQuerying;
-using P3Model.Parser.ModelQuerying.Queries;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective;
 using P3Model.Parser.ModelSyntax.People;
@@ -16,16 +15,15 @@ public class MainPageFactory : MermaidPageFactory
     public IEnumerable<MermaidPage> Create(string outputDirectory, ModelGraph modelGraph)
     {
         yield return new MainPage(outputDirectory,
-            modelGraph.Execute(Query
-                .Elements<Product>()
-                .Single()),
-            modelGraph.Execute(Query
+            modelGraph.Execute(query => query
+                .SingleElement<Product>())!,
+            modelGraph.Execute(query => query
                 .Relations<Actor.UsesProduct>()),
-            modelGraph.Execute(Query
+            modelGraph.Execute(query => query
                 .Relations<Product.UsesExternalSystem>()),
-            modelGraph.Execute(Query
+            modelGraph.Execute(query => query
                 .Relations<ExternalSystem.UsesProduct>()),
-            modelGraph.Execute(Query
+            modelGraph.Execute(query => query
                     .Traits<DomainVisionStatement>())
                 .SingleOrDefault());
     }

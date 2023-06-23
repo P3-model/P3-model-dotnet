@@ -50,7 +50,7 @@ public class ProcessPage : MermaidPageBase
 - engaged people: actors, development teams, business stakeholders";
 
     public override string RelativeFilePath =>
-        $"Processes/{string.Join('/', _process.Hierarchy.Parts)}/{_process.Name}.md";
+        $"Processes/{string.Join('/', _process.Id.Parts)}/{_process.Name}.md";
 
     public override Element MainElement => _process;
 

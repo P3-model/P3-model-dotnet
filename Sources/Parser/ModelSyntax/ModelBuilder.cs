@@ -16,7 +16,6 @@ public class ModelBuilder : ElementsProvider
         new(SymbolEqualityComparer.Default);
 
     private readonly ConcurrentDictionary<Relation, byte> _relations = new();
-
     private readonly ConcurrentDictionary<Func<ElementsProvider, IEnumerable<Relation>>, byte> _relationFactories =
         new();
 
@@ -68,7 +67,7 @@ public class ModelBuilder : ElementsProvider
         foreach (var relationsFactory in _relationFactories.Keys)
         foreach (var relation in relationsFactory(this))
             Add(relation);
-        
+
         foreach (var traitFactory in _traitFactories.Keys)
         foreach (var trait in traitFactory(this))
             Add(trait);

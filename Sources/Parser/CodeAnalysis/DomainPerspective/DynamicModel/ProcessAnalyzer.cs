@@ -27,10 +27,10 @@ public class ProcessAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
     private static IEnumerable<Relation> GetRelations(Process process, AttributeData processAttribute,
         ElementsProvider elements)
     {
-        var parent = process.Hierarchy.Level > 0
+        var parent = process.Id.Level > 0
             ? elements
                 .OfType<Process>()
-                .SingleOrDefault(p => p.Hierarchy.FullName == process.Hierarchy.ParentFullName)
+                .SingleOrDefault(p => p.Id.FullName == process.Id.ParentFullName)
             : null;
         // TODO: warning logging if parent not found
         if (parent != null)
@@ -42,7 +42,7 @@ public class ProcessAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
         {
             var nextSubProcess = elements
                 .OfType<Process>()
-                .SingleOrDefault(p => p.Hierarchy.Name == nextSubProcessName);
+                .SingleOrDefault(p => p.Id.Name == nextSubProcessName);
             // TODO: warning logging if nextProcess not found
             if (nextSubProcess != null)
                 yield return new Process.HasNextSubProcess(process, nextSubProcess);
