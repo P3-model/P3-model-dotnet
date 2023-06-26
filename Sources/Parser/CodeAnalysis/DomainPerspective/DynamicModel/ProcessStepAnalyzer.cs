@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -19,30 +20,34 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
 
     private static void Analyze(ISymbol symbol, ModelBuilder modelBuilder)
     {
-        if (!symbol.TryGetAttribute(typeof(ProcessStepAttribute), out var processStepAttribute))
+        if (!symbol.TryGetAttribute(typeof(ProcessStepAttribute), out var stepAttribute))
             return;
-        var name = processStepAttribute.GetConstructorArgumentValue<string?>(nameof(ProcessStepAttribute.Name))
+        var name = stepAttribute.GetConstructorArgumentValue<string?>(nameof(ProcessStepAttribute.Name))
                    ?? symbol.Name;
         var processStep = new ProcessStep(name);
         modelBuilder.Add(processStep, symbol);
-        modelBuilder.Add(elements => GetRelations(symbol, processStepAttribute, processStep, elements));
+        modelBuilder.Add(elements => GetRelations(symbol, stepAttribute, processStep, elements));
     }
 
-    private static IEnumerable<Relation> GetRelations(ISymbol symbol, AttributeData processStepAttribute, ProcessStep step,
-        ElementsProvider elements)
+    private static IEnumerable<Relation> GetRelations(ISymbol symbol, AttributeData stepAttribute,
+        ProcessStep step, ElementsProvider elements)
     {
-        if (TryGetProcessName(processStepAttribute, out var processName))
+        if (TryGetProcessName(stepAttribute, out var processName))
         {
-            var process = elements.OfType<Process>().SingleOrDefault(p => p.Name == processName);
+            var process = elements
+                .OfType<Process>()
+                .SingleOrDefault(p => p.Id.FullName.Equals(processName, StringComparison.InvariantCulture));
             // TODO: warning logging if process not found
             if (process != null)
                 yield return new Process.ContainsProcessStep(process, step);
         }
-        if (TryGetNextStepNames(processStepAttribute, out var nextStepNames))
+        if (TryGetNextStepNames(stepAttribute, out var nextStepNames))
         {
             foreach (var nextStepName in nextStepNames)
             {
-                var nextStep = elements.OfType<ProcessStep>().SingleOrDefault(s => s.Name == nextStepName);
+                var nextStep = elements
+                    .OfType<ProcessStep>()
+                    .SingleOrDefault(s => s.Name.Equals(nextStepName, StringComparison.InvariantCulture));
                 // TODO: warning logging if step not found
                 if (nextStep != null)
                     yield return new ProcessStep.HasNextStep(step, nextStep);
@@ -57,22 +62,22 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
             yield return new ProcessStep.BelongsToDomainModule(step, module);
     }
 
-    private static bool TryGetProcessName(AttributeData processStepAttribute, 
+    private static bool TryGetProcessName(AttributeData stepAttribute,
         [NotNullWhen(true)] out string? processName)
     {
-        if (processStepAttribute.TryGetConstructorArgumentValue(nameof(ProcessStepAttribute.Process), out processName))
+        if (stepAttribute.TryGetConstructorArgumentValue(nameof(ProcessStepAttribute.Process), out processName))
             return true;
-        if (processStepAttribute.TryGetNamedArgumentValue(nameof(ProcessStepAttribute.Process), out processName))
+        if (stepAttribute.TryGetNamedArgumentValue(nameof(ProcessStepAttribute.Process), out processName))
             return true;
         return false;
     }
-    
-    private static bool TryGetNextStepNames(AttributeData processStepAttribute, 
+
+    private static bool TryGetNextStepNames(AttributeData stepAttribute,
         [NotNullWhen(true)] out IEnumerable<string>? nextStepNames)
     {
-        if (processStepAttribute.TryGetConstructorArgumentValues(nameof(ProcessStepAttribute.NextSteps), out nextStepNames))
+        if (stepAttribute.TryGetConstructorArgumentValues(nameof(ProcessStepAttribute.NextSteps), out nextStepNames))
             return true;
-        if (processStepAttribute.TryGetNamedArgumentValues(nameof(ProcessStepAttribute.NextSteps), out nextStepNames))
+        if (stepAttribute.TryGetNamedArgumentValues(nameof(ProcessStepAttribute.NextSteps), out nextStepNames))
             return true;
         return false;
     }

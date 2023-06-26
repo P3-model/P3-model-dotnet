@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -30,7 +31,8 @@ public class ProcessAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
         var parent = process.Id.Level > 0
             ? elements
                 .OfType<Process>()
-                .SingleOrDefault(p => p.Id.FullName == process.Id.ParentFullName)
+                .SingleOrDefault(p => p.Id.FullName
+                    .Equals(process.Id.ParentFullName, StringComparison.InvariantCulture))
             : null;
         // TODO: warning logging if parent not found
         if (parent != null)
@@ -42,7 +44,8 @@ public class ProcessAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
         {
             var nextSubProcess = elements
                 .OfType<Process>()
-                .SingleOrDefault(p => p.Id.Name == nextSubProcessName);
+                .SingleOrDefault(p => p.Id.FullName
+                    .Equals(nextSubProcessName, StringComparison.InvariantCulture));
             // TODO: warning logging if nextProcess not found
             if (nextSubProcess != null)
                 yield return new Process.HasNextSubProcess(process, nextSubProcess);
