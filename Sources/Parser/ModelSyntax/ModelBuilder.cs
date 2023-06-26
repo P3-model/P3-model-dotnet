@@ -10,9 +10,8 @@ namespace P3Model.Parser.ModelSyntax;
 public class ModelBuilder : ElementsProvider
 {
     private readonly ConcurrentDictionary<Element, byte> _elements = new();
-    private readonly ConcurrentDictionary<Element, HashSet<ISymbol>> _elementToSymbols = new();
-
-    private readonly ConcurrentDictionary<ISymbol, HashSet<Element>> _symbolToElements =
+    private readonly ConcurrentDictionary<Element, ConcurrentDictionary<ISymbol, byte>> _elementToSymbols = new();
+    private readonly ConcurrentDictionary<ISymbol, ConcurrentDictionary<Element, byte>> _symbolToElements =
         new(SymbolEqualityComparer.Default);
 
     private readonly ConcurrentDictionary<Relation, byte> _relations = new();
@@ -27,17 +26,27 @@ public class ModelBuilder : ElementsProvider
     public void Add(Element element, ISymbol symbol)
     {
         _elementToSymbols.AddOrUpdate(element,
-            _ => new HashSet<ISymbol>(SymbolEqualityComparer.Default) { symbol },
+            _ =>
+            {
+                var set = new ConcurrentDictionary<ISymbol, byte>(SymbolEqualityComparer.Default);
+                set.TryAdd(symbol, default);
+                return set;
+            },
             (_, symbols) =>
             {
-                symbols.Add(symbol);
+                symbols.TryAdd(symbol, default);
                 return symbols;
             });
         _symbolToElements.AddOrUpdate(symbol,
-            _ => new HashSet<Element> { element },
+            _ =>
+            {
+                var set = new ConcurrentDictionary<Element, byte>();
+                set.TryAdd(element, default);
+                return set;
+            },
             (_, elements) =>
             {
-                elements.Add(element);
+                elements.TryAdd(element, default);
                 return elements;
             });
     }
@@ -53,12 +62,12 @@ public class ModelBuilder : ElementsProvider
         _traitFactories.TryAdd(traitFactory, default);
 
     IEnumerable<Element> ElementsProvider.For(ISymbol symbol) => _symbolToElements.TryGetValue(symbol, out var elements)
-        ? elements
+        ? elements.Keys
         : Enumerable.Empty<Element>();
 
     IEnumerable<Element> ElementsProvider.Where(Func<ISymbol, bool> predicate) => _symbolToElements
         .Where(pair => predicate(pair.Key))
-        .SelectMany(pair => pair.Value);
+        .SelectMany(pair => pair.Value.Keys);
 
     IEnumerable<TElement> ElementsProvider.OfType<TElement>() => GetAllElements().OfType<TElement>();
 
