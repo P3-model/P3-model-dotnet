@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax;
@@ -5,6 +6,7 @@ using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
+[UsedImplicitly]
 public class ModelBoundaryAnalyzer : SymbolAnalyzer<IAssemblySymbol>
 {
     public void Analyze(IAssemblySymbol symbol, ModelBuilder modelBuilder)
