@@ -19,10 +19,10 @@ public class ProcessStepAttribute : Attribute
         NextSteps = Array.Empty<string>();
     }
 
-    public ProcessStepAttribute(string name, string process, params string[] nextSteps)
+    public ProcessStepAttribute(string name, string process)
     {
         Name = name;
         Process = process;
-        NextSteps = nextSteps;
+        NextSteps = Array.Empty<string>();
     }
 }
