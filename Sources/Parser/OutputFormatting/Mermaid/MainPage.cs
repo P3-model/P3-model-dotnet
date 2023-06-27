@@ -53,7 +53,7 @@ public class MainPage : MermaidPageBase
                 flowchartWriter.WriteArrow(actorId, productId);
             }
 
-            var externalSystemIds = new Dictionary<ExternalSystem, int>();
+            var externalSystemIds = new Dictionary<ExternalSystem, string>();
             foreach (var productUsesExternalSystem in _productUsesExternalSystemRelations)
             {
                 if (!externalSystemIds.TryGetValue(productUsesExternalSystem.Destination, out var externalSystemId))

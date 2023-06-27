@@ -42,7 +42,9 @@ public class ProcessPage : MermaidPageBase
     }
 
     public override string Header => $"[*Business process*] {_process.Name}";
-    protected override string Description => @$"This view contains details information about {_process.Name} business process, including:
+
+    protected override string Description =>
+        @$"This view contains details information about {_process.Name} business process, including:
 - other related processes
 - process steps
 - related domain modules
@@ -67,7 +69,7 @@ public class ProcessPage : MermaidPageBase
                 flowchartWriter.WriteArrow(parentId, processId);
             }
 
-            var subProcessIds = new Dictionary<Process, int>();
+            var subProcessIds = new Dictionary<Process, string>();
             foreach (var subProcess in _children)
             {
                 var subProcessId = flowchartWriter.WriteStadiumShape(subProcess.Name, Style.DomainPerspective);
@@ -79,7 +81,7 @@ public class ProcessPage : MermaidPageBase
             {
                 var currentProcessId = subProcessIds[relation.Source];
                 var nextProcessId = subProcessIds[relation.Destination];
-                flowchartWriter.WriteArrow(currentProcessId, nextProcessId, LineStyle.Dotted);
+                flowchartWriter.WriteArrow((string)currentProcessId, (string)nextProcessId, LineStyle.Dotted);
             }
 
             foreach (var step in _steps)
@@ -106,7 +108,7 @@ public class ProcessPage : MermaidPageBase
             var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
             foreach (var deployableUnit in _deployableUnits)
             {
-                var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name, 
+                var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name,
                     Style.TechnologyPerspective);
                 flowchartWriter.WriteArrow(processId, deployableUnitId, "is deployed in");
             }
@@ -114,27 +116,45 @@ public class ProcessPage : MermaidPageBase
 
         mermaidWriter.WriteHeading("People Perspective", 2);
         mermaidWriter.WriteHeading("Engaged people", 3);
-        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        mermaidWriter.WriteFlowchart(FlowchartDirection.LR, flowchartWriter =>
         {
+            var actorsId = flowchartWriter.WriteSubgraph("Actors", FlowchartDirection.TB, actorsWriter =>
+            {
+                string? previousActorId = null;
+                foreach (var actor in _actors)
+                {
+                    var actorId = actorsWriter.WriteStadiumShape(actor.Name, Style.PeoplePerspective);
+                    if(previousActorId != null)
+                        actorsWriter.WriteInvisibleLink(previousActorId, actorId);
+                    previousActorId = actorId;
+                }
+            });
             var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
-            foreach (var actor in _actors)
+            flowchartWriter.WriteArrow(actorsId, processId, "uses");
+            var teamsId = flowchartWriter.WriteSubgraph("Teams", FlowchartDirection.TB, teamsWriter =>
             {
-                var actorId = flowchartWriter.WriteStadiumShape(actor.Name, Style.PeoplePerspective);
-                flowchartWriter.WriteArrow(actorId, processId, "uses");
-            }
-
-            foreach (var team in _developmentTeams)
+                string? previousTeamId = null;
+                foreach (var team in _developmentTeams)
+                {
+                    var teamId = teamsWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
+                    if(previousTeamId != null)
+                        teamsWriter.WriteInvisibleLink(previousTeamId, teamId);
+                    previousTeamId = teamId;
+                }
+            });
+            flowchartWriter.WriteBackwardArrow(teamsId, processId, "develops & maintains");
+            var businessId = flowchartWriter.WriteSubgraph("Business", FlowchartDirection.TB, businessWriter =>
             {
-                var teamId = flowchartWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
-                flowchartWriter.WriteArrow(teamId, processId, "develops & maintains");
-            }
-
-            foreach (var organizationalUnit in _organizationalUnits)
-            {
-                var organizationalUnitId = flowchartWriter.WriteStadiumShape(organizationalUnit.Name, 
-                    Style.PeoplePerspective);
-                flowchartWriter.WriteArrow(organizationalUnitId, processId, "owns");
-            }
+                string? previousUnitId = null;
+                foreach (var organizationalUnit in _organizationalUnits)
+                {
+                    var unitId = businessWriter.WriteStadiumShape(organizationalUnit.Name, Style.PeoplePerspective);
+                    if(previousUnitId != null)
+                        businessWriter.WriteInvisibleLink(previousUnitId, unitId);
+                    previousUnitId = unitId;
+                }
+            });
+            flowchartWriter.WriteBackwardArrow(businessId, processId, "owns");
         });
     }
 
@@ -153,7 +173,8 @@ public class ProcessPage : MermaidPageBase
         ProcessStepPage stepPage => _steps.Contains(stepPage.MainElement),
         DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
-        BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage.MainElement),
+        BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage
+            .MainElement),
         _ => false
     };
 }

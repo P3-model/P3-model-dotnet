@@ -34,7 +34,7 @@ public class ProcessesPage : MermaidPageBase
         }
     }
 
-    private void Write(Process parent, int parentId, FlowchartElementsWriter flowchartWriter)
+    private void Write(Process parent, string parentId, FlowchartElementsWriter flowchartWriter)
     {
         foreach (var child in _processesHierarchy.GetChildrenFor(parent).OrderBy(r => r.Name))
         {

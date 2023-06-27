@@ -95,10 +95,14 @@ public class MermaidWriter : IAsyncDisposable
     }
 
     [PublicAPI]
-    public void WriteFlowchart(Action<FlowchartElementsWriter> writeElements)
+    public void WriteFlowchart(Action<FlowchartElementsWriter> writeElements) =>
+        WriteFlowchart(FlowchartDirection.TB, writeElements);
+    
+    [PublicAPI]
+    public void WriteFlowchart(FlowchartDirection direction, Action<FlowchartElementsWriter> writeElements)
     {
         var flowchartWriter = new FlowchartWriter(_streamWriter);
-        flowchartWriter.WriteDiagram(writeElements);
+        flowchartWriter.WriteDiagram(direction, writeElements);
     }
 
     public async ValueTask DisposeAsync()

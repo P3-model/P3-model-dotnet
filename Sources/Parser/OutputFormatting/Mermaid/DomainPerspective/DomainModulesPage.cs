@@ -37,7 +37,7 @@ All modules can be divided into sub-modules to reflect hierarchical structure of
         }
     }
 
-    private void Write(DomainModule parent, int parentId, FlowchartElementsWriter flowchartWriter)
+    private void Write(DomainModule parent, string parentId, FlowchartElementsWriter flowchartWriter)
     {
         foreach (var child in _modulesHierarchy.GetChildrenFor(parent).OrderBy(r => r.Name))
         {
