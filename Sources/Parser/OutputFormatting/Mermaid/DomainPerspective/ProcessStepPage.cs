@@ -55,13 +55,13 @@ public class ProcessStepPage : MermaidPageBase
             if (_process != null)
             {
                 var processId = flowchartWriter.WriteStadiumShape(_process.Name, Style.DomainPerspective);
-                flowchartWriter.WriteArrow(stepId, processId, "is part of");
+                flowchartWriter.WriteArrow(stepId, processId, "is part of process");
             }
 
             if (_domainModule != null)
             {
                 var moduleId = flowchartWriter.WriteStadiumShape(_domainModule.Name, Style.DomainPerspective);
-                flowchartWriter.WriteArrow(stepId, moduleId, "belongs to");
+                flowchartWriter.WriteArrow(stepId, moduleId, "belongs to module");
             }
         });
 
