@@ -7,4 +7,7 @@ public record DomainBuildingBlock(string Name, FileInfo? DescriptionFile) : Elem
     public virtual bool Equals(DomainBuildingBlock? other) => other != null && Name == other.Name;
 
     public override int GetHashCode() => Name.GetHashCode();
+
+    public record DependsOnBuildingBlock(DomainBuildingBlock Source, DomainBuildingBlock Destination)
+        : Relation<DomainBuildingBlock, DomainBuildingBlock>;
 }

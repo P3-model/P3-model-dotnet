@@ -14,7 +14,7 @@ internal class SyntaxWalker : CSharpSyntaxWalker
     private readonly SemanticModel _semanticModel;
     private readonly ModelBuilder _modelBuilder;
 
-    public SyntaxWalker(IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers, SemanticModel semanticModel, 
+    public SyntaxWalker(IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers, SemanticModel semanticModel,
         ModelBuilder modelBuilder, SyntaxWalkerDepth depth = SyntaxWalkerDepth.Node)
         : base(depth)
     {
@@ -22,7 +22,7 @@ internal class SyntaxWalker : CSharpSyntaxWalker
         _semanticModel = semanticModel;
         _modelBuilder = modelBuilder;
     }
-    
+
     public override void VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
     {
         var symbol = _semanticModel.GetDeclaredSymbol(node) ?? throw new InvalidOperationException();
@@ -79,10 +79,42 @@ internal class SyntaxWalker : CSharpSyntaxWalker
         base.VisitMethodDeclaration(node);
     }
 
+    public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+    {
+        var symbol = _semanticModel.GetDeclaredSymbol(node) ?? throw new InvalidOperationException();
+        Analyze(symbol);
+        base.VisitPropertyDeclaration(node);
+    }
+
+    public override void VisitParameter(ParameterSyntax node)
+    {
+        var symbol = _semanticModel.GetDeclaredSymbol(node) ?? throw new InvalidOperationException();
+        Analyze(symbol);
+        base.VisitParameter(node);
+    }
+
+    public override void VisitVariableDeclaration(VariableDeclarationSyntax node)
+    {
+        foreach (var variable in node.Variables)
+        {
+            var symbol = _semanticModel.GetDeclaredSymbol(variable) ?? throw new InvalidOperationException();
+            switch (symbol)
+            {
+                case IFieldSymbol fieldSymbol:
+                    Analyze(fieldSymbol);
+                    break;
+                case ILocalSymbol localSymbol:
+                    Analyze(localSymbol);
+                    break;
+            }
+        }
+        base.VisitVariableDeclaration(node);
+    }
+
     private void Analyze<TSymbol>(TSymbol symbol)
         where TSymbol : ISymbol
     {
-        foreach (var analyzer in _symbolAnalyzers.OfType<SymbolAnalyzer<TSymbol>>()) 
+        foreach (var analyzer in _symbolAnalyzers.OfType<SymbolAnalyzer<TSymbol>>())
             analyzer.Analyze(symbol, _modelBuilder);
     }
 }
