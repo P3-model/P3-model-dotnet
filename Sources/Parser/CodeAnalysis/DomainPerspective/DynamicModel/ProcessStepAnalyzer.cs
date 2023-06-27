@@ -24,33 +24,40 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
             return;
         var name = stepAttribute.GetConstructorArgumentValue<string?>(nameof(ProcessStepAttribute.Name))
                    ?? symbol.Name;
-        var processStep = new ProcessStep(name);
-        modelBuilder.Add(processStep, symbol);
-        modelBuilder.Add(elements => GetRelations(symbol, stepAttribute, processStep, elements));
+        var stepId = TryGetProcessName(stepAttribute, out var processFullName)
+            ? HierarchyId.FromParts(processFullName, name)
+            : HierarchyId.FromValue(name);
+        var step = new ProcessStep(stepId);
+        modelBuilder.Add(step, symbol);
+        modelBuilder.Add(elements => GetRelations(symbol, stepAttribute, step, elements));
     }
 
     private static IEnumerable<Relation> GetRelations(ISymbol symbol, AttributeData stepAttribute,
         ProcessStep step, ElementsProvider elements)
     {
-        if (TryGetProcessName(stepAttribute, out var processName))
+        if (TryGetProcessName(stepAttribute, out var processFullName))
         {
-            var process = elements
+            var processes = elements
                 .OfType<Process>()
-                .SingleOrDefault(p => p.Id.FullName.Equals(processName, StringComparison.InvariantCulture));
+                .Where(p => p.Id.FullName.Equals(processFullName, StringComparison.InvariantCulture))
+                .ToList();
             // TODO: warning logging if process not found
-            if (process != null)
-                yield return new Process.ContainsProcessStep(process, step);
+            // TODO: warning logging if more than one element (non unique names o processes)
+            if (processes.Count == 1)
+                yield return new Process.ContainsProcessStep(processes[0], step);
         }
         if (TryGetNextStepNames(stepAttribute, out var nextStepNames))
         {
-            foreach (var nextStepName in nextStepNames)
+            foreach (var nextStepFullName in nextStepNames)
             {
-                var nextStep = elements
+                var nextSteps = elements
                     .OfType<ProcessStep>()
-                    .SingleOrDefault(s => s.Name.Equals(nextStepName, StringComparison.InvariantCulture));
+                    .Where(s => s.Id.FullName.Equals(nextStepFullName, StringComparison.InvariantCulture))
+                    .ToList();
                 // TODO: warning logging if step not found
-                if (nextStep != null)
-                    yield return new ProcessStep.HasNextStep(step, nextStep);
+                // TODO: warning logging if more than one element (non unique names o process steps)
+                if (nextSteps.Count == 1)
+                    yield return new ProcessStep.HasNextStep(step, nextSteps[0]);
             }
         }
 
