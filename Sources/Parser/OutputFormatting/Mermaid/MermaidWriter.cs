@@ -93,6 +93,18 @@ public class MermaidWriter : IAsyncDisposable
         foreach (var item in items)
             _streamWriter.WriteLine($"- {valueFactory(item)}");
     }
+    
+    [PublicAPI]
+    public void WriteUnorderedList<T>(IEnumerable<T> items, Func<T, (string Value, int Level)> valueFactory)
+    {
+        foreach (var item in items)
+        {
+            var (value, level) = valueFactory(item);
+            level = level < 1 ? 1 : level;
+            _streamWriter.Write(new string(' ', 2 * (level - 1)));
+            _streamWriter.WriteLine($"- {value}");
+        }
+    }
 
     [PublicAPI]
     public void WriteFlowchart(Action<FlowchartElementsWriter> writeElements) =>

@@ -47,7 +47,7 @@ public abstract class MermaidPageBase : MermaidPage
     private void WriteHeader(MermaidWriter mermaidWriter)
     {
         mermaidWriter.WriteHeading(Header, 1);
-        if (Description == null) 
+        if (Description == null)
             return;
         mermaidWriter.WriteLine(Description);
         mermaidWriter.WriteHorizontalRule();
@@ -58,12 +58,21 @@ public abstract class MermaidPageBase : MermaidPage
 
     private void WriteLinks(MermaidWriter mermaidWriter)
     {
+        // TODO: better links structure (especially for hierarchy elements)
         mermaidWriter.WriteHeading("Next steps", 2);
         if (_zoomInPages is { Count: > 0 })
         {
             mermaidWriter.WriteHeading("Zoom-in", 3);
-            mermaidWriter.WriteUnorderedList(_zoomInPages,
-                p => MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)));
+            mermaidWriter.WriteUnorderedList(_zoomInPages
+                    .OrderBy(p => p.GetType().Name)
+                    .ThenBy(p => p.MainElement is HierarchyElement hierarchyElement 
+                        ? hierarchyElement.Id.FullName 
+                        : string.Empty),
+                p => (
+                    MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)),
+                    p.MainElement is HierarchyElement hierarchyElement 
+                        ? hierarchyElement.Id.Level + 1 
+                        : 1));
         }
 
         if (_zoomOutPages is { Count: > 0 })
@@ -72,7 +81,7 @@ public abstract class MermaidPageBase : MermaidPage
             mermaidWriter.WriteUnorderedList(_zoomOutPages,
                 p => MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)));
         }
-        
+
         if (_changePerspectivePages is { Count: > 0 })
         {
             mermaidWriter.WriteHeading("Change perspective", 3);
@@ -85,7 +94,7 @@ public abstract class MermaidPageBase : MermaidPage
     {
         var currentPageDirectory = Path.GetDirectoryName(RelativeFilePath);
         return string.IsNullOrEmpty(currentPageDirectory)
-            ? linkedPage.RelativeFilePath 
+            ? linkedPage.RelativeFilePath
             : Path.GetRelativePath(currentPageDirectory, linkedPage.RelativeFilePath);
     }
 
