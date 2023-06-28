@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel.Ddd;
+namespace P3Model.Parser.CodeAnalysis.DomainPerspective;
 
 [UsedImplicitly]
 public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSymbol>,
@@ -41,7 +41,7 @@ public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSym
         modelBuilder.Add(elements => AddRelations(sourceSymbol, destinationSymbol, elements));
     }
 
-    private IEnumerable<Relation> AddRelations(ISymbol sourceSymbol, ISymbol destinationSymbol,
+    private static IEnumerable<Relation> AddRelations(ISymbol sourceSymbol, ISymbol destinationSymbol,
         ElementsProvider elements)
     {
         var sources = elements.For(sourceSymbol).OfType<DomainBuildingBlock>();
