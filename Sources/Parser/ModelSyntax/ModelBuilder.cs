@@ -2,17 +2,20 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace P3Model.Parser.ModelSyntax;
 
+[SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1024", 
+    Justification = "See CompilationIndependentSymbolEqualityComparer")]
 public class ModelBuilder : ElementsProvider
 {
     private readonly ConcurrentDictionary<Element, byte> _elements = new();
     private readonly ConcurrentDictionary<Element, ConcurrentDictionary<ISymbol, byte>> _elementToSymbols = new();
     private readonly ConcurrentDictionary<ISymbol, ConcurrentDictionary<Element, byte>> _symbolToElements =
-        new(SymbolEqualityComparer.Default);
+        new(CompilationIndependentSymbolEqualityComparer.Default);
 
     private readonly ConcurrentDictionary<Relation, byte> _relations = new();
     private readonly ConcurrentDictionary<Func<ElementsProvider, IEnumerable<Relation>>, byte> _relationFactories =
@@ -28,7 +31,7 @@ public class ModelBuilder : ElementsProvider
         _elementToSymbols.AddOrUpdate(element,
             _ =>
             {
-                var set = new ConcurrentDictionary<ISymbol, byte>(SymbolEqualityComparer.Default);
+                var set = new ConcurrentDictionary<ISymbol, byte>(CompilationIndependentSymbolEqualityComparer.Default);
                 set.TryAdd(symbol, default);
                 return set;
             },
