@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using P3Model.Parser.ModelQuerying;
@@ -19,6 +20,8 @@ public class MermaidFormatter : OutputFormatter
 
     async Task OutputFormatter.Write(Model model)
     {
+        Directory.Delete(_basePath, true);
+        Directory.CreateDirectory(_basePath);
         var modelGraph = ModelGraph.From(model);
         var pages = _pageFactories
             .SelectMany(f => f.Create(_basePath, modelGraph))
