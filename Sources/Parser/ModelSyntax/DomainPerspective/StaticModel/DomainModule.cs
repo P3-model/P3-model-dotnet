@@ -1,11 +1,14 @@
+using System.Text.Json.Serialization;
 using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 public record DomainModule(HierarchyId Id) : HierarchyElement
 {
+    [JsonIgnore]
     public string Name => Id.Name;
 
+    [JsonIgnore]
     public int Level => Id.Level;
 
     public record ContainsDomainModule(DomainModule Source, DomainModule Destination) 

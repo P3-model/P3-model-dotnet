@@ -1,7 +1,10 @@
+using System.Text.Json.Serialization;
+
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 
 public record Process(HierarchyId Id) : HierarchyElement
 {
+    [JsonIgnore]
     public string Name => Id.Name;
 
     public record ContainsSubProcess(Process Source, Process Destination) : HierarchyRelation<Process>;
