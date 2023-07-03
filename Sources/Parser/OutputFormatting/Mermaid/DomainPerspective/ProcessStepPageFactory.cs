@@ -28,6 +28,10 @@ public class ProcessStepPageFactory : MermaidPageFactory
                 .ByReverseRelation<ProcessStep.BelongsToDomainModule>());
             // TODO: warning logging if more than one element (non unique names o process steps)
             var module = modules.FirstOrDefault();
+            var buildingBlocks = modelGraph.Execute(query => query
+                .Elements<DomainBuildingBlock>()
+                .RelatedTo(step)
+                .ByReverseRelation<ProcessStep.DependsOnBuildingBlock>());
             var deployableUnit = module is null
                 ? null
                 : modelGraph.Execute(query => query
@@ -41,7 +45,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                 .RelatedTo(step)
                 .ByRelation<Actor.UsesProcessStep>());
             var developmentTeams = module is null
-                ? Enumerable.Empty<DevelopmentTeam>()
+                ? new HashSet<DevelopmentTeam>()
                 : modelGraph.Execute(query => query
                     .Elements<DevelopmentTeam>()
                     .RelatedToAny(subQuery => subQuery
@@ -50,7 +54,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                         .GroupBy(r => r.Destination.Level)
                         .MaxBy(g => g.Key)!));
             var organizationalUnits = module is null
-                ? Enumerable.Empty<BusinessOrganizationalUnit>()
+                ? new HashSet<BusinessOrganizationalUnit>()
                 : modelGraph.Execute(query => query
                     .Elements<BusinessOrganizationalUnit>()
                     .RelatedToAny(subQuery => subQuery
@@ -58,7 +62,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                     .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>(filter => filter
                         .GroupBy(r => r.Destination.Level)
                         .MaxBy(g => g.Key)!));
-            return new ProcessStepPage(outputDirectory, step, process, module, deployableUnit, actors,
+            return new ProcessStepPage(outputDirectory, step, process, module, buildingBlocks, deployableUnit, actors,
                 developmentTeams, organizationalUnits);
         });
 }

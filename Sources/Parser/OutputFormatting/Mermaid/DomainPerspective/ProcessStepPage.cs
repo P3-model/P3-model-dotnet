@@ -15,18 +15,21 @@ public class ProcessStepPage : MermaidPageBase
     private readonly ProcessStep _step;
     private readonly Process? _process;
     private readonly DomainModule? _domainModule;
+    private readonly IReadOnlySet<DomainBuildingBlock> _buildingBlocks;
     private readonly DeployableUnit? _deployableUnit;
-    private readonly IEnumerable<Actor> _actors;
-    private readonly IEnumerable<DevelopmentTeam> _developmentTeams;
-    private readonly IEnumerable<BusinessOrganizationalUnit> _organizationalUnits;
+    private readonly IReadOnlySet<Actor> _actors;
+    private readonly IReadOnlySet<DevelopmentTeam> _developmentTeams;
+    private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
 
     public ProcessStepPage(string outputDirectory, ProcessStep step, Process? process, DomainModule? domainModule,
-        DeployableUnit? deployableUnit, IEnumerable<Actor> actors, IEnumerable<DevelopmentTeam> developmentTeams,
-        IEnumerable<BusinessOrganizationalUnit> organizationalUnits) : base(outputDirectory)
+        IReadOnlySet<DomainBuildingBlock> buildingBlocks, DeployableUnit? deployableUnit, IReadOnlySet<Actor> actors, 
+        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits) 
+        : base(outputDirectory)
     {
         _step = step;
         _process = process;
         _domainModule = domainModule;
+        _buildingBlocks = buildingBlocks;
         _deployableUnit = deployableUnit;
         _actors = actors;
         _developmentTeams = developmentTeams;
@@ -49,6 +52,7 @@ public class ProcessStepPage : MermaidPageBase
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
         mermaidWriter.WriteHeading("Domain Perspective", 2);
+        mermaidWriter.WriteHeading("Module & Process", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var stepId = flowchartWriter.WriteRectangle(_step.Name, Style.DomainPerspective);
@@ -64,6 +68,23 @@ public class ProcessStepPage : MermaidPageBase
                 flowchartWriter.WriteArrow(stepId, moduleId, "belongs to module");
             }
         });
+        mermaidWriter.WriteHeading("Used Building Blocks", 3);
+        if (_buildingBlocks.Count > 0)
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
+            {
+                var stepId = flowchartWriter.WriteRectangle(_step.Name, Style.DomainPerspective);
+                foreach (var buildingBlock in _buildingBlocks)
+                {
+                    var buildingBlockId = flowchartWriter.WriteStadiumShape(buildingBlock.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteArrow(stepId, buildingBlockId, "uses");
+                }
+            });
+        }
+        else
+        {
+            mermaidWriter.WriteLine("No building blocks are used. Maybe this process step is not implemented yet?");
+        }
 
         mermaidWriter.WriteHeading("Technology Perspective", 2);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
