@@ -25,7 +25,7 @@ All modules can be divided into sub-modules to reflect hierarchical structure of
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
-        mermaidWriter.WriteHeading("Modules", 1);
+        mermaidWriter.WriteHeading("Modules hierarchy", 2);
         foreach (var module in _modulesHierarchy.FromLevel(0).OrderBy(m => m.Name))
         {
             mermaidWriter.WriteHeading($"{module.Name}", 2);

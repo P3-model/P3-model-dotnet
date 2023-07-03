@@ -27,10 +27,15 @@ public class DomainModulePageFactory : MermaidPageFactory
                     .Elements<DomainModule>()
                     .RelatedTo(module)
                     .ByReverseRelation<DomainModule.ContainsDomainModule>());
+                var allBuildingBlocks = modelGraph.Execute(query => query
+                    .Elements<DomainBuildingBlock>()
+                    .RelatedToAny(subQuery => subQuery
+                        .DescendantsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
+                    .ByReverseRelation<DomainModule.ContainsBuildingBlock>());
                 var steps = modelGraph.Execute(query => query
                     .Elements<ProcessStep>()
-                    .RelatedTo(module)
-                    .ByRelation<ProcessStep.BelongsToDomainModule>());
+                    .RelatedToAny(allBuildingBlocks)
+                    .ByRelation<ProcessStep.DependsOnBuildingBlock>());
                 var processes = modelGraph.Execute(query => query
                     .Elements<Process>()
                     .RelatedToAny(steps)

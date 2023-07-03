@@ -21,7 +21,7 @@ public interface FlowchartElementsWriter
     void WriteArrow(string sourceId, string destinationId, string? text = null, LineStyle lineStyle = LineStyle.Normal);
     void WriteBackwardArrow(string sourceId, string destinationId, LineStyle lineStyle);
 
-    void WriteBackwardArrow(string sourceId, string destinationId, string? text,
+    void WriteBackwardArrow(string sourceId, string destinationId, string? text = null,
         LineStyle lineStyle = LineStyle.Normal);
 
     void WriteInvisibleLink(string sourceId, string destinationId);

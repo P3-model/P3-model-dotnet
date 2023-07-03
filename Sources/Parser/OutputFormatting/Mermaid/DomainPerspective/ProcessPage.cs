@@ -66,7 +66,7 @@ public class ProcessPage : MermaidPageBase
             if (_parent != null)
             {
                 var parentId = flowchartWriter.WriteStadiumShape(_parent.Name, Style.DomainPerspective);
-                flowchartWriter.WriteArrow(parentId, processId);
+                flowchartWriter.WriteBackwardArrow(parentId, processId, "is part of");
             }
 
             var subProcessIds = new Dictionary<Process, string>();
