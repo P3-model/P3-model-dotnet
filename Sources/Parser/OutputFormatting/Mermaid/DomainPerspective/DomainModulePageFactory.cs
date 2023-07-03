@@ -27,6 +27,10 @@ public class DomainModulePageFactory : MermaidPageFactory
                     .Elements<DomainModule>()
                     .RelatedTo(module)
                     .ByReverseRelation<DomainModule.ContainsDomainModule>());
+                var directBuildingBlocks = modelGraph.Execute(query => query
+                    .Elements<DomainBuildingBlock>()
+                    .RelatedTo(module)
+                    .ByReverseRelation<DomainModule.ContainsBuildingBlock>());
                 var allBuildingBlocks = modelGraph.Execute(query => query
                     .Elements<DomainBuildingBlock>()
                     .RelatedToAny(subQuery => subQuery
@@ -53,8 +57,8 @@ public class DomainModulePageFactory : MermaidPageFactory
                     .Elements<BusinessOrganizationalUnit>()
                     .RelatedTo(module)
                     .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>());
-                return new DomainModulePage(outputDirectory, module, parent, children, processes, deployableUnits,
-                    developmentTeams, organizationalUnits);
+                return new DomainModulePage(outputDirectory, module, parent, children, processes, directBuildingBlocks, 
+                    deployableUnits, developmentTeams, organizationalUnits);
             });
     }
 }

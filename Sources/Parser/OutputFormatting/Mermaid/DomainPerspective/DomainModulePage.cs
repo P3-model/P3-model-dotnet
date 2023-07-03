@@ -14,21 +14,24 @@ public class DomainModulePage : MermaidPageBase
 {
     private readonly DomainModule _module;
     private readonly DomainModule? _parent;
-    private readonly IEnumerable<DomainModule> _children;
-    private readonly IEnumerable<Process> _processes;
-    private readonly IEnumerable<DeployableUnit> _deployableUnits;
-    private readonly IEnumerable<DevelopmentTeam> _developmentTeams;
-    private readonly IEnumerable<BusinessOrganizationalUnit> _organizationalUnits;
+    private readonly IReadOnlySet<DomainModule> _children;
+    private readonly IReadOnlySet<Process> _processes;
+    private readonly IReadOnlySet<DomainBuildingBlock> _directBuildingBlocks;
+    private readonly IReadOnlySet<DeployableUnit> _deployableUnits;
+    private readonly IReadOnlySet<DevelopmentTeam> _developmentTeams;
+    private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
 
     public DomainModulePage(string outputDirectory, DomainModule module, DomainModule? parent,
-        IEnumerable<DomainModule> children, IEnumerable<Process> processes, IEnumerable<DeployableUnit> deployableUnits, 
-        IEnumerable<DevelopmentTeam> developmentTeams, IEnumerable<BusinessOrganizationalUnit> organizationalUnits) 
+        IReadOnlySet<DomainModule> children, IReadOnlySet<Process> processes, 
+        IReadOnlySet<DomainBuildingBlock> directBuildingBlocks, IReadOnlySet<DeployableUnit> deployableUnits, 
+        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits) 
         : base(outputDirectory)
     {
         _module = module;
         _parent = parent;
         _children = children;
         _processes = processes;
+        _directBuildingBlocks = directBuildingBlocks;
         _deployableUnits = deployableUnits;
         _developmentTeams = developmentTeams;
         _organizationalUnits = organizationalUnits;
@@ -40,6 +43,7 @@ public class DomainModulePage : MermaidPageBase
         @$"This view contains details information about {_module.Name} domain module, including:
 - other related modules
 - related processes
+- related building blocks
 - related deployable units
 - engaged people: actors, development teams, business stakeholders";
 
@@ -77,6 +81,23 @@ public class DomainModulePage : MermaidPageBase
                 flowchartWriter.WriteArrow(moduleId, processId, "contains");
             }
         });
+        mermaidWriter.WriteHeading("Direct building blocks", 3);
+        if (_directBuildingBlocks.Count > 0)
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
+            {
+                var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
+                foreach (var buildingBlock in _directBuildingBlocks)
+                {
+                    var buildingBlockId = flowchartWriter.WriteStadiumShape(buildingBlock.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteArrow(moduleId, buildingBlockId, "contains");
+                }
+            });
+        }
+        else
+        {
+            mermaidWriter.WriteLine("Module doesn't contain direct building blocks.");
+        }
 
         mermaidWriter.WriteHeading("Technology Perspective", 2);
         mermaidWriter.WriteHeading("Related deployable units", 3);
@@ -122,6 +143,7 @@ public class DomainModulePage : MermaidPageBase
     protected override bool IncludeInChangePerspectivePages(MermaidPage page) => page switch
     {
         ProcessPage processPage => _processes.Contains(processPage.MainElement),
+        DomainBuildingBlockPage buildingBlockPage => _directBuildingBlocks.Contains(buildingBlockPage.MainElement),
         DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
         BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage.MainElement),
