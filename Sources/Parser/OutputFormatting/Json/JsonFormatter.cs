@@ -6,18 +6,18 @@ namespace P3Model.Parser.OutputFormatting.Json;
 
 public class JsonFormatter : OutputFormatter
 {
-    private readonly string _outputPath;
+    private readonly string _fileFullName;
 
-    public JsonFormatter(string outputPath) => _outputPath = outputPath;
+    public JsonFormatter(string fileFullName) => _fileFullName = fileFullName;
 
     public async Task Write(Model model)
     {
-        var directory = Path.GetDirectoryName(_outputPath);
+        var directory = Path.GetDirectoryName(_fileFullName);
         if (directory != null)
             Directory.CreateDirectory(directory);
-        if (File.Exists(_outputPath))
-            File.Delete(_outputPath);
-        var fileStream = File.Create(_outputPath);
+        if (File.Exists(_fileFullName))
+            File.Delete(_fileFullName);
+        var fileStream = File.Create(_fileFullName);
         await P3ModelSerializer.Serialize(fileStream, model);
     }
 }

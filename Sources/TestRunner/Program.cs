@@ -30,5 +30,7 @@ await P3
     .OutputFormat(formatters => formatters
         .UseMermaid(options => options
             .Directory(configuration["OutputPath"]!)
-            .UseDefaultPages()))
+            .UseDefaultPages())
+        .UseJson(options => options
+            .File($"{configuration["OutputPath"]!}/model.json")))
     .Analyze();

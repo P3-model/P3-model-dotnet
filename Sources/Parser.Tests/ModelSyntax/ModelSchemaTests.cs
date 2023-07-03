@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using System.Reflection;
-using System.Text.Json;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.OutputFormatting.Json;
 using Parser.Tests.ModelSyntax.ExampleObjects;

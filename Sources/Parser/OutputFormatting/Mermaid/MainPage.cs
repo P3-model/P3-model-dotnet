@@ -83,7 +83,7 @@ public class MainPage : MermaidPageBase
         if (_domainVisionStatement is null)
             return;
         mermaidWriter.WriteHeading("Domain Vision Statement", 2);
-        mermaidWriter.WriteLinkInline("Link", _domainVisionStatement.FileInfo.FullName);
+        mermaidWriter.WriteLinkInline("Link", _domainVisionStatement.SourceFile.FullName);
     }
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page is

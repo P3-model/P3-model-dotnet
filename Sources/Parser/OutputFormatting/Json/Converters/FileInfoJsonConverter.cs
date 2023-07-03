@@ -16,5 +16,5 @@ public class FileInfoJsonConverter : JsonConverter<FileInfo>
     }
 
     public override void Write(Utf8JsonWriter writer, FileInfo value, JsonSerializerOptions options) => 
-        writer.WriteString("SourceFilePath", value.FullName);
+        writer.WriteStringValue(value.FullName);
 }
