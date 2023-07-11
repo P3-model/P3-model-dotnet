@@ -29,8 +29,8 @@ await P3
                 .RemoveRootNamespace("MyCompany.ECommerce"))))
     .OutputFormat(formatters => formatters
         .UseMermaid(options => options
-            .Directory(configuration["OutputPath"]!)
+            .Directory($"{configuration["OutputPath"]!}/MermaidOutput")
             .UseDefaultPages())
         .UseJson(options => options
-            .File($"{configuration["OutputPath"]!}/model.json")))
+            .File($"{configuration["OutputPath"]!}/JsonOutput/model.json")))
     .Analyze();
