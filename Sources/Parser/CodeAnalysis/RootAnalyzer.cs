@@ -107,8 +107,7 @@ public class RootAnalyzer
         if (compilation is null)
             throw new InvalidOperationException($"Can not compile project: {project.Name}");
         compilation = compilation
-            .AddReferences(Net60.References.All)
-            .AddReferences(MetadataReference.CreateFromFile(typeof(DddAggregateAttribute).Assembly.Location));
+            .AddReferences(Net60.References.All);
         return compilation;
     }
 
