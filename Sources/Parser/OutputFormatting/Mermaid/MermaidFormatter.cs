@@ -20,7 +20,8 @@ public class MermaidFormatter : OutputFormatter
 
     async Task OutputFormatter.Write(Model model)
     {
-        Directory.Delete(_basePath, true);
+        if (Directory.Exists(_basePath))
+            Directory.Delete(_basePath, true);
         Directory.CreateDirectory(_basePath);
         var modelGraph = ModelGraph.From(model);
         var pages = _pageFactories
