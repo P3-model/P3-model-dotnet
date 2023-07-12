@@ -23,9 +23,24 @@ public abstract class MermaidPageBase : MermaidPage
 
     public void LinkWith(IReadOnlyCollection<MermaidPage> otherPages)
     {
-        _zoomInPages = otherPages.Where(IncludeInZoomInPages).ToList().AsReadOnly();
-        _zoomOutPages = otherPages.Where(IncludeInZoomOutPages).ToList().AsReadOnly();
-        _changePerspectivePages = otherPages.Where(IncludeInChangePerspectivePages).ToList().AsReadOnly();
+        _zoomInPages = otherPages
+            .Where(IncludeInZoomInPages)
+            .OrderBy(p => p.GetType().Name)
+            .ThenBy(p => p.MainElement is HierarchyElement hierarchyElement
+                ? hierarchyElement.Id.FullName
+                : string.Empty)
+            .ToList()
+            .AsReadOnly();
+        _zoomOutPages = otherPages
+            .Where(IncludeInZoomOutPages)
+            .OrderBy(p => p.GetType().Name)
+            .ToList()
+            .AsReadOnly();
+        _changePerspectivePages = otherPages
+            .Where(IncludeInChangePerspectivePages)
+            .OrderBy(p => p.GetType().Name)
+            .ToList()
+            .AsReadOnly();
     }
 
     protected abstract bool IncludeInZoomInPages(MermaidPage page);
@@ -51,7 +66,7 @@ public abstract class MermaidPageBase : MermaidPage
             : string.Empty;
         return Path.GetRelativePath(directoryPath, path);
     }
-    
+
     protected string GetAbsolutePath(string pathRelativeToOutputDirectory) =>
         Path.Combine(_outputDirectory, pathRelativeToOutputDirectory);
 
@@ -76,16 +91,11 @@ public abstract class MermaidPageBase : MermaidPage
         if (_zoomInPages is { Count: > 0 })
         {
             mermaidWriter.WriteHeading("Zoom-in", 3);
-            mermaidWriter.WriteUnorderedList(_zoomInPages
-                    .OrderBy(p => p.GetType().Name)
-                    .ThenBy(p => p.MainElement is HierarchyElement hierarchyElement
-                        ? hierarchyElement.Id.FullName
-                        : string.Empty),
-                p => (
-                    MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)),
-                    p.MainElement is HierarchyElement hierarchyElement
-                        ? hierarchyElement.Id.Level + 1
-                        : 1));
+            mermaidWriter.WriteUnorderedList(_zoomInPages, p => (
+                MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)),
+                p.MainElement is HierarchyElement hierarchyElement
+                    ? hierarchyElement.Id.Level + 1
+                    : 1));
         }
 
         if (_zoomOutPages is { Count: > 0 })
