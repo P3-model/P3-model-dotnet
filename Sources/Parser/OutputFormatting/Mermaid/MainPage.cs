@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective;
 using P3Model.Parser.ModelSyntax.People;
@@ -82,8 +83,12 @@ public class MainPage : MermaidPageBase
     {
         if (_domainVisionStatement is null)
             return;
+        var sourceFileInfo = _domainVisionStatement.SourceFile;
+        var relativeFilePath = sourceFileInfo.Name;
+        var fileInfo = sourceFileInfo.CopyTo(GetAbsolutePath(relativeFilePath));
+        var pathRelativeToPageFile = GetPathRelativeToPageFile(fileInfo.FullName);
         mermaidWriter.WriteHeading("Domain Vision Statement", 2);
-        mermaidWriter.WriteLinkInline("Link", _domainVisionStatement.SourceFile.FullName);
+        mermaidWriter.WriteLinkInline("Link", pathRelativeToPageFile);
     }
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page is

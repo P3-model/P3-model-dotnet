@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
@@ -51,8 +52,10 @@ public class ProcessPage : MermaidPageBase
 - related deployable units
 - engaged people: actors, development teams, business stakeholders";
 
-    public override string RelativeFilePath =>
-        $"Processes/{string.Join('/', _process.Id.Parts)}/{_process.Name}.md";
+    public override string RelativeFilePath => Path.Combine(
+        "Processes",
+        Path.Combine(_process.Id.Parts.ToArray()),
+        $"{_process.Name}.md");
 
     public override Element MainElement => _process;
 

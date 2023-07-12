@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
@@ -32,8 +33,8 @@ public class DomainBuildingBlockPage : MermaidPageBase
 - related processes";
 
     public override string RelativeFilePath => _module is null
-        ? $"BuildingBlocks/{_buildingBlock.Name}.md"
-        : $"BuildingBlocks/{string.Join('/', _module.Id.Parts)}/{_buildingBlock.Name}.md";
+        ? Path.Combine("BuildingBlocks", $"/{_buildingBlock.Name}.md")
+        : Path.Combine("BuildingBlocks", Path.Combine(_module.Id.Parts.ToArray()), $"{_buildingBlock.Name}.md");
 
     public override Element MainElement => _buildingBlock;
 

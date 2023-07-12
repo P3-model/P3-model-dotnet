@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
@@ -47,8 +48,10 @@ public class DomainModulePage : MermaidPageBase
 - related deployable units
 - engaged people: actors, development teams, business stakeholders";
 
-    public override string RelativeFilePath =>
-        $"Modules/{string.Join('/', _module.Id.Parts)}/{_module.Name}.md";
+    public override string RelativeFilePath => Path.Combine(
+        "Modules", 
+        Path.Combine(_module.Id.Parts.ToArray()), 
+        $"{_module.Name}.md");
 
     public override Element MainElement => _module;
 

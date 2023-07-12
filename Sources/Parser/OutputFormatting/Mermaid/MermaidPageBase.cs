@@ -34,15 +34,28 @@ public abstract class MermaidPageBase : MermaidPage
 
     public async Task WriteToFile()
     {
-        var path = Path.Combine(_outputDirectory, RelativeFilePath.EndsWith(".md")
-            ? RelativeFilePath
-            : $"{RelativeFilePath}.md");
+        var path = GetAbsolutePath(NormalizeFilePath(RelativeFilePath));
         await using var mermaidWriter = new MermaidWriter(path);
         WriteHeader(mermaidWriter);
         WriteBody(mermaidWriter);
         WriteLinks(mermaidWriter);
         WriteFooter(mermaidWriter);
     }
+
+    protected string GetPathRelativeToPageFile(string path)
+    {
+        var filePath = GetAbsolutePath(NormalizeFilePath(RelativeFilePath));
+        var fileInfo = new FileInfo(filePath);
+        var directoryPath = fileInfo.Directory != null
+            ? fileInfo.Directory.FullName
+            : string.Empty;
+        return Path.GetRelativePath(directoryPath, path);
+    }
+    
+    protected string GetAbsolutePath(string pathRelativeToOutputDirectory) =>
+        Path.Combine(_outputDirectory, pathRelativeToOutputDirectory);
+
+    private static string NormalizeFilePath(string path) => path.EndsWith(".md") ? path : $"{path}.md";
 
     private void WriteHeader(MermaidWriter mermaidWriter)
     {
@@ -65,13 +78,13 @@ public abstract class MermaidPageBase : MermaidPage
             mermaidWriter.WriteHeading("Zoom-in", 3);
             mermaidWriter.WriteUnorderedList(_zoomInPages
                     .OrderBy(p => p.GetType().Name)
-                    .ThenBy(p => p.MainElement is HierarchyElement hierarchyElement 
-                        ? hierarchyElement.Id.FullName 
+                    .ThenBy(p => p.MainElement is HierarchyElement hierarchyElement
+                        ? hierarchyElement.Id.FullName
                         : string.Empty),
                 p => (
                     MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)),
-                    p.MainElement is HierarchyElement hierarchyElement 
-                        ? hierarchyElement.Id.Level + 1 
+                    p.MainElement is HierarchyElement hierarchyElement
+                        ? hierarchyElement.Id.Level + 1
                         : 1));
         }
 

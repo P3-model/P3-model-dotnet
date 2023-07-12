@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
@@ -29,7 +30,7 @@ public class DeployableUnitPage : MermaidPageBase
 - related domain modules
 - related development teams";
 
-    public override string RelativeFilePath => $"DeployableUnits/{_unit.Name}.md";
+    public override string RelativeFilePath => Path.Combine("DeployableUnits", $"{_unit.Name}.md");
     public override Element MainElement => _unit;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)

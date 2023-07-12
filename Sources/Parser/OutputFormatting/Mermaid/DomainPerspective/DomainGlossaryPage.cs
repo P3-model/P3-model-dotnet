@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -13,7 +14,7 @@ public class DomainGlossaryPage : MermaidPageBase
 
     public override string Header => "Domain Glossary";
     protected override string Description => "This view contains definitions of key domain terms.";
-    public override string RelativeFilePath => "Domain_Glossary.md";
+    public override string RelativeFilePath => Path.Combine("Glossary", "Domain_Glossary.md");
     public override Element MainElement => _product;
 
     public DomainGlossaryPage(string outputDirectory, Product product, Hierarchy<DomainModule> modulesHierarchy,
@@ -51,12 +52,16 @@ public class DomainGlossaryPage : MermaidPageBase
         }
     }
 
-    private static void WriteDescriptionLink(MermaidWriter mermaidWriter, DomainBuildingBlock buildingBlock)
+    private void WriteDescriptionLink(MermaidWriter mermaidWriter, DomainBuildingBlock buildingBlock)
     {
         if (buildingBlock.DescriptionFile is null)
             return;
+        var sourceFileInfo = buildingBlock.DescriptionFile;
+        var relativeFilePath = Path.Combine("Glossary", sourceFileInfo.Name);
+        var fileInfo = sourceFileInfo.CopyTo(GetAbsolutePath(relativeFilePath));
+        var pathRelativeToPageFile = GetPathRelativeToPageFile(fileInfo.FullName);
         mermaidWriter.WriteInline(" - ");
-        mermaidWriter.WriteLinkInline("Long description", buildingBlock.DescriptionFile.FullName);
+        mermaidWriter.WriteLinkInline("Long description", pathRelativeToPageFile);
         mermaidWriter.WriteLineBreak();
     }
 

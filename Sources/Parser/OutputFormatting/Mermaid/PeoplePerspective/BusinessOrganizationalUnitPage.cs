@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
@@ -21,7 +22,9 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
     protected override string Description => @$"This view contains details information about {_organizationalUnit.Name}, including:
 - related domain modules";
 
-    public override string RelativeFilePath => $"BusinessOrganizationalUnits/{_organizationalUnit.Name}.md";
+    public override string RelativeFilePath => Path.Combine(
+        "BusinessOrganizationalUnits", 
+        $"{_organizationalUnit.Name}.md");
 
     public override Element MainElement => _organizationalUnit;
 
