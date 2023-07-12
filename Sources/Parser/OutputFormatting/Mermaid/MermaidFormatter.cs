@@ -18,10 +18,15 @@ public class MermaidFormatter : OutputFormatter
         _pageFactories = pageFactories;
     }
 
-    async Task OutputFormatter.Write(Model model)
+    public Task Clean()
     {
         if (Directory.Exists(_basePath))
             Directory.Delete(_basePath, true);
+        return Task.CompletedTask;
+    }
+
+    async Task OutputFormatter.Write(Model model)
+    {
         Directory.CreateDirectory(_basePath);
         var modelGraph = ModelGraph.From(model);
         var pages = _pageFactories

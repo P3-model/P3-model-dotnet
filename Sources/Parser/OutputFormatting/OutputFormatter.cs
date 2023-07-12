@@ -5,5 +5,6 @@ namespace P3Model.Parser.OutputFormatting;
 
 public interface OutputFormatter
 {
+    Task Clean();
     Task Write(Model model);
 }

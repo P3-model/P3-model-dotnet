@@ -8,7 +8,6 @@ using Basic.Reference.Assemblies;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
-using P3Model.Annotations.Domain.StaticModel.DDD;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.OutputFormatting;
 
@@ -40,6 +39,8 @@ public class RootAnalyzer
     public async Task Analyze()
     {
         var sw = Stopwatch.StartNew();
+        foreach (var outputFormatter in _outputFormatters)
+            await outputFormatter.Clean();
         MSBuildLocator.RegisterDefaults();
         var modelBuilder = new ModelBuilder();
         modelBuilder.Add(new Product(_productName));
