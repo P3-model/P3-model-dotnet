@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.People;
 
@@ -29,7 +30,7 @@ public class DevelopmentTeamsPage : MermaidPageBase
         mermaidWriter.WriteHeading("Teams and their relations", 2);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            foreach (var team in _teams)
+            foreach (var team in _teams.OrderBy(t => t.Name))
                 flowchartWriter.WriteRectangle(team.Name, Style.PeoplePerspective);
         });
     }

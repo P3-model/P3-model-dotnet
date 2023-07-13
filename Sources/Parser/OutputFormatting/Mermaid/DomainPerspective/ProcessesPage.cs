@@ -23,7 +23,7 @@ public class ProcessesPage : MermaidPageBase
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
-        foreach (var process in _processesHierarchy.FromLevel(0))
+        foreach (var process in _processesHierarchy.FromLevel(0).OrderBy(p => p.Name))
         {
             mermaidWriter.WriteHeading(process.Name, 2);
             mermaidWriter.WriteFlowchart(flowchartWriter =>

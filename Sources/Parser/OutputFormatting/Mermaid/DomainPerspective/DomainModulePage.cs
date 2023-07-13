@@ -68,7 +68,7 @@ public class DomainModulePage : MermaidPageBase
                 flowchartWriter.WriteArrow(moduleId, parentId, "is part of");
             }
 
-            foreach (var child in _children)
+            foreach (var child in _children.OrderBy(c => c.Name))
             {
                 var childId = flowchartWriter.WriteStadiumShape(child.Name, Style.DomainPerspective);
                 flowchartWriter.WriteArrow(moduleId, childId, "contains");
@@ -78,7 +78,7 @@ public class DomainModulePage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
-            foreach (var process in _processes)
+            foreach (var process in _processes.OrderBy(p => p.Name))
             {
                 var processId = flowchartWriter.WriteStadiumShape(process.Name, Style.DomainPerspective);
                 flowchartWriter.WriteArrow(moduleId, processId, "contains");
@@ -90,7 +90,7 @@ public class DomainModulePage : MermaidPageBase
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
                 var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
-                foreach (var buildingBlock in _directBuildingBlocks)
+                foreach (var buildingBlock in _directBuildingBlocks.OrderBy(b => b.Name))
                 {
                     var buildingBlockId = flowchartWriter.WriteStadiumShape(buildingBlock.Name, Style.DomainPerspective);
                     flowchartWriter.WriteArrow(moduleId, buildingBlockId, "contains");
@@ -107,7 +107,7 @@ public class DomainModulePage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
-            foreach (var deployableUnit in _deployableUnits)
+            foreach (var deployableUnit in _deployableUnits.OrderBy(u => u.Name))
             {
                 var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name,
                     Style.TechnologyPerspective);
@@ -120,12 +120,12 @@ public class DomainModulePage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
-            foreach (var team in _developmentTeams)
+            foreach (var team in _developmentTeams.OrderBy(t => t.Name))
             {
                 var teamId = flowchartWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
                 flowchartWriter.WriteArrow(teamId, moduleId, "develops & maintains");
             }
-            foreach (var organizationalUnit in _organizationalUnits)
+            foreach (var organizationalUnit in _organizationalUnits.OrderBy(u => u.Name))
             {
                 var organizationalUnitId = flowchartWriter.WriteStadiumShape(organizationalUnit.Name,
                     Style.PeoplePerspective);

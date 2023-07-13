@@ -73,21 +73,23 @@ public class ProcessPage : MermaidPageBase
             }
 
             var subProcessIds = new Dictionary<Process, string>();
-            foreach (var subProcess in _children)
+            foreach (var subProcess in _children.OrderBy(c => c.Name))
             {
                 var subProcessId = flowchartWriter.WriteStadiumShape(subProcess.Name, Style.DomainPerspective);
                 subProcessIds.Add(subProcess, subProcessId);
                 flowchartWriter.WriteArrow(processId, subProcessId, "contains");
             }
 
-            foreach (var relation in _processHasNextSubProcessRelations)
+            foreach (var relation in _processHasNextSubProcessRelations
+                         .OrderBy(r => r.Source.Name)
+                         .ThenBy(r => r.Destination.Name))
             {
                 var currentProcessId = subProcessIds[relation.Source];
                 var nextProcessId = subProcessIds[relation.Destination];
-                flowchartWriter.WriteArrow((string)currentProcessId, (string)nextProcessId, LineStyle.Dotted);
+                flowchartWriter.WriteArrow(currentProcessId, nextProcessId, LineStyle.Dotted);
             }
 
-            foreach (var step in _steps)
+            foreach (var step in _steps.OrderBy(s => s.Name))
             {
                 var stepId = flowchartWriter.WriteStadiumShape(step.Name, Style.DomainPerspective);
                 flowchartWriter.WriteArrow(processId, stepId, "contains");
@@ -97,7 +99,7 @@ public class ProcessPage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
-            foreach (var module in _modules)
+            foreach (var module in _modules.OrderBy(m => m.Name))
             {
                 var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
                 flowchartWriter.WriteArrow(processId, moduleId, "belongs to");
@@ -109,7 +111,7 @@ public class ProcessPage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
-            foreach (var deployableUnit in _deployableUnits)
+            foreach (var deployableUnit in _deployableUnits.OrderBy(u => u.Name))
             {
                 var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name,
                     Style.TechnologyPerspective);
@@ -124,7 +126,7 @@ public class ProcessPage : MermaidPageBase
             var actorsId = flowchartWriter.WriteSubgraph("Actors", FlowchartDirection.TB, actorsWriter =>
             {
                 string? previousActorId = null;
-                foreach (var actor in _actors)
+                foreach (var actor in _actors.OrderBy(a => a.Name))
                 {
                     var actorId = actorsWriter.WriteStadiumShape(actor.Name, Style.PeoplePerspective);
                     if(previousActorId != null)
@@ -137,7 +139,7 @@ public class ProcessPage : MermaidPageBase
             var teamsId = flowchartWriter.WriteSubgraph("Teams", FlowchartDirection.TB, teamsWriter =>
             {
                 string? previousTeamId = null;
-                foreach (var team in _developmentTeams)
+                foreach (var team in _developmentTeams.OrderBy(t => t.Name))
                 {
                     var teamId = teamsWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
                     if(previousTeamId != null)
@@ -149,7 +151,7 @@ public class ProcessPage : MermaidPageBase
             var businessId = flowchartWriter.WriteSubgraph("Business", FlowchartDirection.TB, businessWriter =>
             {
                 string? previousUnitId = null;
-                foreach (var organizationalUnit in _organizationalUnits)
+                foreach (var organizationalUnit in _organizationalUnits.OrderBy(u => u.Name))
                 {
                     var unitId = businessWriter.WriteStadiumShape(organizationalUnit.Name, Style.PeoplePerspective);
                     if(previousUnitId != null)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
@@ -35,7 +36,7 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var unitId = flowchartWriter.WriteRectangle(_organizationalUnit.Name, Style.PeoplePerspective);
-            foreach (var module in _modules)
+            foreach (var module in _modules.OrderBy(m => m.Name))
             {
                 var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
                 flowchartWriter.WriteArrow(unitId, moduleId, "owns");

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.People;
 
@@ -29,7 +30,7 @@ public class BusinessOrganizationalUnitsPage : MermaidPageBase
         mermaidWriter.WriteHeading("Units structure", 2);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            foreach (var organizationalUnit in _organizationalUnits)
+            foreach (var organizationalUnit in _organizationalUnits.OrderBy(u => u.Name))
                 flowchartWriter.WriteRectangle(organizationalUnit.Name, Style.PeoplePerspective);
         });
     }

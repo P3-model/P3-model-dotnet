@@ -75,7 +75,7 @@ public class ProcessStepPage : MermaidPageBase
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
                 var stepId = flowchartWriter.WriteRectangle(_step.Name, Style.DomainPerspective);
-                foreach (var buildingBlock in _buildingBlocks)
+                foreach (var buildingBlock in _buildingBlocks.OrderBy(b => b.Name))
                 {
                     var buildingBlockId = flowchartWriter.WriteStadiumShape(buildingBlock.Name, Style.DomainPerspective);
                     flowchartWriter.WriteArrow(stepId, buildingBlockId, "uses");
@@ -103,19 +103,19 @@ public class ProcessStepPage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var stepId = flowchartWriter.WriteRectangle(_step.Name, Style.DomainPerspective);
-            foreach (var actor in _actors)
+            foreach (var actor in _actors.OrderBy(a => a.Name))
             {
                 var actorId = flowchartWriter.WriteStadiumShape(actor.Name, Style.PeoplePerspective);
                 flowchartWriter.WriteArrow(actorId, stepId, "uses");
             }
 
-            foreach (var team in _developmentTeams)
+            foreach (var team in _developmentTeams.OrderBy(t => t.Name))
             {
                 var teamId = flowchartWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
                 flowchartWriter.WriteArrow(teamId, stepId, "develops & maintains");
             }
 
-            foreach (var organizationalUnit in _organizationalUnits)
+            foreach (var organizationalUnit in _organizationalUnits.OrderBy(u => u.Name))
             {
                 var organizationalUnitId = flowchartWriter.WriteStadiumShape(organizationalUnit.Name, 
                     Style.PeoplePerspective);

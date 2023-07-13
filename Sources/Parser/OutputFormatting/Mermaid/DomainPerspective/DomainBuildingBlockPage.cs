@@ -56,7 +56,9 @@ public class DomainBuildingBlockPage : MermaidPageBase
                     : flowchartWriter.WriteSubgraph(_module.Name, subGraphWriter => subGraphWriter
                         .WriteRectangle(_buildingBlock.Name, Style.DomainPerspective));
                 var dependencyIds = new List<string>();
-                foreach (var group in _dependencies.GroupBy(t => t.Module, t => t.BuildingBlock))
+                foreach (var group in _dependencies
+                             .GroupBy(t => t.Module, t => t.BuildingBlock)
+                             .OrderBy(t => t.Key is null ? string.Empty : t.Key.Name))
                 {
                     if (group.Key is null)
                         dependencyIds.AddRange(WriteDependencies(group, flowchartWriter));
@@ -78,7 +80,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
                 var buildingBlockId = flowchartWriter.WriteRectangle(_buildingBlock.Name, Style.DomainPerspective);
-                foreach (var processStep in _processSteps)
+                foreach (var processStep in _processSteps.OrderBy(step => step.Name))
                 {
                     var processStepId = flowchartWriter.WriteStadiumShape(processStep.Name, Style.DomainPerspective);
                     flowchartWriter.WriteArrow(buildingBlockId, processStepId, "is used in");
@@ -89,6 +91,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
 
     private static IEnumerable<string> WriteDependencies(IEnumerable<DomainBuildingBlock> dependencies,
         FlowchartElementsWriter flowchartWriter) => dependencies
+        .OrderBy(dependency  => dependency.Name)
         .Select(dependency => flowchartWriter.WriteStadiumShape(dependency.Name, Style.DomainPerspective))
         .ToList();
 

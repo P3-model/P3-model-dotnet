@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
@@ -50,7 +51,7 @@ public class DeployableUnitPage : MermaidPageBase
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
             var unitId = flowchartWriter.WriteRectangle(_unit.Name, Style.TechnologyPerspective);
-            foreach (var team in _teams)
+            foreach (var team in _teams.OrderBy(t => t.Name))
             {
                 var teamId = flowchartWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
                 flowchartWriter.WriteArrow(teamId, unitId, "maintains");
@@ -61,7 +62,7 @@ public class DeployableUnitPage : MermaidPageBase
     private void WriteUnitWithModules(FlowchartElementsWriter flowchartWriter)
     {
         var unitId = flowchartWriter.WriteRectangle(_unit.Name, Style.TechnologyPerspective);
-        foreach (var module in _modules)
+        foreach (var module in _modules.OrderBy(m => m.Name))
         {
             var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
             flowchartWriter.WriteArrow(moduleId, unitId, "is deployed in");
