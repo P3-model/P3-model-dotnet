@@ -15,6 +15,12 @@ public class FileInfoJsonConverter : JsonConverter<FileInfo>
         return new FileInfo(value);
     }
 
-    public override void Write(Utf8JsonWriter writer, FileInfo value, JsonSerializerOptions options) => 
-        writer.WriteStringValue(value.FullName);
+    public override void Write(Utf8JsonWriter writer, FileInfo value, JsonSerializerOptions options)
+    {
+        using var streamReader = value.OpenText();
+        writer.WriteStartObject();
+        writer.WriteString("FileType", value.Extension.StartsWith('.') ? value.Extension[1..] : value.Extension);
+        writer.WriteString("Content", streamReader.ReadToEnd());
+        writer.WriteEndObject();
+    }
 }
