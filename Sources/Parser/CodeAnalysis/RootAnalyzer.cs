@@ -42,8 +42,7 @@ public class RootAnalyzer
         foreach (var outputFormatter in _outputFormatters)
             await outputFormatter.Clean();
         MSBuildLocator.RegisterDefaults();
-        var modelBuilder = new ModelBuilder();
-        modelBuilder.Add(new Product(_productName));
+        var modelBuilder = new ModelBuilder(new DocumentedSystem(_productName));
         foreach (var repository in _repositories)
             await Analyze(repository, modelBuilder);
         var model = modelBuilder.Build();

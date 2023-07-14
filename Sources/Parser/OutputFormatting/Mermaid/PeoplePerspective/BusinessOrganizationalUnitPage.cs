@@ -27,7 +27,7 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
         "BusinessOrganizationalUnits", 
         $"{_organizationalUnit.Name}.md");
 
-    public override Element MainElement => _organizationalUnit;
+    public override Element? MainElement => _organizationalUnit;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

@@ -7,23 +7,23 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 
 public class DevelopmentTeamsPage : MermaidPageBase
 {
-    private readonly Product _product;
+    private readonly ModelSyntax.DocumentedSystem _system;
     private readonly IEnumerable<DevelopmentTeam> _teams;
 
-    public DevelopmentTeamsPage(string outputDirectory, Product product, IEnumerable<DevelopmentTeam> teams)
+    public DevelopmentTeamsPage(string outputDirectory, ModelSyntax.DocumentedSystem system, IEnumerable<DevelopmentTeam> teams)
         : base(outputDirectory)
     {
-        _product = product;
+        _system = system;
         _teams = teams;
     }
 
     public override string Header => "Development teams";
 
     protected override string Description =>
-        $"This view contains all development teams that build and maintain {_product.Name} product.";
+        $"This view contains all development teams that build and maintain {_system.Name} product.";
 
     public override string RelativeFilePath => "Development_Teams.md";
-    public override Element MainElement => _product;
+    public override Element? MainElement => null;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

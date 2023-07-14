@@ -8,20 +8,18 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
 public class DomainGlossaryPage : MermaidPageBase
 {
-    private readonly Product _product;
     private readonly Hierarchy<DomainModule> _modulesHierarchy;
     private readonly IReadOnlySet<DomainModule.ContainsBuildingBlock> _containsBuildingBlockRelations;
 
     public override string Header => "Domain Glossary";
     protected override string Description => "This view contains definitions of key domain terms.";
     public override string RelativeFilePath => Path.Combine("Glossary", "Domain_Glossary.md");
-    public override Element MainElement => _product;
+    public override Element? MainElement => null;
 
-    public DomainGlossaryPage(string outputDirectory, Product product, Hierarchy<DomainModule> modulesHierarchy,
+    public DomainGlossaryPage(string outputDirectory, Hierarchy<DomainModule> modulesHierarchy,
         IReadOnlySet<DomainModule.ContainsBuildingBlock> containsBuildingBlockRelations)
         : base(outputDirectory)
     {
-        _product = product;
         _modulesHierarchy = modulesHierarchy;
         _containsBuildingBlockRelations = containsBuildingBlockRelations;
     }

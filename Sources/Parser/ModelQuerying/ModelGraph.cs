@@ -19,6 +19,8 @@ public class ModelGraph
 
     public static ModelGraph From(Model model) => new(model);
 
+    public ModelSyntax.DocumentedSystem System => _model.System;
+
     public IEnumerable<TElement> ElementsOfType<TElement>() where TElement : Element =>
         _model.Elements.OfType<TElement>();
 
@@ -106,45 +108,4 @@ public class ModelGraph
         var query = configure(queryBuilder);
         return query.Execute(this);
     }
-
-    // [PublicAPI]
-    // public Hierarchy<TElement> Execute<TElement, TRelation>(
-    //     GetHierarchy<TElement, TRelation> query)
-    //     where TElement : HierarchyElement
-    //     where TRelation : HierarchyRelation<TElement> =>
-    //     Hierarchy<TElement>.Create(_model.Relations.OfType<TRelation>());
-    //
-    // [PublicAPI]
-    // public IReadOnlySet<TSource> Execute<TSource, TDestination, THierarchyRelation, TRelation>(
-    //     GetElementsRelatedToDescendants<TSource, TDestination, THierarchyRelation, TRelation> query)
-    //     where TSource : Element
-    //     where TDestination : HierarchyElement, IEquatable<TDestination>
-    //     where THierarchyRelation : HierarchyRelation<TDestination>
-    //     where TRelation : Relation<TSource, TDestination>
-    // {
-    //     var hierarchy = Hierarchy<TDestination>.Create(_model.Relations.OfType<THierarchyRelation>());
-    //     var descendants = hierarchy.GetDescendantsFor(query.Destination);
-    //     return _model.Relations.OfType<TRelation>()
-    //         .Where(r => descendants.Contains(r.Destination) ||
-    //                     (query.IncludeSelf && r.Destination.Equals(query.Destination)))
-    //         .Select(r => r.Source)
-    //         .ToHashSet();
-    // }
-    //
-    // [PublicAPI]
-    // public IReadOnlySet<TSource> Execute<TSource, TDestination, THierarchyRelation, TRelation>(
-    //     GetElementsBackRelatedToDescendants<TSource, TDestination, THierarchyRelation, TRelation> query)
-    //     where TSource : Element
-    //     where TDestination : HierarchyElement, IEquatable<TDestination>
-    //     where THierarchyRelation : HierarchyRelation<TDestination>
-    //     where TRelation : Relation<TDestination, TSource>
-    // {
-    //     var hierarchy = Hierarchy<TDestination>.Create(_model.Relations.OfType<THierarchyRelation>());
-    //     var descendants = hierarchy.GetDescendantsFor(query.Destination);
-    //     return _model.Relations.OfType<TRelation>()
-    //         .Where(r => descendants.Contains(r.Source) ||
-    //                     (query.IncludeSelf && r.Source.Equals(query.Destination)))
-    //         .Select(r => r.Destination)
-    //         .ToHashSet();
-    // }
 }

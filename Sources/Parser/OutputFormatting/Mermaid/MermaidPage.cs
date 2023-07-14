@@ -9,7 +9,7 @@ public interface MermaidPage
     string Header { get; }
     string LinkText { get; }
     string RelativeFilePath { get; }
-    Element MainElement { get; }
+    Element? MainElement { get; }
     
     void LinkWith(IReadOnlyCollection<MermaidPage> otherPages);
     Task WriteToFile();

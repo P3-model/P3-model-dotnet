@@ -57,7 +57,7 @@ public class ProcessPage : MermaidPageBase
         Path.Combine(_process.Id.Parts.ToArray()),
         $"{_process.Name}.md");
 
-    public override Element MainElement => _process;
+    public override Element? MainElement => _process;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

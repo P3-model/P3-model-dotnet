@@ -6,20 +6,16 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
 public class ProcessesPage : MermaidPageBase
 {
-    private readonly Product _product;
     private readonly Hierarchy<Process> _processesHierarchy;
 
-    public ProcessesPage(string outputDirectory, Product product, Hierarchy<Process> processesHierarchy)
-        : base(outputDirectory)
-    {
-        _product = product;
+    public ProcessesPage(string outputDirectory, Hierarchy<Process> processesHierarchy)
+        : base(outputDirectory) =>
         _processesHierarchy = processesHierarchy;
-    }
 
     public override string Header => "Business processes";
     protected override string Description => "This view contains all business processes with their sub-processes.";
     public override string RelativeFilePath => "Business_Processes.md";
-    public override Element MainElement => _product;
+    public override Element? MainElement => null;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

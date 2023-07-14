@@ -53,7 +53,7 @@ public class DomainModulePage : MermaidPageBase
         Path.Combine(_module.Id.Parts.ToArray()), 
         $"{_module.Name}.md");
 
-    public override Element MainElement => _module;
+    public override Element? MainElement => _module;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

@@ -12,6 +12,8 @@ namespace P3Model.Parser.ModelSyntax;
     Justification = "See CompilationIndependentSymbolEqualityComparer")]
 public class ModelBuilder : ElementsProvider
 {
+    private readonly DocumentedSystem _system;
+        
     private readonly ConcurrentDictionary<Element, byte> _elements = new();
     private readonly ConcurrentDictionary<Element, ConcurrentDictionary<ISymbol, byte>> _elementToSymbols = new();
     private readonly ConcurrentDictionary<ISymbol, ConcurrentDictionary<Element, byte>> _symbolToElements =
@@ -23,6 +25,8 @@ public class ModelBuilder : ElementsProvider
 
     private readonly ConcurrentDictionary<Trait, byte> _traits = new();
     private readonly ConcurrentDictionary<Func<ElementsProvider, IEnumerable<Trait>>, byte> _traitFactories = new();
+
+    public ModelBuilder(DocumentedSystem system) => _system = system;
 
     public void Add(Element element) => _elements.TryAdd(element, default);
 
@@ -84,7 +88,8 @@ public class ModelBuilder : ElementsProvider
         foreach (var trait in traitFactory(this))
             Add(trait);
 
-        return new Model(GetAllElements().ToImmutableArray(),
+        return new Model(_system,
+            GetAllElements().ToImmutableArray(),
             _relations.Keys.ToImmutableArray(),
             _traits.Keys.ToImmutableArray());
     }

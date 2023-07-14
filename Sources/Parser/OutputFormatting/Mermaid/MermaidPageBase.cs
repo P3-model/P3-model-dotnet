@@ -17,7 +17,7 @@ public abstract class MermaidPageBase : MermaidPage
     protected virtual string? Description => null;
     public virtual string LinkText => Header;
     public abstract string RelativeFilePath { get; }
-    public abstract Element MainElement { get; }
+    public abstract Element? MainElement { get; }
 
     protected MermaidPageBase(string outputDirectory) => _outputDirectory = outputDirectory;
 

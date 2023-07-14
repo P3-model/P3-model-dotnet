@@ -7,15 +7,15 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.TechnologyPerspective;
 
 public class DeployableUnitsPage : MermaidPageBase
 {
-    private readonly Product _product;
+    private readonly ModelSyntax.DocumentedSystem _system;
     private readonly IEnumerable<DeployableUnit> _unitsWithoutTier;
     private readonly IEnumerable<Tier.ContainsDeployableUnit> _tierContainsDeploymentUnitRelations;
 
-    public DeployableUnitsPage(string outputDirectory, Product product, IEnumerable<DeployableUnit> units,
+    public DeployableUnitsPage(string outputDirectory, ModelSyntax.DocumentedSystem system, IEnumerable<DeployableUnit> units,
         IEnumerable<Tier.ContainsDeployableUnit> tierContainsDeploymentUnitRelations)
         : base(outputDirectory)
     {
-        _product = product;
+        _system = system;
         _unitsWithoutTier = units
             .Where(u => tierContainsDeploymentUnitRelations
                 .All(r => !r.Destination.Equals(u)));
@@ -23,9 +23,9 @@ public class DeployableUnitsPage : MermaidPageBase
     }
 
     public override string Header => "Deployable units";
-    protected override string Description => $"This view contains all deployable units for {_product.Name} product.";
+    protected override string Description => $"This view contains all deployable units for {_system.Name} product.";
     public override string RelativeFilePath => "Deployable_Units.md";
-    public override Element MainElement => _product;
+    public override Element? MainElement => null;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

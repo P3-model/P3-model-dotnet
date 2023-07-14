@@ -27,11 +27,10 @@ public class ExampleElements : IEnumerable<Element>
         new DevelopmentTeam("ExampleDevelopmentTeam"),
         new DomainBuildingBlock("ExampleBuildingBlock", null),
         new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleF")),
-        new ExternalSystem("ExampleExternalSystem"),
+        new ExternalSoftwareSystem("ExampleExternalSystem"),
         new ModelBoundary("ExampleModelBoundary"),
         new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
         new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA")),
-        new Product("ExampleProduct"),
         new Tier("ExampleTier")
     };
     

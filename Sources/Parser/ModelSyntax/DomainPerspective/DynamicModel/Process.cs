@@ -4,6 +4,8 @@ namespace P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 
 public record Process(HierarchyId Id) : HierarchyElement
 {
+    public Perspective Perspective => Perspective.Domain;
+
     [JsonIgnore]
     public string Name => Id.Name;
 

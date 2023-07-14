@@ -5,6 +5,8 @@ namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 public record DomainModule(HierarchyId Id) : HierarchyElement
 {
+    public Perspective Perspective => Perspective.Domain;
+    
     [JsonIgnore]
     public string Name => Id.Name;
 

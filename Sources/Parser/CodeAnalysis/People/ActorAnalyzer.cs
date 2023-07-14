@@ -26,11 +26,8 @@ public class ActorAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnalyzer<IM
         modelBuilder.Add(elements => GetRelations(symbol, actor, elements));
     }
     
-    private static IEnumerable<Relation> GetRelations(ISymbol symbol, Actor actor, ElementsProvider elements)
-    {
-        var product = elements.OfType<Product>().Single();
-        yield return new Actor.UsesProduct(actor, product);
-        foreach (var processStep in elements.For(symbol).OfType<ProcessStep>())
-            yield return new Actor.UsesProcessStep(actor, processStep);
-    }
+    private static IEnumerable<Relation> GetRelations(ISymbol symbol, Actor actor, ElementsProvider elements) => 
+        elements.For(symbol)
+            .OfType<ProcessStep>()
+            .Select(processStep => new Actor.UsesProcessStep(actor, processStep));
 }

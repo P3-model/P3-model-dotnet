@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective;
 using P3Model.Parser.ModelSyntax.People;
@@ -12,29 +11,31 @@ namespace P3Model.Parser.OutputFormatting.Mermaid;
 
 public class MainPage : MermaidPageBase
 {
-    private readonly Product _product;
-    private readonly IReadOnlyCollection<Actor.UsesProduct> _actorUsesProductRelations;
-    private readonly IReadOnlyCollection<Product.UsesExternalSystem> _productUsesExternalSystemRelations;
-    private readonly IReadOnlyCollection<ExternalSystem.UsesProduct> _externalSystemUsesProductRelations;
+    private readonly ModelSyntax.DocumentedSystem _system;
+    private readonly IReadOnlySet<Actor> _actors;
+    private readonly IReadOnlySet<ExternalSoftwareSystem> _inputExternalSystems;
+    private readonly IReadOnlySet<ExternalSoftwareSystem> _outputExternalSystems;
     private readonly DomainVisionStatement? _domainVisionStatement;
 
-    public MainPage(string outputDirectory, Product product,
-        IReadOnlyCollection<Actor.UsesProduct> actorUsesProductRelations,
-        IReadOnlyCollection<Product.UsesExternalSystem> productUsesExternalSystemRelations,
-        IReadOnlyCollection<ExternalSystem.UsesProduct> externalSystemUsesProductRelations,
-        DomainVisionStatement? domainVisionStatement) : base(outputDirectory)
+    public MainPage(string outputDirectory, 
+        ModelSyntax.DocumentedSystem system, 
+        IReadOnlySet<Actor> actors, 
+        IReadOnlySet<ExternalSoftwareSystem> inputExternalSystems, 
+        IReadOnlySet<ExternalSoftwareSystem> outputExternalSystems, 
+        DomainVisionStatement? domainVisionStatement) 
+        : base(outputDirectory)
     {
-        _product = product;
-        _actorUsesProductRelations = actorUsesProductRelations;
-        _productUsesExternalSystemRelations = productUsesExternalSystemRelations;
-        _externalSystemUsesProductRelations = externalSystemUsesProductRelations;
+        _system = system;
+        _actors = actors;
+        _inputExternalSystems = inputExternalSystems;
+        _outputExternalSystems = outputExternalSystems;
         _domainVisionStatement = domainVisionStatement;
     }
 
-    public override string Header => $"P3 Model documentation for {_product.Name}";
+    public override string Header => $"P3 Model documentation for {_system.Name}";
     public override string LinkText => "Main page";
     public override string RelativeFilePath => "README.md";
-    public override Element MainElement => _product;
+    public override Element? MainElement => null;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -47,31 +48,31 @@ public class MainPage : MermaidPageBase
         mermaidWriter.WriteHeading("Product Landscape", 2);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var productId = flowchartWriter.WriteRectangle(_product.Name);
-            foreach (var actorUsesProduct in _actorUsesProductRelations)
+            var productId = flowchartWriter.WriteRectangle(_system.Name);
+            foreach (var actor in _actors)
             {
-                var actorId = flowchartWriter.WriteCircle(actorUsesProduct.Source.Name);
+                var actorId = flowchartWriter.WriteCircle(actor.Name);
                 flowchartWriter.WriteArrow(actorId, productId);
             }
 
-            var externalSystemIds = new Dictionary<ExternalSystem, string>();
-            foreach (var productUsesExternalSystem in _productUsesExternalSystemRelations)
+            var externalSystemIds = new Dictionary<ExternalSoftwareSystem, string>();
+            foreach (var externalSystem in _outputExternalSystems)
             {
-                if (!externalSystemIds.TryGetValue(productUsesExternalSystem.Destination, out var externalSystemId))
+                if (!externalSystemIds.TryGetValue(externalSystem, out var externalSystemId))
                 {
-                    externalSystemId = flowchartWriter.WriteRectangle(productUsesExternalSystem.Destination.Name);
-                    externalSystemIds.Add(productUsesExternalSystem.Destination, externalSystemId);
+                    externalSystemId = flowchartWriter.WriteRectangle(externalSystem.Name);
+                    externalSystemIds.Add(externalSystem, externalSystemId);
                 }
 
                 flowchartWriter.WriteArrow(productId, externalSystemId);
             }
 
-            foreach (var externalSystemUsesProduct in _externalSystemUsesProductRelations)
+            foreach (var externalSystem in _inputExternalSystems)
             {
-                if (!externalSystemIds.TryGetValue(externalSystemUsesProduct.Source, out var externalSystemId))
+                if (!externalSystemIds.TryGetValue(externalSystem, out var externalSystemId))
                 {
-                    externalSystemId = flowchartWriter.WriteRectangle(externalSystemUsesProduct.Source.Name);
-                    externalSystemIds.Add(externalSystemUsesProduct.Source, externalSystemId);
+                    externalSystemId = flowchartWriter.WriteRectangle(externalSystem.Name);
+                    externalSystemIds.Add(externalSystem, externalSystemId);
                 }
 
                 flowchartWriter.WriteArrow(externalSystemId, productId);

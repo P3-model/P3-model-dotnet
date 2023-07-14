@@ -5,6 +5,8 @@ namespace P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 
 public record ProcessStep(HierarchyId Id) : Element
 {
+    public Perspective Perspective => Perspective.Domain;
+    
     [JsonIgnore]
     public string Name => Id.Name;
     

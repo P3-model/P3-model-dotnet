@@ -11,6 +11,7 @@ public class ModelSchemaTests
     [Fact]
     public async Task SerializedModelShouldMatchJsonSchema()
     {
+        var system = new DocumentedSystem("TestSystem");
         var assembly = typeof(Model).Assembly;
         var elements = assembly
             .GetTypes()
@@ -30,7 +31,7 @@ public class ModelSchemaTests
             .Where(IsConstructableType)
             .Select(ExampleTraits.All.ForType)
             .ToImmutableArray();
-        var model = new Model(elements, relations, traits);
+        var model = new Model(system, elements, relations, traits);
         
         // TODO: assert json schema
         await using var file = File.Create("model.json");

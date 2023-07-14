@@ -13,9 +13,6 @@ public class ExampleRelations : IEnumerable<Relation>
 
     public static readonly ExampleRelations All = new()
     {
-        new Actor.UsesProduct(
-            new Actor("ExampleActor"),
-            new Product("ExampleProduct")),
         new Actor.UsesProcessStep(
             new Actor("ExampleActor"),
             new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA"))),
@@ -40,9 +37,6 @@ public class ExampleRelations : IEnumerable<Relation>
         new DomainModule.IsDeployedInDeployableUnit(
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
             new DeployableUnit("ExampleDeployableUnit")),
-        new ExternalSystem.UsesProduct(
-            new ExternalSystem("ExampleExternalSystem"),
-            new Product("ExampleProduct")),
         new Process.ContainsProcessStep(
             new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
             new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA"))),
@@ -61,9 +55,6 @@ public class ExampleRelations : IEnumerable<Relation>
         new ProcessStep.DependsOnBuildingBlock(
             new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepZ")),
             new DomainBuildingBlock("ExampleBuildingBlock", null)),
-        new Product.UsesExternalSystem(
-            new Product("ExampleProduct"),
-            new ExternalSystem("ExampleExternalSystem")),
         new Tier.ContainsDeployableUnit(
             new Tier("ExampleTier"),
             new DeployableUnit("ExampleDeployableUnit")),

@@ -36,7 +36,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
         ? Path.Combine("Modules", $"/{_buildingBlock.Name}.md")
         : Path.Combine("Modules", Path.Combine(_module.Id.Parts.ToArray()), $"{_buildingBlock.Name}.md");
 
-    public override Element MainElement => _buildingBlock;
+    public override Element? MainElement => _buildingBlock;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

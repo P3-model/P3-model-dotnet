@@ -7,23 +7,23 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 
 public class BusinessOrganizationalUnitsPage : MermaidPageBase
 {
-    private readonly Product _product;
+    private readonly ModelSyntax.DocumentedSystem _system;
     private readonly IEnumerable<BusinessOrganizationalUnit> _organizationalUnits;
 
-    public BusinessOrganizationalUnitsPage(string outputDirectory, Product product,
+    public BusinessOrganizationalUnitsPage(string outputDirectory, ModelSyntax.DocumentedSystem system,
         IEnumerable<BusinessOrganizationalUnit> organizationalUnits) : base(outputDirectory)
     {
-        _product = product;
+        _system = system;
         _organizationalUnits = organizationalUnits;
     }
 
     public override string Header => "Business organizational units";
 
     protected override string Description =>
-        $"This view contains all business organizational units that owns {_product.Name} product";
+        $"This view contains all business organizational units that owns {_system.Name} product";
 
     public override string RelativeFilePath => "Business_Organizational_Units.md";
-    public override Element MainElement => _product;
+    public override Element? MainElement => null;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
