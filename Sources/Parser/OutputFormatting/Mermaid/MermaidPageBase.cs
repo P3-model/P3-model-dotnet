@@ -26,9 +26,6 @@ public abstract class MermaidPageBase : MermaidPage
         _zoomInPages = otherPages
             .Where(IncludeInZoomInPages)
             .OrderBy(p => p.GetType().Name)
-            .ThenBy(p => p.MainElement is HierarchyElement hierarchyElement
-                ? hierarchyElement.Id.FullName
-                : string.Empty)
             .ToList()
             .AsReadOnly();
         _zoomOutPages = otherPages
@@ -86,16 +83,12 @@ public abstract class MermaidPageBase : MermaidPage
 
     private void WriteLinks(MermaidWriter mermaidWriter)
     {
-        // TODO: better links structure (especially for hierarchy elements)
         mermaidWriter.WriteHeading("Next steps", 2);
         if (_zoomInPages is { Count: > 0 })
         {
             mermaidWriter.WriteHeading("Zoom-in", 3);
-            mermaidWriter.WriteUnorderedList(_zoomInPages, p => (
-                MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)),
-                p.MainElement is HierarchyElement hierarchyElement
-                    ? hierarchyElement.Id.Level + 1
-                    : 1));
+            mermaidWriter.WriteUnorderedList(_zoomInPages, p =>
+                MermaidWriter.FormatLink(p.LinkText, GetRelativePathFor(p)));
         }
 
         if (_zoomOutPages is { Count: > 0 })
