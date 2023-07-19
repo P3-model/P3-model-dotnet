@@ -61,11 +61,16 @@ public class DomainModulePage : MermaidPageBase
         mermaidWriter.WriteHeading("Related modules", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
-            if (_parent != null)
+            string moduleId;
+            if (_parent is null)
+            {
+                moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
+            }
+            else
             {
                 var parentId = flowchartWriter.WriteStadiumShape(_parent.Name, Style.DomainPerspective);
-                flowchartWriter.WriteArrow(moduleId, parentId, "is part of");
+                moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
+                flowchartWriter.WriteBackwardArrow(moduleId, parentId, "is part of");
             }
 
             foreach (var child in _children.OrderBy(c => c.Name))
@@ -136,17 +141,18 @@ public class DomainModulePage : MermaidPageBase
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
-        ProcessPage processesPage when _children.Contains(processesPage.MainElement) => true,
-        ProcessStepPage stepPage when _processes.Contains(stepPage.MainElement) => true,
+        DomainModulePage modulePage => _children.Contains(modulePage.MainElement) ,
+        DomainBuildingBlockPage buildingBlockPage => _directBuildingBlocks.Contains(buildingBlockPage.MainElement),
         _ => false
     };
 
-    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is ProcessesPage;
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => _parent is null 
+        ? page is DomainModulesPage
+        : page is DomainModulePage modulePage && _parent.Equals(modulePage.MainElement);
 
     protected override bool IncludeInChangePerspectivePages(MermaidPage page) => page switch
     {
         ProcessPage processPage => _processes.Contains(processPage.MainElement),
-        DomainBuildingBlockPage buildingBlockPage => _directBuildingBlocks.Contains(buildingBlockPage.MainElement),
         DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
         BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage.MainElement),
