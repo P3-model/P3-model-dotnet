@@ -88,9 +88,9 @@ internal class FlowchartWriter : FlowchartElementsWriter
     public void WriteBackwardArrow(string sourceId, string destinationId, string? text,
         LineStyle lineStyle = LineStyle.Normal)
     {
-        WriteInvisibleLink(sourceId, destinationId);
-        WriteLink(sourceId, destinationId, GetArrowSymbol(lineStyle), text);
         WriteInvisibleLink(destinationId, sourceId);
+        WriteLink(sourceId, destinationId, GetArrowSymbol(lineStyle), text);
+        WriteInvisibleLink(sourceId, destinationId);
     }
 
     private static string GetArrowSymbol(LineStyle lineStyle) => lineStyle switch
