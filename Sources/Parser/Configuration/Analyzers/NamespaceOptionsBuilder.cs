@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
+using P3Model.Annotations.Domain.DynamicModel;
+using P3Model.Parser.CodeAnalysis;
 
 namespace P3Model.Parser.Configuration.Analyzers;
 
@@ -24,6 +26,18 @@ public class NamespaceOptionsBuilder
     [PublicAPI]
     public NamespaceOptionsBuilder Exclude(string pattern) => Matching(
         symbol => !Regex.IsMatch(symbol.ToDisplayString(), pattern));
+
+    [PublicAPI]
+    public NamespaceOptionsBuilder ExcludeAnnotatedWithProcessAttribute() => ExcludeAnnotatedWith<ProcessAttribute>(
+        attribute => attribute.TryGetNamedArgumentValue(nameof(ProcessAttribute.ApplyOnNamespace),
+            out bool applyOnNamespace) && applyOnNamespace);
+
+    [PublicAPI]
+    public NamespaceOptionsBuilder ExcludeAnnotatedWith<TAttribute>(Func<AttributeData, bool>? predicate = null) =>
+        Matching(symbol => !symbol.ContainingNamespace
+            .GetTypeMembers()
+            .Any(typeSymbol => typeSymbol.TryGetAttribute(typeof(TAttribute), out var attribute) &&
+                               (predicate is null || predicate(attribute))));
 
     [PublicAPI]
     public NamespaceOptionsBuilder Matching(Func<INamespaceSymbol, bool> predicate)

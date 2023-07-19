@@ -26,6 +26,7 @@ await P3
                 .Exclude("FluentMigrations")
                 .Exclude("DI")
                 .Exclude("Nuke")
+                .ExcludeAnnotatedWithProcessAttribute()
                 .RemoveRootNamespace("MyCompany.ECommerce"))))
     .OutputFormat(formatters => formatters
         .UseMermaid(options => options
