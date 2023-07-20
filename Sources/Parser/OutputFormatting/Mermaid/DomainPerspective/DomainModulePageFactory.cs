@@ -15,13 +15,13 @@ public class DomainModulePageFactory : MermaidPageFactory
     public IEnumerable<MermaidPage> Create(string outputDirectory, ModelGraph modelGraph)
     {
         return modelGraph.Execute(query => query
-            .AllElements<DomainModule>())
+                .AllElements<DomainModule>())
             .Select(module =>
             {
                 var parent = modelGraph.Execute(query => query
-                    .Elements<DomainModule>()
-                    .RelatedTo(module)
-                    .ByRelation<DomainModule.ContainsDomainModule>())
+                        .Elements<DomainModule>()
+                        .RelatedTo(module)
+                        .ByRelation<DomainModule.ContainsDomainModule>())
                     .SingleOrDefault();
                 var children = modelGraph.Execute(query => query
                     .Elements<DomainModule>()
@@ -48,16 +48,21 @@ public class DomainModulePageFactory : MermaidPageFactory
                     .Elements<DeployableUnit>()
                     .RelatedTo(module)
                     .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>());
-                // TODO: relation to owners from all hierarchy levels
                 var developmentTeams = modelGraph.Execute(query => query
                     .Elements<DevelopmentTeam>()
-                    .RelatedTo(module)
-                    .ByRelation<DevelopmentTeam.OwnsDomainModule>());
+                    .RelatedToAny(subQuery => subQuery
+                        .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
+                    .ByRelation<DevelopmentTeam.OwnsDomainModule>(filter => filter
+                        .GroupBy(r => r.Destination)
+                        .MaxBy(g => g.Key.Level) ?? Enumerable.Empty<DevelopmentTeam.OwnsDomainModule>()));
                 var organizationalUnits = modelGraph.Execute(query => query
                     .Elements<BusinessOrganizationalUnit>()
-                    .RelatedTo(module)
-                    .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>());
-                return new DomainModulePage(outputDirectory, module, parent, children, processes, directBuildingBlocks, 
+                    .RelatedToAny(subQuery => subQuery
+                        .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
+                    .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>(filter => filter
+                        .GroupBy(r => r.Destination)
+                        .MaxBy(g => g.Key.Level) ?? Enumerable.Empty<BusinessOrganizationalUnit.OwnsDomainModule>()));
+                return new DomainModulePage(outputDirectory, module, parent, children, processes, directBuildingBlocks,
                     deployableUnits, developmentTeams, organizationalUnits);
             });
     }
