@@ -26,16 +26,19 @@ public abstract class MermaidPageBase : MermaidPage
         _zoomInPages = otherPages
             .Where(IncludeInZoomInPages)
             .OrderBy(p => p.GetType().Name)
+            .ThenBy(p => p.LinkText)
             .ToList()
             .AsReadOnly();
         _zoomOutPages = otherPages
             .Where(IncludeInZoomOutPages)
             .OrderBy(p => p.GetType().Name)
+            .ThenBy(p => p.LinkText)
             .ToList()
             .AsReadOnly();
         _changePerspectivePages = otherPages
             .Where(IncludeInChangePerspectivePages)
             .OrderBy(p => p.GetType().Name)
+            .ThenBy(p => p.LinkText)
             .ToList()
             .AsReadOnly();
     }
