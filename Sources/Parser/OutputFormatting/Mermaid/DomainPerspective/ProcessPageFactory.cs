@@ -63,24 +63,26 @@ public class ProcessPageFactory : MermaidPageFactory
                     .RelatedToAny(allSteps)
                     .ByRelation<Actor.UsesProcessStep>());
                 var developmentTeams = domainModules
-                    .Select(module => modelGraph.Execute(query => query
+                    .SelectMany(module => modelGraph.Execute(query => query
                         .Elements<DevelopmentTeam>()
                         .RelatedToAny(subQuery => subQuery
                             .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                         .ByRelation<DevelopmentTeam.OwnsDomainModule>(filter => filter
-                            .MaxBy(r => r.Destination.Level))))
+                            .GroupBy(r => r.Destination.Level)
+                            .MaxBy(g => g.Key) ?? Enumerable.Empty<DevelopmentTeam.OwnsDomainModule>())))
                     .ToHashSet();
                 var organizationalUnits = domainModules
-                    .Select(module => modelGraph.Execute(query => query
+                    .SelectMany(module => modelGraph.Execute(query => query
                         .Elements<BusinessOrganizationalUnit>()
                         .RelatedToAny(subQuery => subQuery
                             .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                         .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>(filter => filter
-                            .MaxBy(r => r.Destination.Level))))
+                            .GroupBy(r => r.Destination.Level)
+                            .MaxBy(r => r.Key) ?? Enumerable.Empty<BusinessOrganizationalUnit.OwnsDomainModule>())))
                     .ToHashSet();
                 return new ProcessPage(outputDirectory, process, parent, children, processHasNextSubProcessRelations,
-                    directSteps, rootLevelDomainModules, deployableUnits!, actors, developmentTeams!,
-                    organizationalUnits!);
+                    directSteps, rootLevelDomainModules, deployableUnits!, actors, developmentTeams,
+                    organizationalUnits);
             });
     }
 }

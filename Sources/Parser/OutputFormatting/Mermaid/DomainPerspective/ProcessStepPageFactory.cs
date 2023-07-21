@@ -52,7 +52,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                         .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByRelation<DevelopmentTeam.OwnsDomainModule>(filter => filter
                         .GroupBy(r => r.Destination.Level)
-                        .MaxBy(g => g.Key)!));
+                        .MaxBy(g => g.Key) ?? Enumerable.Empty<DevelopmentTeam.OwnsDomainModule>()));
             var organizationalUnits = module is null
                 ? new HashSet<BusinessOrganizationalUnit>()
                 : modelGraph.Execute(query => query
@@ -61,7 +61,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                         .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>(filter => filter
                         .GroupBy(r => r.Destination.Level)
-                        .MaxBy(g => g.Key)!));
+                        .MaxBy(g => g.Key) ?? Enumerable.Empty<BusinessOrganizationalUnit.OwnsDomainModule>()));
             return new ProcessStepPage(outputDirectory, step, process, module, buildingBlocks, deployableUnit, actors,
                 developmentTeams, organizationalUnits);
         });
