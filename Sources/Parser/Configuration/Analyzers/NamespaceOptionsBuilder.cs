@@ -5,13 +5,17 @@ using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations;
+using P3Model.Annotations.Domain.StaticModel;
 using P3Model.Parser.CodeAnalysis;
 
 namespace P3Model.Parser.Configuration.Analyzers;
 
 public class NamespaceOptionsBuilder
 {
-    private readonly List<Func<INamespaceSymbol, bool>> _namespacePredicates = new();
+    private readonly List<Func<INamespaceSymbol, bool>> _namespacePredicates = new()
+    {
+        symbol => !AnnotatedWith<NotDomainModuleAttribute>(symbol)
+    };
     private readonly List<Func<INamespaceSymbol, string, string>> _namespaceFilters = new();
 
     [PublicAPI]
@@ -30,13 +34,17 @@ public class NamespaceOptionsBuilder
     [PublicAPI]
     public NamespaceOptionsBuilder ExcludeAnnotatedWith<TAttribute>(Func<AttributeData, bool>? predicate = null)
         where TAttribute : NamespaceApplicable =>
-        Matching(symbol => !symbol
-            .GetTypeMembers()
-            .Any(typeSymbol => typeSymbol.TryGetAttribute(typeof(TAttribute), out var attribute) &&
-                               attribute.TryGetNamedArgumentValue(nameof(NamespaceApplicable.ApplyOnNamespace),
-                                   out bool applyOnNamespace) &&
-                               applyOnNamespace &&
-                               (predicate is null || predicate(attribute))));
+        Matching(symbol => !AnnotatedWith<TAttribute>(symbol, predicate));
+
+    private static bool AnnotatedWith<TAttribute>(INamespaceOrTypeSymbol symbol,
+        Func<AttributeData, bool>? predicate = null)
+        where TAttribute : NamespaceApplicable => symbol
+        .GetTypeMembers()
+        .Any(typeSymbol => typeSymbol.TryGetAttribute(typeof(TAttribute), out var attribute) &&
+                           attribute.TryGetArgumentValue(nameof(NamespaceApplicable.ApplyOnNamespace),
+                               out bool applyOnNamespace) &&
+                           applyOnNamespace &&
+                           (predicate is null || predicate(attribute)));
 
     [PublicAPI]
     public NamespaceOptionsBuilder Matching(Func<INamespaceSymbol, bool> predicate)

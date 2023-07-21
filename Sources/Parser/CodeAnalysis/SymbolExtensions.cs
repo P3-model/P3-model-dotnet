@@ -27,6 +27,11 @@ public static class SymbolExtensions
             attributeData.AttributeClass?.Name == type.Name &&
             attributeData.AttributeClass?.ContainingNamespace.ToDisplayString() == type.Namespace);
 
+    public static bool TryGetArgumentValue<T>(this AttributeData attributeData, string argumentName,
+        [NotNullWhen(true)] out T? value) =>
+        TryGetConstructorArgumentValue(attributeData, argumentName, out value) || 
+        TryGetNamedArgumentValue(attributeData, argumentName, out value);
+
     public static T GetConstructorArgumentValue<T>(this AttributeData attributeData)
     {
         if (attributeData.ConstructorArguments.Length != 1)
