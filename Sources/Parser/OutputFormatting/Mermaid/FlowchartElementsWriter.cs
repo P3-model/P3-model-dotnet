@@ -24,6 +24,11 @@ public interface FlowchartElementsWriter
     void WriteBackwardArrow(string sourceId, string destinationId, string? text = null,
         LineStyle lineStyle = LineStyle.Normal);
 
+    void WriteBidirectionalArrow(string sourceId, string destinationId, LineStyle lineStyle);
+
+    void WriteBidirectionalArrow(string sourceId, string destinationId, string? text,
+        LineStyle lineStyle = LineStyle.Normal);
+
     void WriteInvisibleLink(string sourceId, string destinationId);
     string WriteSubgraph(string title, Action<FlowchartElementsWriter> writeElements);
     string WriteSubgraph(string title, FlowchartDirection direction, Action<FlowchartElementsWriter> writeElements);

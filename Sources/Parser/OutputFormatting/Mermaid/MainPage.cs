@@ -13,22 +13,25 @@ public class MainPage : MermaidPageBase
 {
     private readonly DocumentedSystem _system;
     private readonly IReadOnlySet<Actor> _actors;
-    private readonly IReadOnlySet<ExternalSoftwareSystem> _inputExternalSystems;
-    private readonly IReadOnlySet<ExternalSoftwareSystem> _outputExternalSystems;
+    private readonly IReadOnlySet<ExternalSoftwareSystem> _externalSystems;
+    private readonly IReadOnlySet<DevelopmentTeam> _developmentTeams;
+    private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
     private readonly DomainVisionStatement? _domainVisionStatement;
 
     public MainPage(string outputDirectory, 
         DocumentedSystem system, 
         IReadOnlySet<Actor> actors, 
-        IReadOnlySet<ExternalSoftwareSystem> inputExternalSystems, 
-        IReadOnlySet<ExternalSoftwareSystem> outputExternalSystems, 
+        IReadOnlySet<ExternalSoftwareSystem> externalSystems, 
+        IReadOnlySet<DevelopmentTeam> developmentTeams, 
+        IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits, 
         DomainVisionStatement? domainVisionStatement) 
         : base(outputDirectory)
     {
         _system = system;
         _actors = actors;
-        _inputExternalSystems = inputExternalSystems;
-        _outputExternalSystems = outputExternalSystems;
+        _externalSystems = externalSystems;
+        _developmentTeams = developmentTeams;
+        _organizationalUnits = organizationalUnits;
         _domainVisionStatement = domainVisionStatement;
     }
 
@@ -39,44 +42,40 @@ public class MainPage : MermaidPageBase
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
-        WriteProductLandscape(mermaidWriter);
+        WriteSystemLandscape(mermaidWriter);
         WriteDomainVisionStatement(mermaidWriter);
     }
 
-    private void WriteProductLandscape(MermaidWriter mermaidWriter)
+    private void WriteSystemLandscape(MermaidWriter mermaidWriter)
     {
-        mermaidWriter.WriteHeading("Product Landscape", 2);
+        mermaidWriter.WriteHeading("System Landscape", 2);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var productId = flowchartWriter.WriteRectangle(_system.Name);
-            foreach (var actor in _actors)
+            var systemId = flowchartWriter.WriteRectangle(_system.Name);
+            var actorsId = flowchartWriter.WriteSubgraph("Actors", subgraphWriter =>
             {
-                var actorId = flowchartWriter.WriteCircle(actor.Name);
-                flowchartWriter.WriteArrow(actorId, productId);
-            }
-
-            var externalSystemIds = new Dictionary<ExternalSoftwareSystem, string>();
-            foreach (var externalSystem in _outputExternalSystems)
+                foreach (var actor in _actors) 
+                    subgraphWriter.WriteStadiumShape(actor.Name);
+            });
+            flowchartWriter.WriteArrow(actorsId, systemId, "uses");
+            var externalSystemsId = flowchartWriter.WriteSubgraph("External Systems", subgraphWriter =>
             {
-                if (!externalSystemIds.TryGetValue(externalSystem, out var externalSystemId))
-                {
-                    externalSystemId = flowchartWriter.WriteRectangle(externalSystem.Name);
-                    externalSystemIds.Add(externalSystem, externalSystemId);
-                }
-
-                flowchartWriter.WriteArrow(productId, externalSystemId);
-            }
-
-            foreach (var externalSystem in _inputExternalSystems)
+                foreach (var externalSystem in _externalSystems) 
+                    subgraphWriter.WriteStadiumShape(externalSystem.Name);
+            });
+            flowchartWriter.WriteBidirectionalArrow(externalSystemsId, systemId, "are integrated with");
+            var teamsId = flowchartWriter.WriteSubgraph("Development Teams", subgraphWriter =>
             {
-                if (!externalSystemIds.TryGetValue(externalSystem, out var externalSystemId))
-                {
-                    externalSystemId = flowchartWriter.WriteRectangle(externalSystem.Name);
-                    externalSystemIds.Add(externalSystem, externalSystemId);
-                }
-
-                flowchartWriter.WriteArrow(externalSystemId, productId);
-            }
+                foreach (var team in _developmentTeams) 
+                    subgraphWriter.WriteStadiumShape(team.Name);
+            });
+            flowchartWriter.WriteBackwardArrow(teamsId, systemId, "develops & maintains");
+            var businessUnitsId = flowchartWriter.WriteSubgraph("Business Units", subgraphWriter =>
+            {
+                foreach (var unit in _organizationalUnits) 
+                    subgraphWriter.WriteStadiumShape(unit.Name);
+            });
+            flowchartWriter.WriteBackwardArrow(businessUnitsId, systemId, "owns");
         });
     }
 

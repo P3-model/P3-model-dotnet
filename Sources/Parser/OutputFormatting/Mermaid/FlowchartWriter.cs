@@ -92,10 +92,25 @@ internal class FlowchartWriter : FlowchartElementsWriter
         WriteLink(sourceId, destinationId, GetArrowSymbol(lineStyle), text);
         WriteInvisibleLink(sourceId, destinationId);
     }
-
+    
     private static string GetArrowSymbol(LineStyle lineStyle) => lineStyle switch
     {
         LineStyle.Normal => "-->",
+        LineStyle.Dotted => "-.->",
+        LineStyle.Thick => "<==>",
+        _ => throw new ArgumentOutOfRangeException(nameof(lineStyle), lineStyle, null)
+    };
+    
+    public void WriteBidirectionalArrow(string sourceId, string destinationId, LineStyle lineStyle) =>
+        WriteBidirectionalArrow(sourceId, destinationId, null, lineStyle);
+
+    public void WriteBidirectionalArrow(string sourceId, string destinationId, string? text,
+        LineStyle lineStyle = LineStyle.Normal) =>
+        WriteLink(sourceId, destinationId, GetBidirectionalArrowSymbol(lineStyle), text);
+    
+    private static string GetBidirectionalArrowSymbol(LineStyle lineStyle) => lineStyle switch
+    {
+        LineStyle.Normal => "<-->",
         LineStyle.Dotted => "-.->",
         LineStyle.Thick => "==>",
         _ => throw new ArgumentOutOfRangeException(nameof(lineStyle), lineStyle, null)
