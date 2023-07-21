@@ -11,14 +11,14 @@ namespace P3Model.Parser.OutputFormatting.Mermaid;
 
 public class MainPage : MermaidPageBase
 {
-    private readonly ModelSyntax.DocumentedSystem _system;
+    private readonly DocumentedSystem _system;
     private readonly IReadOnlySet<Actor> _actors;
     private readonly IReadOnlySet<ExternalSoftwareSystem> _inputExternalSystems;
     private readonly IReadOnlySet<ExternalSoftwareSystem> _outputExternalSystems;
     private readonly DomainVisionStatement? _domainVisionStatement;
 
     public MainPage(string outputDirectory, 
-        ModelSyntax.DocumentedSystem system, 
+        DocumentedSystem system, 
         IReadOnlySet<Actor> actors, 
         IReadOnlySet<ExternalSoftwareSystem> inputExternalSystems, 
         IReadOnlySet<ExternalSoftwareSystem> outputExternalSystems, 

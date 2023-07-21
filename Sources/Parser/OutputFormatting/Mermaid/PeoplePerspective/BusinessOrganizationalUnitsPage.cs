@@ -7,10 +7,10 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 
 public class BusinessOrganizationalUnitsPage : MermaidPageBase
 {
-    private readonly ModelSyntax.DocumentedSystem _system;
+    private readonly DocumentedSystem _system;
     private readonly IEnumerable<BusinessOrganizationalUnit> _organizationalUnits;
 
-    public BusinessOrganizationalUnitsPage(string outputDirectory, ModelSyntax.DocumentedSystem system,
+    public BusinessOrganizationalUnitsPage(string outputDirectory, DocumentedSystem system,
         IEnumerable<BusinessOrganizationalUnit> organizationalUnits) : base(outputDirectory)
     {
         _system = system;

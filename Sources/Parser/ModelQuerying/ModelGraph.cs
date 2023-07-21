@@ -19,7 +19,7 @@ public class ModelGraph
 
     public static ModelGraph From(Model model) => new(model);
 
-    public ModelSyntax.DocumentedSystem System => _model.System;
+    public DocumentedSystem System => _model.System;
 
     public IEnumerable<TElement> ElementsOfType<TElement>() where TElement : Element =>
         _model.Elements.OfType<TElement>();

@@ -7,11 +7,11 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.TechnologyPerspective;
 
 public class DeployableUnitsPage : MermaidPageBase
 {
-    private readonly ModelSyntax.DocumentedSystem _system;
+    private readonly DocumentedSystem _system;
     private readonly IEnumerable<DeployableUnit> _unitsWithoutTier;
     private readonly IEnumerable<Tier.ContainsDeployableUnit> _tierContainsDeploymentUnitRelations;
 
-    public DeployableUnitsPage(string outputDirectory, ModelSyntax.DocumentedSystem system, IEnumerable<DeployableUnit> units,
+    public DeployableUnitsPage(string outputDirectory, DocumentedSystem system, IEnumerable<DeployableUnit> units,
         IEnumerable<Tier.ContainsDeployableUnit> tierContainsDeploymentUnitRelations)
         : base(outputDirectory)
     {
