@@ -38,8 +38,6 @@ public class DomainModulePage : MermaidPageBase
         _organizationalUnits = organizationalUnits;
     }
 
-    public override string Header => $"[*Domain module*] {_module.Name}";
-
     protected override string Description =>
         @$"This view contains details information about {_module.Name} domain module, including:
 - other related modules
@@ -143,19 +141,14 @@ public class DomainModulePage : MermaidPageBase
     {
         DomainModulePage modulePage => _children.Contains(modulePage.MainElement) ,
         DomainBuildingBlockPage buildingBlockPage => _directBuildingBlocks.Contains(buildingBlockPage.MainElement),
-        _ => false
-    };
-
-    protected override bool IncludeInZoomOutPages(MermaidPage page) => _parent is null 
-        ? page is DomainModulesPage
-        : page is DomainModulePage modulePage && _parent.Equals(modulePage.MainElement);
-
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => page switch
-    {
         ProcessPage processPage => _processes.Contains(processPage.MainElement),
         DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
         BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage.MainElement),
         _ => false
     };
+
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => _parent is null 
+        ? page is DomainModulesPage
+        : page is DomainModulePage modulePage && _parent.Equals(modulePage.MainElement);
 }

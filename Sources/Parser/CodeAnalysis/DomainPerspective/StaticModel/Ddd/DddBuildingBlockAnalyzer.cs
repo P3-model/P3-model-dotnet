@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Humanizer;
 using Microsoft.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -17,7 +18,8 @@ public abstract class DddBuildingBlockAnalyzer : SymbolAnalyzer<INamedTypeSymbol
         // TODO: Support for duplicated symbols (partial classes)
         if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
             return;
-        var name = buildingBlockAttribute.GetConstructorArgumentValue<string?>() ?? symbol.Name;
+        var name = buildingBlockAttribute.GetConstructorArgumentValue<string?>() 
+                   ?? symbol.Name.Humanize(LetterCasing.Title);
         var descriptionFile = GetDescriptionFile(symbol);
         var buildingBlock = CreateBuildingBlock(name, descriptionFile);
         modelBuilder.Add(buildingBlock, symbol);

@@ -22,7 +22,6 @@ public class DevelopmentTeamPage : MermaidPageBase
         _deployableUnits = deployableUnits;
     }
 
-    public override string Header => $"[*Development team*] {_team.Name}";
     protected override string Description => @$"This view contains details information about {_team.Name} team, including:
 - related domain modules
 - related deployable units";
@@ -65,6 +64,4 @@ public class DevelopmentTeamPage : MermaidPageBase
     };
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is DevelopmentTeamsPage;
-
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

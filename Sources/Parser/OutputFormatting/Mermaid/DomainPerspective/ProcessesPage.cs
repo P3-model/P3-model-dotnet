@@ -16,6 +16,7 @@ public class ProcessesPage : MermaidPageBase
     protected override string Description => "This view contains all business processes with their sub-processes.";
     public override string RelativeFilePath => "Business_Processes.md";
     public override Element? MainElement => null;
+    public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -43,6 +44,4 @@ public class ProcessesPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => page is ProcessPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
-    
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

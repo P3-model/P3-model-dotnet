@@ -14,6 +14,7 @@ First level modules can be treated as separate sub-models or DDD Bounded Context
 All modules can be divided into sub-modules to reflect hierarchical structure of the domain.";
     public override string RelativeFilePath => "Modules.md";
     public override Element? MainElement => null;
+    public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 
     public DomainModulesPage(string outputDirectory, Hierarchy<DomainModule> modulesHierarchy) 
         : base(outputDirectory) =>
@@ -46,6 +47,4 @@ All modules can be divided into sub-modules to reflect hierarchical structure of
     protected override bool IncludeInZoomInPages(MermaidPage page) => page is DomainModulePage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
-    
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

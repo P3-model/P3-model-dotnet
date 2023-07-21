@@ -42,8 +42,6 @@ public class ProcessPage : MermaidPageBase
         _organizationalUnits = organizationalUnits;
     }
 
-    public override string Header => $"[*Business process*] {_process.Name}";
-
     protected override string Description =>
         @$"This view contains details information about {_process.Name} business process, including:
 - other related processes
@@ -165,21 +163,13 @@ public class ProcessPage : MermaidPageBase
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
-        ProcessPage processesPage when _children.Contains(processesPage.MainElement) => true,
-        ProcessStepPage stepPage when _steps.Contains(stepPage.MainElement) => true,
-        _ => false
-    };
-
-    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is ProcessesPage;
-
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => page switch
-    {
         ProcessPage processPage => _children.Contains(processPage.MainElement),
         ProcessStepPage stepPage => _steps.Contains(stepPage.MainElement),
         DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
-        BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage
-            .MainElement),
+        BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage.MainElement),
         _ => false
     };
+
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is ProcessesPage;
 }

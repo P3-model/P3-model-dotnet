@@ -26,6 +26,7 @@ public class DeployableUnitsPage : MermaidPageBase
     protected override string Description => $"This view contains all deployable units for {_system.Name} product.";
     public override string RelativeFilePath => "Deployable_Units.md";
     public override Element? MainElement => null;
+    public override Perspective? Perspective => ModelSyntax.Perspective.Technology;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -46,6 +47,4 @@ public class DeployableUnitsPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => page is DeployableUnitPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
-
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

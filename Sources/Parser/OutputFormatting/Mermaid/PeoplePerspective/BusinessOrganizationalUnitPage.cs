@@ -18,8 +18,7 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
         _organizationalUnit = organizationalUnit;
         _modules = modules;
     }
-
-    public override string Header => $"[*Business organizational unit*] {_organizationalUnit.Name}";
+    
     protected override string Description => @$"This view contains details information about {_organizationalUnit.Name}, including:
 - related domain modules";
 
@@ -47,6 +46,4 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => false;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is BusinessOrganizationalUnitsPage;
-
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

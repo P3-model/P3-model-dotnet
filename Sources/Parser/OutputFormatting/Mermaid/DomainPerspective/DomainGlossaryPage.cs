@@ -15,6 +15,7 @@ public class DomainGlossaryPage : MermaidPageBase
     protected override string Description => "This view contains definitions of key domain terms.";
     public override string RelativeFilePath => Path.Combine("Glossary", "Domain_Glossary.md");
     public override Element? MainElement => null;
+    public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 
     public DomainGlossaryPage(string outputDirectory, Hierarchy<DomainModule> modulesHierarchy,
         IReadOnlySet<DomainModule.ContainsBuildingBlock> containsBuildingBlockRelations)
@@ -66,6 +67,4 @@ public class DomainGlossaryPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => false;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
-
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

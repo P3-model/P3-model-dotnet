@@ -10,7 +10,8 @@ public interface MermaidPage
     string LinkText { get; }
     string RelativeFilePath { get; }
     Element? MainElement { get; }
-    
+    Perspective? Perspective { get; }
+
     void LinkWith(IReadOnlyCollection<MermaidPage> otherPages);
     Task WriteToFile();
 }

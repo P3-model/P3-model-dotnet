@@ -1,3 +1,4 @@
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Technology;
@@ -13,7 +14,8 @@ public class ExternalSoftwareSystemAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
     {
         if (!symbol.TryGetAttribute(typeof(ExternalSoftwareSystemAttribute), out var externalSystemAttribute))
             return;
-        var name = externalSystemAttribute.GetConstructorArgumentValue<string?>() ?? symbol.Name;
+        var name = externalSystemAttribute.GetConstructorArgumentValue<string?>() 
+                   ?? symbol.Name.Humanize(LetterCasing.Title);
         var externalSystem = new ExternalSoftwareSystem(name);
         modelBuilder.Add(externalSystem, symbol);
     }

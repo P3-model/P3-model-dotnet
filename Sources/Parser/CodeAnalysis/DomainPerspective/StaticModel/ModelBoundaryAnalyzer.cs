@@ -1,3 +1,4 @@
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Domain.StaticModel;
@@ -14,7 +15,7 @@ public class ModelBoundaryAnalyzer : SymbolAnalyzer<IAssemblySymbol>
         foreach (var modelBoundaryAttribute in symbol.GetAttributes(typeof(ModelBoundaryAttribute)))
         {
             var name = modelBoundaryAttribute.ConstructorArguments[0].Value?.ToString()
-                       ?? symbol.Name;
+                       ?? symbol.Name.Humanize(LetterCasing.Title);
             modelBuilder.Add(new ModelBoundary(name), symbol);
         }
     }

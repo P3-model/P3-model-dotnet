@@ -24,8 +24,6 @@ public class DeployableUnitPage : MermaidPageBase
         _teams = teams;
     }
 
-    public override string Header => $"[*Deployable unit*] {_unit.Name}";
-
     protected override string Description =>
         @$"This view contains details information about {_unit.Name} deployable unit, including:
 - related domain modules
@@ -72,6 +70,4 @@ public class DeployableUnitPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => false;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is DeployableUnitsPage;
-
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }

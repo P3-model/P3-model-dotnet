@@ -24,8 +24,6 @@ public class DomainBuildingBlockPage : MermaidPageBase
         _processSteps = processSteps;
     }
 
-    public override string Header => $"[*Domain building block*] {_buildingBlock.Name}";
-
     protected override string Description =>
         @$"This view contains details information about {_buildingBlock.Name} building block, including:
 - dependencies
@@ -36,7 +34,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
         ? Path.Combine("Modules", $"{_buildingBlock.Name}.md")
         : Path.Combine("Modules", Path.Combine(_module.Id.Parts.ToArray()), $"{_buildingBlock.Name}.md");
 
-    public override Element? MainElement => _buildingBlock;
+    public override Element MainElement => _buildingBlock;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -73,7 +71,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
         mermaidWriter.WriteHeading("Related process steps", 3);
         if (_processSteps.Count == 0)
         {
-            mermaidWriter.WriteLine($"{_buildingBlock.Name} is not used in any process step.");
+            mermaidWriter.WriteLine($"{_buildingBlock.Name} is not used directly in any process step.");
         }
         else
         {
@@ -91,18 +89,16 @@ public class DomainBuildingBlockPage : MermaidPageBase
 
     private static IEnumerable<string> WriteDependencies(IEnumerable<DomainBuildingBlock> dependencies,
         FlowchartElementsWriter flowchartWriter) => dependencies
-        .OrderBy(dependency  => dependency.Name)
+        .OrderBy(dependency => dependency.Name)
         .Select(dependency => flowchartWriter.WriteStadiumShape(dependency.Name, Style.DomainPerspective))
         .ToList();
 
-    protected override bool IncludeInZoomInPages(MermaidPage page) => false;
-
-    protected override bool IncludeInZoomOutPages(MermaidPage page) =>
-        page is DomainModulePage modulePage && modulePage.MainElement.Equals(_module);
-
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) =>
+    protected override bool IncludeInZoomInPages(MermaidPage page) =>
         page is DomainBuildingBlockPage buildingBlockPage &&
         _dependencies
             .Select(d => d.BuildingBlock)
-            .Contains((DomainBuildingBlock)buildingBlockPage.MainElement);
+            .Contains((DomainBuildingBlock)buildingBlockPage.MainElement!);
+
+    protected override bool IncludeInZoomOutPages(MermaidPage page) =>
+        page is DomainModulePage modulePage && modulePage.MainElement!.Equals(_module);
 }

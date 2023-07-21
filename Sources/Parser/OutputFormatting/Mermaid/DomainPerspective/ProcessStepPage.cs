@@ -36,8 +36,7 @@ public class ProcessStepPage : MermaidPageBase
         _developmentTeams = developmentTeams;
         _organizationalUnits = organizationalUnits;
     }
-
-    public override string Header => $"[*Process Step*] {_step.Name}";
+    
     protected override string Description => @$"This view contains details information about {_step.Name} business processes step, including:
 - related process
 - next process steps
@@ -124,16 +123,7 @@ public class ProcessStepPage : MermaidPageBase
         });
     }
 
-    protected override bool IncludeInZoomInPages(MermaidPage page)
-    {
-        return false;
-    }
-
-    protected override bool IncludeInZoomOutPages(MermaidPage page) =>
-        page is ProcessPage processPage &&
-        processPage.MainElement.Equals(_process);
-    
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => page switch
+    protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
         ProcessPage processPage => _process?.Equals(processPage.MainElement) ?? false,
         DomainModulePage modulePage => _domainModule?.Equals(modulePage.MainElement) ?? false,
@@ -142,4 +132,8 @@ public class ProcessStepPage : MermaidPageBase
         BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage.MainElement),
         _ => false
     };
+
+    protected override bool IncludeInZoomOutPages(MermaidPage page) =>
+        page is ProcessPage processPage &&
+        processPage.MainElement!.Equals(_process);
 }

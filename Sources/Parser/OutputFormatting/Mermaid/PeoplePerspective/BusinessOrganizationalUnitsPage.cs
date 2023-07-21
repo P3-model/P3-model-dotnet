@@ -24,6 +24,7 @@ public class BusinessOrganizationalUnitsPage : MermaidPageBase
 
     public override string RelativeFilePath => "Business_Organizational_Units.md";
     public override Element? MainElement => null;
+    public override Perspective? Perspective => ModelSyntax.Perspective.People;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -38,6 +39,4 @@ public class BusinessOrganizationalUnitsPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => page is BusinessOrganizationalUnitPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
-
-    protected override bool IncludeInChangePerspectivePages(MermaidPage page) => false;
 }
