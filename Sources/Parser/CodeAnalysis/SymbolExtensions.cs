@@ -15,9 +15,9 @@ public static class SymbolExtensions
     {
         attributeData = symbol
             .GetAttributes()
-            .SingleOrDefault(attributeData =>
-                attributeData.AttributeClass?.Name == type.Name &&
-                attributeData.AttributeClass?.ContainingNamespace.ToDisplayString() == type.Namespace);
+            .SingleOrDefault(a =>
+                a.AttributeClass?.Name == type.Name &&
+                a.AttributeClass?.ContainingNamespace.ToDisplayString() == type.Namespace);
         return attributeData != null;
     }
 

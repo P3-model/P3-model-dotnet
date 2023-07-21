@@ -21,7 +21,7 @@ public class DomainModuleAnalyzer : SymbolAnalyzer<INamespaceSymbol>
 
     public void Analyze(INamespaceSymbol symbol, ModelBuilder modelBuilder)
     {
-        if (!_isDomainModelNamespace(symbol) || symbol.IsGlobalNamespace)
+        if (symbol.IsGlobalNamespace || !_isDomainModelNamespace(symbol))
             return;
         var modulesHierarchy = _getModulesHierarchy(symbol);
         if (string.IsNullOrEmpty(modulesHierarchy))

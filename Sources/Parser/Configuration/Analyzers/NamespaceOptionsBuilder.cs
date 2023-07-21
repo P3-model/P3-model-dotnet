@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
-using P3Model.Annotations.Domain.DynamicModel;
+using P3Model.Annotations;
 using P3Model.Parser.CodeAnalysis;
 
 namespace P3Model.Parser.Configuration.Analyzers;
@@ -14,10 +14,10 @@ public class NamespaceOptionsBuilder
     private readonly List<Func<INamespaceSymbol, bool>> _namespacePredicates = new();
     private readonly List<Func<INamespaceSymbol, string, string>> _namespaceFilters = new();
 
-    // TODO: support for same namespace declared in multiple assemblies
-    // [PublicAPI]
-    // public NamespaceOptionsBuilder UseOnlyAssembliesAnnotatedWith(Type attributeType) => Matching(
-    //     symbol => symbol.ContainingAssembly.TryGetAttribute(attributeType, out _));
+    [PublicAPI]
+    public NamespaceOptionsBuilder OnlyFromAssembliesAnnotatedWith<TAttribute>() => Matching(
+        symbol => symbol.ConstituentNamespaces
+            .Any(ns => ns.ContainingAssembly.TryGetAttribute(typeof(TAttribute), out _)));
 
     [PublicAPI]
     public NamespaceOptionsBuilder Matching(string pattern) => Matching(
@@ -28,15 +28,14 @@ public class NamespaceOptionsBuilder
         symbol => !Regex.IsMatch(symbol.ToDisplayString(), pattern));
 
     [PublicAPI]
-    public NamespaceOptionsBuilder ExcludeAnnotatedWithProcessAttribute() => ExcludeAnnotatedWith<ProcessAttribute>(
-        attribute => attribute.TryGetNamedArgumentValue(nameof(ProcessAttribute.ApplyOnNamespace),
-            out bool applyOnNamespace) && applyOnNamespace);
-
-    [PublicAPI]
-    public NamespaceOptionsBuilder ExcludeAnnotatedWith<TAttribute>(Func<AttributeData, bool>? predicate = null) =>
-        Matching(symbol => !symbol.ContainingNamespace
+    public NamespaceOptionsBuilder ExcludeAnnotatedWith<TAttribute>(Func<AttributeData, bool>? predicate = null)
+        where TAttribute : NamespaceApplicable =>
+        Matching(symbol => !symbol
             .GetTypeMembers()
             .Any(typeSymbol => typeSymbol.TryGetAttribute(typeof(TAttribute), out var attribute) &&
+                               attribute.TryGetNamedArgumentValue(nameof(NamespaceApplicable.ApplyOnNamespace),
+                                   out bool applyOnNamespace) &&
+                               applyOnNamespace &&
                                (predicate is null || predicate(attribute))));
 
     [PublicAPI]
