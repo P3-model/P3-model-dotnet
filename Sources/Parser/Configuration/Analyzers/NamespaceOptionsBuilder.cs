@@ -36,15 +36,24 @@ public class NamespaceOptionsBuilder
         where TAttribute : NamespaceApplicable =>
         Matching(symbol => !AnnotatedWith<TAttribute>(symbol, predicate));
 
-    private static bool AnnotatedWith<TAttribute>(INamespaceOrTypeSymbol symbol,
+    private static bool AnnotatedWith<TAttribute>(INamespaceSymbol symbol,
         Func<AttributeData, bool>? predicate = null)
-        where TAttribute : NamespaceApplicable => symbol
-        .GetTypeMembers()
-        .Any(typeSymbol => typeSymbol.TryGetAttribute(typeof(TAttribute), out var attribute) &&
-                           attribute.TryGetArgumentValue(nameof(NamespaceApplicable.ApplyOnNamespace),
-                               out bool applyOnNamespace) &&
-                           applyOnNamespace &&
-                           (predicate is null || predicate(attribute)));
+        where TAttribute : NamespaceApplicable
+    {
+        while (symbol is { IsGlobalNamespace: false })
+        {
+            if (symbol
+                .GetTypeMembers()
+                .Any(typeSymbol => typeSymbol.TryGetAttribute(typeof(TAttribute), out var attribute) &&
+                                   attribute.TryGetArgumentValue(nameof(NamespaceApplicable.ApplyOnNamespace),
+                                       out bool applyOnNamespace) &&
+                                   applyOnNamespace &&
+                                   (predicate is null || predicate(attribute))))
+                return true;
+            symbol = symbol.ContainingNamespace;
+        }
+        return false;
+    }
 
     [PublicAPI]
     public NamespaceOptionsBuilder Matching(Func<INamespaceSymbol, bool> predicate)
