@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective;
 using P3Model.Parser.ModelSyntax.People;
@@ -54,25 +55,25 @@ public class MainPage : MermaidPageBase
             var systemId = flowchartWriter.WriteRectangle(_system.Name);
             var actorsId = flowchartWriter.WriteSubgraph("Actors", subgraphWriter =>
             {
-                foreach (var actor in _actors) 
+                foreach (var actor in _actors.OrderBy(a => a.Name)) 
                     subgraphWriter.WriteStadiumShape(actor.Name);
             });
             flowchartWriter.WriteArrow(actorsId, systemId, "uses");
             var externalSystemsId = flowchartWriter.WriteSubgraph("External Systems", subgraphWriter =>
             {
-                foreach (var externalSystem in _externalSystems) 
+                foreach (var externalSystem in _externalSystems.OrderBy(s => s.Name)) 
                     subgraphWriter.WriteStadiumShape(externalSystem.Name);
             });
             flowchartWriter.WriteBidirectionalArrow(externalSystemsId, systemId, "are integrated with");
             var teamsId = flowchartWriter.WriteSubgraph("Development Teams", subgraphWriter =>
             {
-                foreach (var team in _developmentTeams) 
+                foreach (var team in _developmentTeams.OrderBy(t => t.Name)) 
                     subgraphWriter.WriteStadiumShape(team.Name);
             });
             flowchartWriter.WriteBackwardArrow(teamsId, systemId, "develops & maintains");
             var businessUnitsId = flowchartWriter.WriteSubgraph("Business Units", subgraphWriter =>
             {
-                foreach (var unit in _organizationalUnits) 
+                foreach (var unit in _organizationalUnits.OrderBy(u => u.Name)) 
                     subgraphWriter.WriteStadiumShape(unit.Name);
             });
             flowchartWriter.WriteBackwardArrow(businessUnitsId, systemId, "owns");
