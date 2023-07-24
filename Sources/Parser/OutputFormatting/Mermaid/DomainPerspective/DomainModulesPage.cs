@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -12,7 +13,7 @@ public class DomainModulesPage : MermaidPageBase
     protected override string Description => @"This view shows domain model modularization.  
 First level modules can be treated as separate sub-models or DDD Bounded Contexts.  
 All modules can be divided into sub-modules to reflect hierarchical structure of the domain.";
-    public override string RelativeFilePath => "Modules.md";
+    public override string RelativeFilePath => Path.Combine("Domain", "Concepts", "Modules.md");
     public override Element? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 

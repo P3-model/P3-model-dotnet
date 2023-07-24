@@ -29,7 +29,7 @@ public class DeployableUnitPage : MermaidPageBase
 - related domain modules
 - related development teams";
 
-    public override string RelativeFilePath => Path.Combine("DeployableUnits", $"{_unit.Name}.md");
+    public override string RelativeFilePath => Path.Combine("Technology", "DeployableUnits", $"{_unit.Name}.md");
     public override Element? MainElement => _unit;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)

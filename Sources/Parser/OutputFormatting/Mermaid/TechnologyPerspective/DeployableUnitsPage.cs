@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Technology;
@@ -22,7 +23,7 @@ public class DeployableUnitsPage : MermaidPageBase
         _tierContainsDeploymentUnitRelations = tierContainsDeploymentUnitRelations;
     }
 
-    public override string Header => "Deployable units";
+    public override string Header => Path.Combine("Technology", "DeployableUnits", "Deployable units");
     protected override string Description => $"This view contains all deployable units for {_system.Name} product.";
     public override string RelativeFilePath => "Deployable_Units.md";
     public override Element? MainElement => null;

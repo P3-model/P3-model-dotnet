@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
@@ -14,7 +15,7 @@ public class ProcessesPage : MermaidPageBase
 
     public override string Header => "Business processes";
     protected override string Description => "This view contains all business processes with their sub-processes.";
-    public override string RelativeFilePath => "Business_Processes.md";
+    public override string RelativeFilePath => Path.Combine("Domain", "Processes", "Business_Processes.md");
     public override Element? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 

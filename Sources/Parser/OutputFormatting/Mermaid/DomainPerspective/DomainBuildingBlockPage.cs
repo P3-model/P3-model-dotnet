@@ -31,8 +31,8 @@ public class DomainBuildingBlockPage : MermaidPageBase
 - related processes";
 
     public override string RelativeFilePath => _module is null
-        ? Path.Combine("Modules", $"{_buildingBlock.Name}.md")
-        : Path.Combine("Modules", Path.Combine(_module.Id.Parts.ToArray()), $"{_buildingBlock.Name}.md");
+        ? Path.Combine("Domain", "Concepts", $"{_buildingBlock.Name}.md")
+        : Path.Combine("Domain", "Concepts", Path.Combine(_module.Id.Parts.ToArray()), $"{_buildingBlock.Name}.md");
 
     public override Element MainElement => _buildingBlock;
 

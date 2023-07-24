@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.People;
@@ -22,7 +23,7 @@ public class DevelopmentTeamsPage : MermaidPageBase
     protected override string Description =>
         $"This view contains all development teams that build and maintain {_system.Name} product.";
 
-    public override string RelativeFilePath => "Development_Teams.md";
+    public override string RelativeFilePath => Path.Combine("People", "DevelopmentTeams", "Development_Teams.md");
     public override Element? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.People;
 

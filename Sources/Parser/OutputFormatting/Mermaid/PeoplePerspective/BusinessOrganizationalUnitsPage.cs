@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.People;
@@ -22,7 +23,9 @@ public class BusinessOrganizationalUnitsPage : MermaidPageBase
     protected override string Description =>
         $"This view contains all business organizational units that owns {_system.Name} product";
 
-    public override string RelativeFilePath => "Business_Organizational_Units.md";
+    public override string RelativeFilePath => Path.Combine(
+        "People", "BusinessOrganizationalUnits", "Business_Organizational_Units.md");
+
     public override Element? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.People;
 

@@ -13,7 +13,7 @@ public class DomainGlossaryPage : MermaidPageBase
 
     public override string Header => "Domain Glossary";
     protected override string Description => "This view contains definitions of key domain terms.";
-    public override string RelativeFilePath => Path.Combine("Glossary", "Domain_Glossary.md");
+    public override string RelativeFilePath => Path.Combine("Domain", "Glossary", "Domain_Glossary.md");
     public override Element? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 
@@ -56,7 +56,7 @@ public class DomainGlossaryPage : MermaidPageBase
         if (buildingBlock.DescriptionFile is null)
             return;
         var sourceFileInfo = buildingBlock.DescriptionFile;
-        var relativeFilePath = Path.Combine("Glossary", sourceFileInfo.Name);
+        var relativeFilePath = Path.Combine("Domain", "Glossary", sourceFileInfo.Name);
         var fileInfo = sourceFileInfo.CopyTo(GetAbsolutePath(relativeFilePath));
         var pathRelativeToPageFile = GetPathRelativeToPageFile(fileInfo.FullName);
         mermaidWriter.WriteInline(" - ");

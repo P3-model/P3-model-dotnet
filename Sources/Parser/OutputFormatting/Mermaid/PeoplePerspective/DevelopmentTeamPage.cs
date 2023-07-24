@@ -26,7 +26,7 @@ public class DevelopmentTeamPage : MermaidPageBase
 - related domain modules
 - related deployable units";
 
-    public override string RelativeFilePath => Path.Combine("Teams", $"{_team.Name}.md");
+    public override string RelativeFilePath => Path.Combine("People", "DevelopmentTeams", $"{_team.Name}.md");
 
     public override Element? MainElement => _team;
 

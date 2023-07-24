@@ -51,9 +51,7 @@ public class ProcessPage : MermaidPageBase
 - engaged people: actors, development teams, business stakeholders";
 
     public override string RelativeFilePath => Path.Combine(
-        "Processes",
-        Path.Combine(_process.Id.Parts.ToArray()),
-        $"{_process.Name}.md");
+        "Domain", "Processes", Path.Combine(_process.Id.Parts.ToArray()), $"{_process.Name}.md");
 
     public override Element? MainElement => _process;
 

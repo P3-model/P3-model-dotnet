@@ -23,8 +23,7 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
 - related domain modules";
 
     public override string RelativeFilePath => Path.Combine(
-        "BusinessOrganizationalUnits", 
-        $"{_organizationalUnit.Name}.md");
+        "People", "BusinessOrganizationalUnits", $"{_organizationalUnit.Name}.md");
 
     public override Element? MainElement => _organizationalUnit;
 
