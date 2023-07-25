@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Humanizer;
 using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -8,7 +9,7 @@ public record DomainModule(HierarchyId Id) : HierarchyElement
     public Perspective Perspective => Perspective.Domain;
     
     [JsonIgnore]
-    public string Name => Id.Name;
+    public string Name => Id.LastPart.Humanize();
 
     [JsonIgnore]
     public int Level => Id.Level;
