@@ -62,11 +62,16 @@ public class ProcessPage : MermaidPageBase
         mermaidWriter.WriteHeading("Related processes and steps", 3);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
-            if (_parent != null)
+            string processId;
+            if (_parent is null)
+            {
+                processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
+            }
+            else
             {
                 var parentId = flowchartWriter.WriteStadiumShape(_parent.Name, Style.DomainPerspective);
-                flowchartWriter.WriteBackwardArrow(parentId, processId, "is part of");
+                processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
+                flowchartWriter.WriteBackwardArrow(processId, parentId, "is part of");
             }
 
             var subProcessIds = new Dictionary<Process, string>();
