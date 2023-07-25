@@ -18,13 +18,13 @@ public class BusinessOrganizationalUnitsPage : MermaidPageBase
         _organizationalUnits = organizationalUnits;
     }
 
-    public override string Header => "Business organizational units";
+    public override string Header => "Business Organizational Units";
 
     protected override string Description =>
         $"This view contains all business organizational units that owns {_system.Name} product";
 
     public override string RelativeFilePath => Path.Combine(
-        "People", "BusinessOrganizationalUnits", "Business_Organizational_Units.md");
+        "People", "BusinessOrganizationalUnits", "BusinessOrganizationalUnits.md");
 
     public override Element? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.People;

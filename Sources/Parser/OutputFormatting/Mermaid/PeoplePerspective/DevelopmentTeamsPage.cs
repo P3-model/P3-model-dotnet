@@ -18,12 +18,12 @@ public class DevelopmentTeamsPage : MermaidPageBase
         _teams = teams;
     }
 
-    public override string Header => "Development teams";
+    public override string Header => "Development Teams";
 
     protected override string Description =>
         $"This view contains all development teams that build and maintain {_system.Name} product.";
 
-    public override string RelativeFilePath => Path.Combine("People", "DevelopmentTeams", "Development_Teams.md");
+    public override string RelativeFilePath => Path.Combine("People", "DevelopmentTeams", "DevelopmentTeams.md");
     public override Element? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.People;
 
