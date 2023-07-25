@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Humanizer;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -23,8 +24,8 @@ public class ProcessStepPage : MermaidPageBase
     private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
 
     public ProcessStepPage(string outputDirectory, ProcessStep step, Process? process, DomainModule? domainModule,
-        IReadOnlySet<DomainBuildingBlock> buildingBlocks, DeployableUnit? deployableUnit, IReadOnlySet<Actor> actors, 
-        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits) 
+        IReadOnlySet<DomainBuildingBlock> buildingBlocks, DeployableUnit? deployableUnit, IReadOnlySet<Actor> actors,
+        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits)
         : base(outputDirectory)
     {
         _step = step;
@@ -36,17 +37,20 @@ public class ProcessStepPage : MermaidPageBase
         _developmentTeams = developmentTeams;
         _organizationalUnits = organizationalUnits;
     }
-    
-    protected override string Description => @$"This view contains details information about {_step.Name} business processes step, including:
+
+    protected override string Description =>
+        @$"This view contains details information about {_step.Name} business processes step, including:
 - related process
 - next process steps
 - related domain module
 - related deployable unit
 - engaged people: actors, development teams, business stakeholders";
-    
+
     public override string RelativeFilePath => _process is null
-        ? Path.Combine("Domain", "Processes", $"{_step.Name}.md")
-        : Path.Combine("Domain", "Processes", Path.Combine(_process.Id.Parts.ToArray()), $"{_step.Name}.md");
+        ? Path.Combine("Domain", "Processes", $"{_step.Name.Dehumanize()}.md")
+        : Path.Combine("Domain", "Processes", Path.Combine(_process.Id.Parts.ToArray()),
+            $"{_step.Name.Dehumanize()}.md");
+
     public override Element? MainElement => _step;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
@@ -76,7 +80,8 @@ public class ProcessStepPage : MermaidPageBase
                 var stepId = flowchartWriter.WriteRectangle(_step.Name, Style.DomainPerspective);
                 foreach (var buildingBlock in _buildingBlocks.OrderBy(b => b.Name))
                 {
-                    var buildingBlockId = flowchartWriter.WriteStadiumShape(buildingBlock.Name, Style.DomainPerspective);
+                    var buildingBlockId =
+                        flowchartWriter.WriteStadiumShape(buildingBlock.Name, Style.DomainPerspective);
                     flowchartWriter.WriteArrow(stepId, buildingBlockId, "uses");
                 }
             });
@@ -92,7 +97,7 @@ public class ProcessStepPage : MermaidPageBase
             var stepId = flowchartWriter.WriteRectangle(_step.Name, Style.DomainPerspective);
             if (_deployableUnit != null)
             {
-                var deployableUnitId = flowchartWriter.WriteStadiumShape(_deployableUnit.Name, 
+                var deployableUnitId = flowchartWriter.WriteStadiumShape(_deployableUnit.Name,
                     Style.TechnologyPerspective);
                 flowchartWriter.WriteArrow(stepId, deployableUnitId, "is deployed in");
             }
@@ -116,7 +121,7 @@ public class ProcessStepPage : MermaidPageBase
 
             foreach (var organizationalUnit in _organizationalUnits.OrderBy(u => u.Name))
             {
-                var organizationalUnitId = flowchartWriter.WriteStadiumShape(organizationalUnit.Name, 
+                var organizationalUnitId = flowchartWriter.WriteStadiumShape(organizationalUnit.Name,
                     Style.PeoplePerspective);
                 flowchartWriter.WriteArrow(organizationalUnitId, stepId, "owns");
             }
@@ -129,7 +134,8 @@ public class ProcessStepPage : MermaidPageBase
         DomainModulePage modulePage => _domainModule?.Equals(modulePage.MainElement) ?? false,
         DeployableUnitPage deployableUnitPage => _deployableUnit?.Equals(deployableUnitPage.MainElement) ?? false,
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
-        BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage.MainElement),
+        BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage
+            .MainElement),
         _ => false
     };
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Humanizer;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -51,7 +52,7 @@ public class ProcessPage : MermaidPageBase
 - engaged people: actors, development teams, business stakeholders";
 
     public override string RelativeFilePath => Path.Combine(
-        "Domain", "Processes", Path.Combine(_process.Id.Parts.ToArray()), $"{_process.Name}.md");
+        "Domain", "Processes", Path.Combine(_process.Id.Parts.ToArray()), $"{_process.Name.Dehumanize()}.md");
 
     public override Element? MainElement => _process;
 

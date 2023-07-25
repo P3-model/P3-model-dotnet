@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Humanizer;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -31,8 +32,9 @@ public class DomainBuildingBlockPage : MermaidPageBase
 - related processes";
 
     public override string RelativeFilePath => _module is null
-        ? Path.Combine("Domain", "Concepts", $"{_buildingBlock.Name}.md")
-        : Path.Combine("Domain", "Concepts", Path.Combine(_module.Id.Parts.ToArray()), $"{_buildingBlock.Name}.md");
+        ? Path.Combine("Domain", "Concepts", $"{_buildingBlock.Name.Dehumanize()}.md")
+        : Path.Combine("Domain", "Concepts", Path.Combine(_module.Id.Parts.ToArray()),
+            $"{_buildingBlock.Name.Dehumanize()}.md");
 
     public override Element MainElement => _buildingBlock;
 

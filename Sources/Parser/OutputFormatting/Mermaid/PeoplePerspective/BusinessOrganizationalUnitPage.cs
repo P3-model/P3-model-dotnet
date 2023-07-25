@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Humanizer;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
@@ -23,7 +24,7 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
 - related domain modules";
 
     public override string RelativeFilePath => Path.Combine(
-        "People", "BusinessOrganizationalUnits", $"{_organizationalUnit.Name}.md");
+        "People", "BusinessOrganizationalUnits", $"{_organizationalUnit.Name.Dehumanize()}.md");
 
     public override Element? MainElement => _organizationalUnit;
 

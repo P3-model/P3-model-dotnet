@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Humanizer;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -47,7 +48,7 @@ public class DomainModulePage : MermaidPageBase
 - engaged people: actors, development teams, business stakeholders";
 
     public override string RelativeFilePath => Path.Combine(
-        "Domain", "Concepts", Path.Combine(_module.Id.Parts.ToArray()), $"{_module.Name}.md");
+        "Domain", "Concepts", Path.Combine(_module.Id.Parts.ToArray()), $"{_module.Name.Dehumanize()}.md");
 
     public override Element? MainElement => _module;
 
