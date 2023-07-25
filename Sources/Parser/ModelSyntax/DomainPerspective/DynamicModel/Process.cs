@@ -7,7 +7,7 @@ public record Process(HierarchyId Id) : HierarchyElement
     public Perspective Perspective => Perspective.Domain;
 
     [JsonIgnore]
-    public string Name => Id.Name;
+    public string Name => Id.LastPart;
 
     public record ContainsSubProcess(Process Source, Process Destination) : HierarchyRelation<Process>;
 

@@ -39,7 +39,7 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
         {
             var processes = elements
                 .OfType<Process>()
-                .Where(p => p.Id.FullName.Equals(processFullName, StringComparison.InvariantCulture))
+                .Where(p => p.Id.Full.Equals(processFullName, StringComparison.InvariantCulture))
                 .ToList();
             // TODO: warning logging if process not found
             // TODO: warning logging if more than one element (non unique names o processes)
@@ -52,7 +52,7 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
             {
                 var nextSteps = elements
                     .OfType<ProcessStep>()
-                    .Where(s => s.Id.FullName.Equals(nextStepFullName, StringComparison.InvariantCulture))
+                    .Where(s => s.Id.Full.Equals(nextStepFullName, StringComparison.InvariantCulture))
                     .ToList();
                 // TODO: warning logging if step not found
                 // TODO: warning logging if more than one element (non unique names o process steps)

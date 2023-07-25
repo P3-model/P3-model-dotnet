@@ -37,17 +37,17 @@ public readonly struct HierarchyId : IEquatable<HierarchyId>
     }
 
     [PublicAPI]
-    public string FullName => _value;
+    public string Full => _value;
 
     [PublicAPI]
-    public string Name => _value[(_value.LastIndexOf(_separator) + 1)..];
+    public string LastPart => _value[(_value.LastIndexOf(_separator) + 1)..];
 
     [PublicAPI]
-    public string ParentFullName => _value.Contains(_separator)
+    public string Parent => _value.Contains(_separator)
         ? _value[.._value.LastIndexOf(_separator)]
         : string.Empty;
 
-    public string RootFullName => _value.Contains(_separator)
+    public string Root => _value.Contains(_separator)
         ? _value[.._value.IndexOf(_separator)]
         : _value;
 

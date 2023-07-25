@@ -31,8 +31,8 @@ public class ProcessAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
         var parent = process.Id.Level > 0
             ? elements
                 .OfType<Process>()
-                .SingleOrDefault(p => p.Id.FullName
-                    .Equals(process.Id.ParentFullName, StringComparison.InvariantCulture))
+                .SingleOrDefault(p => p.Id.Full
+                    .Equals(process.Id.Parent, StringComparison.InvariantCulture))
             : null;
         // TODO: warning logging if parent not found
         if (parent != null)
@@ -44,7 +44,7 @@ public class ProcessAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
         {
             var nextSubProcess = elements
                 .OfType<Process>()
-                .SingleOrDefault(p => p.Id.FullName
+                .SingleOrDefault(p => p.Id.Full
                     .Equals(nextSubProcessName, StringComparison.InvariantCulture));
             // TODO: warning logging if nextProcess not found
             if (nextSubProcess != null)

@@ -16,5 +16,5 @@ public class HierarchyIdJsonConverter : JsonConverter<HierarchyId>
     }
 
     public override void Write(Utf8JsonWriter writer, HierarchyId value, JsonSerializerOptions options) =>
-        writer.WriteStringValue(value.FullName);
+        writer.WriteStringValue(value.Full);
 }

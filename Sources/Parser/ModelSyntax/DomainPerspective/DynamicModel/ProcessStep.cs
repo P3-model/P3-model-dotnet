@@ -8,7 +8,7 @@ public record ProcessStep(HierarchyId Id) : Element
     public Perspective Perspective => Perspective.Domain;
     
     [JsonIgnore]
-    public string Name => Id.Name;
+    public string Name => Id.LastPart;
     
     public record HasNextStep(ProcessStep Source, ProcessStep Destination) : Relation<ProcessStep, ProcessStep>;
     
