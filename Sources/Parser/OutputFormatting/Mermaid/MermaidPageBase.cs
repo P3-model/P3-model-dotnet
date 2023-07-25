@@ -117,8 +117,8 @@ public abstract class MermaidPageBase : MermaidPage
             mermaidWriter.WriteHeading(perspectiveHeading, 4);
             foreach (var elementTypeLinks in perspectiveLinks.Links)
             {
-                mermaidWriter.WriteHeading(elementTypeLinks.ElementType?.Name.Humanize().Pluralize()
-                                           ?? "Cross elements", 5);
+                if (elementTypeLinks.ElementType != null)
+                    mermaidWriter.WriteHeading(elementTypeLinks.ElementType.Name.Humanize().Pluralize(), 5);
                 foreach (var elementLinks in elementTypeLinks.Links)
                 {
                     if (elementLinks.Pages.Count == 1)
