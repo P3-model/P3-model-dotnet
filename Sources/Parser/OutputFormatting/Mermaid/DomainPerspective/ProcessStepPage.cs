@@ -130,7 +130,6 @@ public class ProcessStepPage : MermaidPageBase
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
-        ProcessPage processPage => _process?.Equals(processPage.MainElement) ?? false,
         DomainModulePage modulePage => _domainModule?.Equals(modulePage.MainElement) ?? false,
         DeployableUnitPage deployableUnitPage => _deployableUnit?.Equals(deployableUnitPage.MainElement) ?? false,
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
@@ -140,6 +139,5 @@ public class ProcessStepPage : MermaidPageBase
     };
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) =>
-        page is ProcessPage processPage &&
-        processPage.MainElement!.Equals(_process);
+        page is ProcessPage processPage && processPage.MainElement!.Equals(_process);
 }
