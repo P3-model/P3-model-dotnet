@@ -11,10 +11,10 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 public class BusinessOrganizationalUnitPage : MermaidPageBase
 {
     private readonly BusinessOrganizationalUnit _organizationalUnit;
-    private readonly IEnumerable<DomainModule> _modules;
+    private readonly IReadOnlySet<DomainModule> _modules;
 
     public BusinessOrganizationalUnitPage(string outputDirectory, BusinessOrganizationalUnit organizationalUnit, 
-        IEnumerable<DomainModule> modules) : base(outputDirectory)
+        IReadOnlySet<DomainModule> modules) : base(outputDirectory)
     {
         _organizationalUnit = organizationalUnit;
         _modules = modules;
@@ -32,15 +32,22 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
     {
         mermaidWriter.WriteHeading("Domain Perspective", 2);
         mermaidWriter.WriteHeading("Related domain modules", 3);
-        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        if (_modules.Count == 0)
         {
-            var unitId = flowchartWriter.WriteRectangle(_organizationalUnit.Name, Style.PeoplePerspective);
-            foreach (var module in _modules.OrderBy(m => m.Name))
+            mermaidWriter.WriteLine("No related modules were found.");
+        }
+        else
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
-                flowchartWriter.WriteArrow(unitId, moduleId, "owns");
-            }
-        });
+                var unitId = flowchartWriter.WriteRectangle(_organizationalUnit.Name, Style.PeoplePerspective);
+                foreach (var module in _modules.OrderBy(m => m.Name))
+                {
+                    var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteArrow(unitId, moduleId, "owns");
+                }
+            });
+        }
     }
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => false;

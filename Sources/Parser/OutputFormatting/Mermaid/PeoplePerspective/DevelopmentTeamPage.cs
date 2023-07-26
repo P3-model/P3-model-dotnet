@@ -12,11 +12,11 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 public class DevelopmentTeamPage : MermaidPageBase
 {
     private readonly DevelopmentTeam _team;
-    private readonly IEnumerable<DomainModule> _modules;
-    private readonly IEnumerable<DeployableUnit> _deployableUnits;
+    private readonly IReadOnlySet<DomainModule> _modules;
+    private readonly IReadOnlySet<DeployableUnit> _deployableUnits;
 
-    public DevelopmentTeamPage(string outputDirectory, DevelopmentTeam team, IEnumerable<DomainModule> modules, 
-        IEnumerable<DeployableUnit> deployableUnits) : base(outputDirectory)
+    public DevelopmentTeamPage(string outputDirectory, DevelopmentTeam team, IReadOnlySet<DomainModule> modules, 
+        IReadOnlySet<DeployableUnit> deployableUnits) : base(outputDirectory)
     {
         _team = team;
         _modules = modules;
@@ -36,28 +36,42 @@ public class DevelopmentTeamPage : MermaidPageBase
     {
         mermaidWriter.WriteHeading("Domain Perspective", 2);
         mermaidWriter.WriteHeading("Related domain modules", 3);
-        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        if (_modules.Count == 0)
         {
-            var teamId = flowchartWriter.WriteRectangle(_team.Name, Style.PeoplePerspective);
-            foreach (var module in _modules.OrderBy(m => m.Name))
+            mermaidWriter.WriteLine("No related modules were found.");
+        }
+        else
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
-                flowchartWriter.WriteArrow(teamId, moduleId, "develops & maintains");
-            }
+                var teamId = flowchartWriter.WriteRectangle(_team.Name, Style.PeoplePerspective);
+                foreach (var module in _modules.OrderBy(m => m.Name))
+                {
+                    var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteArrow(teamId, moduleId, "develops & maintains");
+                }
             
-        });
+            });
+        }
 
         mermaidWriter.WriteHeading("Technology Perspective", 2);
         mermaidWriter.WriteHeading("Related deployable units", 3);
-        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        if (_deployableUnits.Count == 0)
         {
-            var teamId = flowchartWriter.WriteRectangle(_team.Name, Style.PeoplePerspective);
-            foreach (var deployableUnit in _deployableUnits.OrderBy(u => u.Name))
+            mermaidWriter.WriteLine("No related deployable units were found.");
+        }
+        else
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name, Style.TechnologyPerspective);
-                flowchartWriter.WriteArrow(teamId, deployableUnitId, "maintains");
-            }
-        });
+                var teamId = flowchartWriter.WriteRectangle(_team.Name, Style.PeoplePerspective);
+                foreach (var deployableUnit in _deployableUnits.OrderBy(u => u.Name))
+                {
+                    var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name, Style.TechnologyPerspective);
+                    flowchartWriter.WriteArrow(teamId, deployableUnitId, "maintains");
+                }
+            });
+        }
     }
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch

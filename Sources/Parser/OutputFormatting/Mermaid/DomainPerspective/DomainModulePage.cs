@@ -56,84 +56,116 @@ public class DomainModulePage : MermaidPageBase
     {
         mermaidWriter.WriteHeading("Domain Perspective", 2);
         mermaidWriter.WriteHeading("Related modules", 3);
-        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        if (_parent is null && _children.Count == 0)
         {
-            string moduleId;
-            if (_parent is null)
+            
+            mermaidWriter.WriteLine("No related modules were found.");
+        }
+        else
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
-            }
-            else
-            {
-                var parentId = flowchartWriter.WriteStadiumShape(_parent.Name, Style.DomainPerspective);
-                moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
-                flowchartWriter.WriteBackwardArrow(moduleId, parentId, "is part of");
-            }
+                string moduleId;
+                if (_parent is null)
+                {
+                    moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
+                }
+                else
+                {
+                    var parentId = flowchartWriter.WriteStadiumShape(_parent.Name, Style.DomainPerspective);
+                    moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteBackwardArrow(moduleId, parentId, "is part of");
+                }
 
-            foreach (var child in _children.OrderBy(c => c.Name))
-            {
-                var childId = flowchartWriter.WriteStadiumShape(child.Name, Style.DomainPerspective);
-                flowchartWriter.WriteArrow(moduleId, childId, "contains");
-            }
-        });
+                foreach (var child in _children.OrderBy(c => c.Name))
+                {
+                    var childId = flowchartWriter.WriteStadiumShape(child.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteArrow(moduleId, childId, "contains");
+                }
+            });
+        }
+        
         mermaidWriter.WriteHeading("Related processes", 3);
-        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        if (_processes.Count == 0)
         {
-            var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
-            foreach (var process in _processes.OrderBy(p => p.Name))
+            mermaidWriter.WriteLine("No related processes were found.");
+        }
+        else
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var processId = flowchartWriter.WriteStadiumShape(process.Name, Style.DomainPerspective);
-                flowchartWriter.WriteArrow(moduleId, processId, "contains");
-            }
-        });
+                var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
+                foreach (var process in _processes.OrderBy(p => p.Name))
+                {
+                    var processId = flowchartWriter.WriteStadiumShape(process.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteArrow(moduleId, processId, "takes part in");
+                }
+            });
+        }
+        
         mermaidWriter.WriteHeading("Direct building blocks", 3);
-        if (_directBuildingBlocks.Count > 0)
+        if (_directBuildingBlocks.Count == 0)
+        {
+            mermaidWriter.WriteLine("No direct building blocks were found.");
+        }
+        else
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
                 var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
                 foreach (var buildingBlock in _directBuildingBlocks.OrderBy(b => b.Name))
                 {
-                    var buildingBlockId = flowchartWriter.WriteStadiumShape(buildingBlock.Name, Style.DomainPerspective);
+                    var buildingBlockId =
+                        flowchartWriter.WriteStadiumShape(buildingBlock.Name, Style.DomainPerspective);
                     flowchartWriter.WriteArrow(moduleId, buildingBlockId, "contains");
                 }
             });
         }
-        else
-        {
-            mermaidWriter.WriteLine("Module doesn't contain direct building blocks.");
-        }
 
         mermaidWriter.WriteHeading("Technology Perspective", 2);
         mermaidWriter.WriteHeading("Related deployable units", 3);
-        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        if (_deployableUnits.Count == 0)
         {
-            var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
-            foreach (var deployableUnit in _deployableUnits.OrderBy(u => u.Name))
+            mermaidWriter.WriteLine("No related deployable units were found.");
+        }
+        else
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name,
-                    Style.TechnologyPerspective);
-                flowchartWriter.WriteArrow(moduleId, deployableUnitId, "is deployed in");
-            }
-        });
+                var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
+                foreach (var deployableUnit in _deployableUnits.OrderBy(u => u.Name))
+                {
+                    var deployableUnitId = flowchartWriter.WriteStadiumShape(deployableUnit.Name,
+                        Style.TechnologyPerspective);
+                    flowchartWriter.WriteArrow(moduleId, deployableUnitId, "is deployed in");
+                }
+            });
+        }
 
         mermaidWriter.WriteHeading("People Perspective", 2);
         mermaidWriter.WriteHeading("Engaged people", 3);
-        mermaidWriter.WriteFlowchart(flowchartWriter =>
+        if (_developmentTeams.Count == 0 && _organizationalUnits.Count == 0)
         {
-            var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
-            foreach (var team in _developmentTeams.OrderBy(t => t.Name))
+            mermaidWriter.WriteLine("No engaged people were found.");
+        }
+        else
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var teamId = flowchartWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
-                flowchartWriter.WriteArrow(teamId, moduleId, "develops & maintains");
-            }
-            foreach (var organizationalUnit in _organizationalUnits.OrderBy(u => u.Name))
-            {
-                var organizationalUnitId = flowchartWriter.WriteStadiumShape(organizationalUnit.Name,
-                    Style.PeoplePerspective);
-                flowchartWriter.WriteArrow(organizationalUnitId, moduleId, "owns");
-            }
-        });
+                var moduleId = flowchartWriter.WriteRectangle(_module.Name, Style.DomainPerspective);
+                foreach (var team in _developmentTeams.OrderBy(t => t.Name))
+                {
+                    var teamId = flowchartWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
+                    flowchartWriter.WriteArrow(teamId, moduleId, "develops & maintains");
+                }
+                foreach (var organizationalUnit in _organizationalUnits.OrderBy(u => u.Name))
+                {
+                    var organizationalUnitId = flowchartWriter.WriteStadiumShape(organizationalUnit.Name,
+                        Style.PeoplePerspective);
+                    flowchartWriter.WriteArrow(organizationalUnitId, moduleId, "owns");
+                }
+            });
+        }
     }
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch

@@ -45,7 +45,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
 
         if (_dependencies.Count == 0)
         {
-            mermaidWriter.WriteLine($"{_buildingBlock.Name} has no dependencies.");
+            mermaidWriter.WriteLine("No dependencies were found.");
         }
         else
         {
@@ -73,7 +73,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
         mermaidWriter.WriteHeading("Related process steps", 3);
         if (_processSteps.Count == 0)
         {
-            mermaidWriter.WriteLine($"{_buildingBlock.Name} is not used directly in any process step.");
+            mermaidWriter.WriteLine("No related processes were found.");
         }
         else
         {
