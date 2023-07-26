@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Domain.DynamicModel;
@@ -23,7 +24,7 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
         if (!symbol.TryGetAttribute(typeof(ProcessStepAttribute), out var stepAttribute))
             return;
         var name = stepAttribute.GetConstructorArgumentValue<string?>(nameof(ProcessStepAttribute.Name))
-                   ?? symbol.Name;
+                   ?? symbol.Name.Humanize();
         var stepId = TryGetProcessName(stepAttribute, out var processFullName)
             ? HierarchyId.FromParts(processFullName, name)
             : HierarchyId.FromValue(name);
