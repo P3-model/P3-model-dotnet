@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Humanizer;
 
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 
@@ -7,7 +8,7 @@ public record Process(HierarchyId Id) : HierarchyElement
     public Perspective Perspective => Perspective.Domain;
 
     [JsonIgnore]
-    public string Name => Id.LastPart;
+    public string Name => Id.LastPart.Humanize(LetterCasing.Title);
 
     public record ContainsSubProcess(Process Source, Process Destination) : HierarchyRelation<Process>;
 

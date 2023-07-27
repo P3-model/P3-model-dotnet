@@ -23,8 +23,7 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
     {
         if (!symbol.TryGetAttribute(typeof(ProcessStepAttribute), out var stepAttribute))
             return;
-        var name = stepAttribute.GetConstructorArgumentValue<string?>(nameof(ProcessStepAttribute.Name))
-                   ?? symbol.Name.Humanize(LetterCasing.Title);
+        var name = stepAttribute.GetConstructorArgumentValue<string?>(nameof(ProcessStepAttribute.Name)) ?? symbol.Name;
         var stepId = TryGetProcessName(stepAttribute, out var processFullName)
             ? HierarchyId.FromParts(processFullName, name)
             : HierarchyId.FromValue(name);
