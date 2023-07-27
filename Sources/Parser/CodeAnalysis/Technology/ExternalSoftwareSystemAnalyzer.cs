@@ -15,7 +15,7 @@ public class ExternalSoftwareSystemAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
         if (!symbol.TryGetAttribute(typeof(ExternalSoftwareSystemAttribute), out var externalSystemAttribute))
             return;
         var name = externalSystemAttribute.GetConstructorArgumentValue<string?>() 
-                   ?? symbol.Name.Humanize(LetterCasing.Title);
+                   ?? symbol.GetFullName().Humanize(LetterCasing.Title);
         var externalSystem = new ExternalSoftwareSystem(name);
         modelBuilder.Add(externalSystem, symbol);
     }

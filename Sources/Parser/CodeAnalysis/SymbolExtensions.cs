@@ -29,7 +29,7 @@ public static class SymbolExtensions
 
     public static bool TryGetArgumentValue<T>(this AttributeData attributeData, string argumentName,
         [NotNullWhen(true)] out T? value) =>
-        TryGetConstructorArgumentValue(attributeData, argumentName, out value) || 
+        TryGetConstructorArgumentValue(attributeData, argumentName, out value) ||
         TryGetNamedArgumentValue(attributeData, argumentName, out value);
 
     public static T GetConstructorArgumentValue<T>(this AttributeData attributeData)
@@ -107,7 +107,7 @@ public static class SymbolExtensions
         value = (T)pair.Value.Value!;
         return true;
     }
-    
+
     public static bool TryGetNamedArgumentValues<T>(this AttributeData attributeData, string argumentName,
         [NotNullWhen(true)] out IEnumerable<T>? values)
     {
@@ -127,4 +127,9 @@ public static class SymbolExtensions
             .Cast<T>();
         return true;
     }
+
+    public static string GetFullName(this INamedTypeSymbol symbol) =>
+        symbol.ContainingSymbol is INamedTypeSymbol containingSymbol
+            ? $"{containingSymbol.GetFullName()} {symbol.Name}"
+            : symbol.Name;
 }

@@ -9,7 +9,7 @@ public record DomainModule(HierarchyId Id) : HierarchyElement
     public Perspective Perspective => Perspective.Domain;
     
     [JsonIgnore]
-    public string Name => Id.LastPart.Humanize();
+    public string Name => Id.LastPart.Humanize(LetterCasing.Title);
 
     [JsonIgnore]
     public int Level => Id.Level;

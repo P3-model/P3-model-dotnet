@@ -19,7 +19,7 @@ public abstract class DddBuildingBlockAnalyzer : SymbolAnalyzer<INamedTypeSymbol
         if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
             return;
         var name = buildingBlockAttribute.GetConstructorArgumentValue<string?>() 
-                   ?? symbol.Name.Humanize(LetterCasing.Title);
+                   ?? symbol.GetFullName().Humanize(LetterCasing.Title);
         var descriptionFile = GetDescriptionFile(symbol);
         var buildingBlock = CreateBuildingBlock(name, descriptionFile);
         modelBuilder.Add(buildingBlock, symbol);

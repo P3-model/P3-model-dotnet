@@ -118,7 +118,10 @@ public abstract class MermaidPageBase : MermaidPage
             foreach (var elementTypeLinks in perspectiveLinks.Links)
             {
                 if (elementTypeLinks.ElementType != null)
-                    mermaidWriter.WriteHeading(elementTypeLinks.ElementType.Name.Humanize().Pluralize(), 5);
+                {
+                    var elementTypeName = elementTypeLinks.ElementType.Name.Humanize(LetterCasing.Title).Pluralize();
+                    mermaidWriter.WriteHeading(elementTypeName, 5);
+                }
                 foreach (var elementLinks in elementTypeLinks.Links)
                 {
                     if (elementLinks.Pages.Count == 1)
