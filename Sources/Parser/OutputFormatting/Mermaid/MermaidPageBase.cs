@@ -29,7 +29,7 @@ public abstract class MermaidPageBase : MermaidPage
 
     public void LinkWith(IReadOnlyCollection<MermaidPage> otherPages)
     {
-        _zoomInLinks = CreateLinks(otherPages, IncludeInZoomInPages);;
+        _zoomInLinks = CreateLinks(otherPages, IncludeInZoomInPages);
         _zoomOutLinks = CreateLinks(otherPages, IncludeInZoomOutPages);
     }
 
@@ -83,9 +83,13 @@ public abstract class MermaidPageBase : MermaidPage
     private void WriteHeader(MermaidWriter mermaidWriter)
     {
         mermaidWriter.WriteHeading(Header, 1);
-        if (Description == null)
-            return;
-        mermaidWriter.WriteLine(Description);
+        if (MainElement != null)
+        {
+            mermaidWriter.WriteLine($"***{MainElement.GetType().Name.Humanize(LetterCasing.Title)}***");
+            mermaidWriter.WriteLineBreak();
+        }
+        if (Description != null)
+            mermaidWriter.WriteLine(Description);
         mermaidWriter.WriteHorizontalRule();
         mermaidWriter.WriteLineBreak();
     }
