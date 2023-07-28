@@ -95,11 +95,14 @@ public class DomainBuildingBlockPage : MermaidPageBase
         .Select(dependency => flowchartWriter.WriteStadiumShape(dependency.Name, Style.DomainPerspective))
         .ToList();
 
-    protected override bool IncludeInZoomInPages(MermaidPage page) =>
-        page is DomainBuildingBlockPage buildingBlockPage &&
-        _dependencies
+    protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
+    {
+        DomainBuildingBlockPage buildingBlockPage => _dependencies
             .Select(d => d.BuildingBlock)
-            .Contains((DomainBuildingBlock)buildingBlockPage.MainElement!);
+            .Contains(buildingBlockPage.MainElement),
+        ProcessStepPage processStepPage => _processSteps.Contains(processStepPage.MainElement),
+        _ => false
+    };
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) =>
         page is DomainModulePage modulePage && modulePage.MainElement!.Equals(_module);
