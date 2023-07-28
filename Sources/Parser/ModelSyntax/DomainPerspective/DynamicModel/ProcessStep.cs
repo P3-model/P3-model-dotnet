@@ -13,9 +13,6 @@ public record ProcessStep(HierarchyId Id) : Element
     
     public record HasNextStep(ProcessStep Source, ProcessStep Destination) : Relation<ProcessStep, ProcessStep>;
     
-    public record BelongsToDomainModule(ProcessStep Source, DomainModule Destination) 
-        : Relation<ProcessStep, DomainModule>;
-
     public record DependsOnBuildingBlock(ProcessStep Source, DomainBuildingBlock Destination)
         : Relation<ProcessStep, DomainBuildingBlock>;
 }

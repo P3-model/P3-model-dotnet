@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -24,21 +23,17 @@ public class DeployableUnitAnalyzer : SymbolAnalyzer<IAssemblySymbol>
     }
 
     private static IEnumerable<Relation> GetRelations(IAssemblySymbol symbol, DeployableUnit deployableUnit,
-        ElementsProvider elements)
-    {
-        var namespaceSymbols = symbol
-            .Modules
-            // TODO: better way to select assemblies from analyzed solution
-            .SelectMany(m => m.ReferencedAssemblySymbols)
-            .Where(a => a.Locations.Length > 0 && a.Locations[0].IsInSource)
-            .Select(a => a.GlobalNamespace)
-            .SelectRecursively(n => n.GetNamespaceMembers())
-            // TODO: Check why INamespaceSymbol instances in elements and in query are different.
-            .SelectMany(n => elements
-                .Where(s => s is INamespaceSymbol ns && ns.Name.Equals(n.Name, StringComparison.InvariantCulture)))
-            .OfType<DomainModule>()
-            .Distinct()
-            .Select(domainModule => new DomainModule.IsDeployedInDeployableUnit(domainModule, deployableUnit));
-        return namespaceSymbols;
-    }
+        ElementsProvider elements) => symbol
+        .GetReferencedAssembliesFromSameRepository()
+        .SelectRecursively(assemblySymbol => assemblySymbol.GetReferencedAssembliesFromSameRepository())
+        .Distinct(SymbolEqualityComparer.Default)
+        .SelectMany(assemblySymbol => elements
+            .OfType<ElementInfo<ModelBoundary>>()
+            .Where(elementInfo => AreRelated(elementInfo, assemblySymbol)))
+        .Distinct()
+        .Select(elementInfo => new ModelBoundary.IsDeployedInDeployableUnit(elementInfo.Element, deployableUnit));
+
+    private static bool AreRelated(ElementInfo elementInfo, ISymbol symbol) =>
+        elementInfo.Symbols.Contains(symbol) ||
+        symbol.SourcesAreIn(elementInfo.Directories);
 }

@@ -19,7 +19,7 @@ public class ProcessPage : MermaidPageBase
     private readonly IReadOnlySet<Process> _children;
     private readonly IReadOnlySet<Process.HasNextSubProcess> _processHasNextSubProcessRelations;
     private readonly IReadOnlySet<ProcessStep> _steps;
-    private readonly IReadOnlySet<DomainModule> _modules;
+    private readonly IReadOnlySet<ModelBoundary> _modelBoundaries;
     private readonly IReadOnlySet<DeployableUnit> _deployableUnits;
     private readonly IReadOnlySet<Actor> _actors;
     private readonly IReadOnlySet<DevelopmentTeam> _developmentTeams;
@@ -27,16 +27,16 @@ public class ProcessPage : MermaidPageBase
 
     public ProcessPage(string outputDirectory, Process process, Process? parent, IReadOnlySet<Process> children,
         IReadOnlySet<Process.HasNextSubProcess> processHasNextSubProcessRelations, IReadOnlySet<ProcessStep> steps,
-        IReadOnlySet<DomainModule> modules, IReadOnlySet<DeployableUnit> deployableUnits, IReadOnlySet<Actor> actors,
-        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits)
-        : base(outputDirectory)
+        IReadOnlySet<ModelBoundary> modelBoundaries, IReadOnlySet<DeployableUnit> deployableUnits, 
+        IReadOnlySet<Actor> actors, IReadOnlySet<DevelopmentTeam> developmentTeams, 
+        IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits) : base(outputDirectory)
     {
         _process = process;
         _parent = parent;
         _children = children;
         _processHasNextSubProcessRelations = processHasNextSubProcessRelations;
         _steps = steps;
-        _modules = modules;
+        _modelBoundaries = modelBoundaries;
         _deployableUnits = deployableUnits;
         _actors = actors;
         _developmentTeams = developmentTeams;
@@ -47,7 +47,7 @@ public class ProcessPage : MermaidPageBase
         @$"This view contains details information about {_process.Name} business process, including:
 - other related processes
 - process steps
-- related domain modules
+- related model boundaries
 - related deployable units
 - engaged people: actors, development teams, business stakeholders";
 
@@ -106,20 +106,20 @@ public class ProcessPage : MermaidPageBase
             });
         }
 
-        mermaidWriter.WriteHeading("Related modules", 3);
-        if (_modules.Count == 0)
+        mermaidWriter.WriteHeading("Related model boundaries", 3);
+        if (_modelBoundaries.Count == 0)
         {
-            mermaidWriter.WriteLine("No related modules were found.");
+            mermaidWriter.WriteLine("No related model boundaries were found.");
         }
         else
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
                 var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
-                foreach (var module in _modules.OrderBy(m => m.Name))
+                foreach (var modelBoundary in _modelBoundaries.OrderBy(m => m.Name))
                 {
-                    var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
-                    flowchartWriter.WriteArrow(processId, moduleId, "belongs to");
+                    var modelBoundaryId = flowchartWriter.WriteStadiumShape(modelBoundary.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteArrow(processId, modelBoundaryId, "belongs to");
                 }
             });
         }

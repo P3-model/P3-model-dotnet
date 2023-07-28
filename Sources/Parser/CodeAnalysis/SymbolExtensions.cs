@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -132,4 +133,25 @@ public static class SymbolExtensions
         symbol.ContainingSymbol is INamedTypeSymbol containingSymbol
             ? $"{containingSymbol.GetFullName()} {symbol.Name}"
             : symbol.Name;
+
+    // TODO: better way to select assemblies from analyzed solution
+    public static IEnumerable<IAssemblySymbol> GetReferencedAssembliesFromSameRepository(this IAssemblySymbol symbol) =>
+        symbol.Modules
+            .SelectMany(m => m.ReferencedAssemblySymbols)
+            .Where(a => a.Locations
+                .Any(l => l.IsInSource));
+
+    public static bool SourcesAreIn(this ISymbol symbol, DirectoryInfo directory) => symbol.Locations
+        .Any(location => location.SourceTree?.FilePath.StartsWith(directory.FullName) ?? false);
+
+    public static bool SourcesAreIn(this ISymbol symbol, IEnumerable<DirectoryInfo> directories) => symbol.Locations
+        .Any(location => directories
+            .Any(directory => location.SourceTree?.FilePath.StartsWith(directory.FullName) ?? false));
+
+    public static bool IsFrom(this ISymbol symbol, IAssemblySymbol assemblySymbol) => symbol switch
+    {
+        INamespaceSymbol namespaceSymbol => namespaceSymbol.ConstituentNamespaces
+            .Any(n => n.ContainingAssembly.Equals(assemblySymbol, SymbolEqualityComparer.Default)),
+        _ => symbol.ContainingAssembly.Equals(assemblySymbol, SymbolEqualityComparer.Default)
+    };
 }

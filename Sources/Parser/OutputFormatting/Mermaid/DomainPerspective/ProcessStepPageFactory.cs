@@ -22,46 +22,40 @@ public class ProcessStepPageFactory : MermaidPageFactory
                     .RelatedTo(step)
                     .ByRelation<Process.ContainsProcessStep>())
                 .SingleOrDefault();
-            var modules = modelGraph.Execute(query => query
-                .Elements<DomainModule>()
-                .RelatedTo(step)
-                .ByReverseRelation<ProcessStep.BelongsToDomainModule>());
             // TODO: warning logging if more than one element (non unique names o process steps)
-            var module = modules.FirstOrDefault();
+            var modelBoundary = modelGraph.Execute(query => query
+                    .Elements<ModelBoundary>()
+                    .RelatedTo(step)
+                    .ByRelation<ModelBoundary.ContainsProcessStep>())
+                .FirstOrDefault();
             var buildingBlocks = modelGraph.Execute(query => query
                 .Elements<DomainBuildingBlock>()
                 .RelatedTo(step)
                 .ByReverseRelation<ProcessStep.DependsOnBuildingBlock>());
-            var deployableUnit = module is null
+            var deployableUnit = modelBoundary is null
                 ? null
                 : modelGraph.Execute(query => query
-                    .Elements<DeployableUnit>()
-                    .RelatedToAny(subQuery => subQuery
-                        .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
-                    .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>(filter => filter
-                        .MaxBy(r => r.Source.Level)));
+                        .Elements<DeployableUnit>()
+                        .RelatedTo(modelBoundary)
+                        .ByReverseRelation<ModelBoundary.IsDeployedInDeployableUnit>())
+                    // TODO: Identifying deployable units by technology relationship (ModelBoundary can by deployed in more than one unit).
+                    .FirstOrDefault();
             var actors = modelGraph.Execute(query => query
                 .Elements<Actor>()
                 .RelatedTo(step)
                 .ByRelation<Actor.UsesProcessStep>());
-            var developmentTeams = module is null
+            var developmentTeams = modelBoundary is null
                 ? new HashSet<DevelopmentTeam>()
                 : modelGraph.Execute(query => query
                     .Elements<DevelopmentTeam>()
-                    .RelatedToAny(subQuery => subQuery
-                        .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
-                    .ByRelation<DevelopmentTeam.OwnsDomainModule>(filter => filter
-                        .GroupBy(r => r.Destination.Level)
-                        .MaxBy(g => g.Key) ?? Enumerable.Empty<DevelopmentTeam.OwnsDomainModule>()));
-            var organizationalUnits = module is null
+                    .RelatedTo(modelBoundary)
+                    .ByRelation<DevelopmentTeam.OwnsModelBoundary>());
+            var organizationalUnits = modelBoundary is null
                 ? new HashSet<BusinessOrganizationalUnit>()
                 : modelGraph.Execute(query => query
                     .Elements<BusinessOrganizationalUnit>()
-                    .RelatedToAny(subQuery => subQuery
-                        .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
-                    .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>(filter => filter
-                        .GroupBy(r => r.Destination.Level)
-                        .MaxBy(g => g.Key) ?? Enumerable.Empty<BusinessOrganizationalUnit.OwnsDomainModule>()));
+                    .RelatedTo(modelBoundary)
+                    .ByRelation<BusinessOrganizationalUnit.OwnsModelBoundary>());
             return new ProcessStepPage(outputDirectory, step, process, buildingBlocks, deployableUnit, actors,
                 developmentTeams, organizationalUnits);
         });

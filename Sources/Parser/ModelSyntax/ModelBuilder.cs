@@ -1,100 +1,124 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 
 namespace P3Model.Parser.ModelSyntax;
 
-[SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1024", 
+[SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1024",
     Justification = "See CompilationIndependentSymbolEqualityComparer")]
 public class ModelBuilder : ElementsProvider
 {
     private readonly DocumentedSystem _system;
-        
-    private readonly ConcurrentDictionary<Element, byte> _elements = new();
-    private readonly ConcurrentDictionary<Element, ConcurrentDictionary<ISymbol, byte>> _elementToSymbols = new();
-    private readonly ConcurrentDictionary<ISymbol, ConcurrentDictionary<Element, byte>> _symbolToElements =
+
+    private readonly ConcurrentDictionary<Element, ElementInfo> _elements = new();
+    private readonly ConcurrentDictionary<ISymbol, ConcurrentSet<Element>> _symbolToElements =
         new(CompilationIndependentSymbolEqualityComparer.Default);
 
-    private readonly ConcurrentDictionary<Relation, byte> _relations = new();
-    private readonly ConcurrentDictionary<Func<ElementsProvider, IEnumerable<Relation>>, byte> _relationFactories =
+    private readonly ConcurrentSet<Relation> _relations = new();
+    private readonly ConcurrentSet<Func<ElementsProvider, IEnumerable<Relation>>> _relationFactories =
         new();
 
-    private readonly ConcurrentDictionary<Trait, byte> _traits = new();
-    private readonly ConcurrentDictionary<Func<ElementsProvider, IEnumerable<Trait>>, byte> _traitFactories = new();
+    private readonly ConcurrentSet<Trait> _traits = new();
+    private readonly ConcurrentSet<Func<ElementsProvider, IEnumerable<Trait>>> _traitFactories = new();
 
     public ModelBuilder(DocumentedSystem system) => _system = system;
 
-    public void Add(Element element) => _elements.TryAdd(element, default);
+    [PublicAPI]
+    public void Add<TElement>(TElement element) where TElement : class, Element =>
+        _elements.TryAdd(element, new ElementInfo<TElement>(element));
 
-    public void Add(Element element, ISymbol symbol)
+    [PublicAPI]
+    public void Add<TElement>(TElement element, ISymbol symbol)
+        where TElement : class, Element
     {
-        _elementToSymbols.AddOrUpdate(element,
+        _elements.AddOrUpdate(element,
             _ =>
             {
-                var set = new ConcurrentDictionary<ISymbol, byte>(CompilationIndependentSymbolEqualityComparer.Default);
-                set.TryAdd(symbol, default);
-                return set;
+                var info = new ElementInfo<TElement>(element);
+                info.Add(symbol);
+                return info;
             },
-            (_, symbols) =>
+            (_, info) =>
             {
-                symbols.TryAdd(symbol, default);
-                return symbols;
+                info.Add(symbol);
+                return info;
             });
         _symbolToElements.AddOrUpdate(symbol,
             _ =>
             {
-                var set = new ConcurrentDictionary<Element, byte>();
-                set.TryAdd(element, default);
+                var set = new ConcurrentSet<Element>();
+                set.TryAdd(element);
                 return set;
             },
             (_, elements) =>
             {
-                elements.TryAdd(element, default);
+                elements.TryAdd(element);
                 return elements;
             });
     }
 
-    public void Add(Relation relation) => _relations.TryAdd(relation, default);
+    [PublicAPI]
+    public void Add<TElement>(TElement element, DirectoryInfo directory)
+        where TElement : class, Element
+    {
+        _elements.AddOrUpdate(element,
+            _ =>
+            {
+                var info = new ElementInfo<TElement>(element);
+                info.Add(directory);
+                return info;
+            },
+            (_, info) =>
+            {
+                info.Add(directory);
+                return info;
+            });
+    }
 
+    [PublicAPI]
+    public void Add(Relation relation) => _relations.TryAdd(relation);
+
+    [PublicAPI]
     public void Add(Func<ElementsProvider, IEnumerable<Relation>> relationFactory) =>
-        _relationFactories.TryAdd(relationFactory, default);
+        _relationFactories.TryAdd(relationFactory);
 
-    public void Add(Trait trait) => _traits.TryAdd(trait, default);
+    [PublicAPI]
+    public void Add(Trait trait) => _traits.TryAdd(trait);
 
+    [PublicAPI]
     public void Add(Func<ElementsProvider, IEnumerable<Trait>> traitFactory) =>
-        _traitFactories.TryAdd(traitFactory, default);
+        _traitFactories.TryAdd(traitFactory);
 
     IEnumerable<Element> ElementsProvider.For(ISymbol symbol) => _symbolToElements.TryGetValue(symbol, out var elements)
-        ? elements.Keys
+        ? elements
         : Enumerable.Empty<Element>();
 
-    IEnumerable<Element> ElementsProvider.Where(Func<ISymbol, bool> predicate) => _symbolToElements
-        .Where(pair => predicate(pair.Key))
-        .SelectMany(pair => pair.Value.Keys);
+    IEnumerable<TElement> ElementsProvider.OfType<TElement>() => _elements.Keys.OfType<TElement>();
 
-    IEnumerable<TElement> ElementsProvider.OfType<TElement>() => GetAllElements().OfType<TElement>();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public IEnumerator<ElementInfo> GetEnumerator() => _elements.Values.GetEnumerator();
 
     public Model Build()
     {
-        foreach (var relationsFactory in _relationFactories.Keys)
+        foreach (var relationsFactory in _relationFactories)
         foreach (var relation in relationsFactory(this))
             Add(relation);
 
-        foreach (var traitFactory in _traitFactories.Keys)
+        foreach (var traitFactory in _traitFactories)
         foreach (var trait in traitFactory(this))
             Add(trait);
 
         return new Model(_system,
-            GetAllElements().ToImmutableArray(),
-            _relations.Keys.ToImmutableArray(),
-            _traits.Keys.ToImmutableArray());
+            _elements.Keys.ToImmutableArray(),
+            _relations.ToImmutableArray(),
+            _traits.ToImmutableArray());
     }
-
-    private IEnumerable<Element> GetAllElements() => _elements.Keys
-        .Union(_elementToSymbols.Keys)
-        .Distinct();
 }

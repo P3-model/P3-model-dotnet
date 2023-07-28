@@ -41,47 +41,28 @@ public class ProcessPageFactory : MermaidPageFactory
                     .Elements<ProcessStep>()
                     .RelatedTo(process)
                     .ByReverseRelation<Process.ContainsProcessStep>());
-                var domainModules = modelGraph.Execute(query => query
-                    .Elements<DomainModule>()
+                var modelBoundaries = modelGraph.Execute(query => query
+                    .Elements<ModelBoundary>()
                     .RelatedToAny(allSteps)
-                    .ByReverseRelation<ProcessStep.BelongsToDomainModule>());
-                var rootLevelDomainModules = domainModules
-                    .Select(module => modulesHierarchy
-                        .GetAncestorsFor(module, true)
-                        .MinBy(a => a.Level)!)
-                    .ToHashSet();
-                var deployableUnits = domainModules
-                    .Select(module => modelGraph.Execute(query => query
-                        .Elements<DeployableUnit>()
-                        .RelatedToAny(subQuery => subQuery
-                            .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
-                        .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>(filter => filter
-                            .MaxBy(r => r.Source.Level))))
-                    .ToHashSet();
+                    .ByRelation<ModelBoundary.ContainsProcessStep>());
+                var deployableUnits = modelGraph.Execute(query => query
+                    .Elements<DeployableUnit>()
+                    .RelatedToAny(modelBoundaries)
+                    .ByReverseRelation<ModelBoundary.IsDeployedInDeployableUnit>());
                 var actors = modelGraph.Execute(query => query
                     .Elements<Actor>()
                     .RelatedToAny(allSteps)
                     .ByRelation<Actor.UsesProcessStep>());
-                var developmentTeams = domainModules
-                    .SelectMany(module => modelGraph.Execute(query => query
-                        .Elements<DevelopmentTeam>()
-                        .RelatedToAny(subQuery => subQuery
-                            .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
-                        .ByRelation<DevelopmentTeam.OwnsDomainModule>(filter => filter
-                            .GroupBy(r => r.Destination.Level)
-                            .MaxBy(g => g.Key) ?? Enumerable.Empty<DevelopmentTeam.OwnsDomainModule>())))
-                    .ToHashSet();
-                var organizationalUnits = domainModules
-                    .SelectMany(module => modelGraph.Execute(query => query
+                var developmentTeams = modelGraph.Execute(query => query
+                    .Elements<DevelopmentTeam>()
+                    .RelatedToAny(modelBoundaries)
+                    .ByRelation<DevelopmentTeam.OwnsModelBoundary>());
+                var organizationalUnits = modelGraph.Execute(query => query
                         .Elements<BusinessOrganizationalUnit>()
-                        .RelatedToAny(subQuery => subQuery
-                            .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
-                        .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>(filter => filter
-                            .GroupBy(r => r.Destination.Level)
-                            .MaxBy(r => r.Key) ?? Enumerable.Empty<BusinessOrganizationalUnit.OwnsDomainModule>())))
-                    .ToHashSet();
+                        .RelatedToAny(modelBoundaries)
+                        .ByRelation<BusinessOrganizationalUnit.OwnsModelBoundary>());
                 return new ProcessPage(outputDirectory, process, parent, children, processHasNextSubProcessRelations,
-                    directSteps, rootLevelDomainModules, deployableUnits!, actors, developmentTeams,
+                    directSteps, modelBoundaries, deployableUnits!, actors, developmentTeams,
                     organizationalUnits);
             });
     }

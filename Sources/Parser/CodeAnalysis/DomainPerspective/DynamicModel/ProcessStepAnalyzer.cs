@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Domain.DynamicModel;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
-using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 namespace P3Model.Parser.CodeAnalysis.DomainPerspective.DynamicModel;
 
@@ -60,13 +58,6 @@ public class ProcessStepAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnaly
                     yield return new ProcessStep.HasNextStep(step, nextSteps[0]);
             }
         }
-
-        var module = elements
-            .For(symbol.ContainingNamespace)
-            .OfType<DomainModule>()
-            .SingleOrDefault();
-        if (module != null)
-            yield return new ProcessStep.BelongsToDomainModule(step, module);
     }
 
     private static bool TryGetProcessName(AttributeData stepAttribute,
