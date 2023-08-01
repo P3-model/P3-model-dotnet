@@ -12,16 +12,20 @@ public class DomainBuildingBlockPage : MermaidPageBase
 {
     private readonly DomainBuildingBlock _buildingBlock;
     private readonly DomainModule? _module;
-    private readonly IReadOnlySet<(DomainBuildingBlock BuildingBlock, DomainModule? Module)> _dependencies;
+    private readonly IReadOnlySet<(DomainBuildingBlock BuildingBlock, DomainModule? Module)> _usingElements;
+    private readonly IReadOnlySet<(DomainBuildingBlock BuildingBlock, DomainModule? Module)> _usedElements;
     private readonly IReadOnlySet<ProcessStep> _processSteps;
 
     public DomainBuildingBlockPage(string outputDirectory, DomainBuildingBlock buildingBlock, DomainModule? module,
-        IReadOnlySet<(DomainBuildingBlock, DomainModule?)> dependencies,
+        
+        IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usingElements,
+        IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usedElements,
         IReadOnlySet<ProcessStep> processSteps) : base(outputDirectory)
     {
         _buildingBlock = buildingBlock;
         _module = module;
-        _dependencies = dependencies;
+        _usingElements = usingElements;
+        _usedElements = usedElements;
         _processSteps = processSteps;
     }
 
@@ -43,7 +47,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
         mermaidWriter.WriteHeading("Domain Perspective", 2);
         mermaidWriter.WriteHeading("Dependencies", 3);
 
-        if (_dependencies.Count == 0)
+        if (_usingElements.Count == 0 && _usedElements.Count == 0)
         {
             mermaidWriter.WriteLine("No dependencies were found.");
         }
@@ -51,23 +55,36 @@ public class DomainBuildingBlockPage : MermaidPageBase
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var buildingBlockId = _module is null
-                    ? flowchartWriter.WriteRectangle(_buildingBlock.Name, Style.DomainPerspective)
-                    : flowchartWriter.WriteSubgraph(_module.Name, subGraphWriter => subGraphWriter
-                        .WriteRectangle(_buildingBlock.Name, Style.DomainPerspective));
-                var dependencyIds = new List<string>();
-                foreach (var group in _dependencies
+                var usingElementIds = new List<string>();
+                foreach (var group in _usingElements
                              .GroupBy(t => t.Module, t => t.BuildingBlock)
                              .OrderBy(t => t.Key is null ? string.Empty : t.Key.Name))
                 {
                     if (group.Key is null)
-                        dependencyIds.AddRange(WriteDependencies(group, flowchartWriter));
+                        usingElementIds.AddRange(WriteDependencies(group, flowchartWriter));
                     else
-                        dependencyIds.Add(flowchartWriter.WriteSubgraph(group.Key.Name, subgraphWriter =>
+                        usingElementIds.Add(flowchartWriter.WriteSubgraph(group.Key.FullName, subgraphWriter =>
                             WriteDependencies(group, subgraphWriter)));
                 }
-                foreach (var dependencyId in dependencyIds)
-                    flowchartWriter.WriteArrow(buildingBlockId, dependencyId, "depends on");
+                var buildingBlockId = _module is null
+                    ? flowchartWriter.WriteRectangle(_buildingBlock.Name, Style.DomainPerspective)
+                    : flowchartWriter.WriteSubgraph(_module.FullName, subGraphWriter => subGraphWriter
+                        .WriteRectangle(_buildingBlock.Name, Style.DomainPerspective));
+                var usedElementIds = new List<string>();
+                foreach (var group in _usedElements
+                             .GroupBy(t => t.Module, t => t.BuildingBlock)
+                             .OrderBy(t => t.Key is null ? string.Empty : t.Key.Name))
+                {
+                    if (group.Key is null)
+                        usedElementIds.AddRange(WriteDependencies(group, flowchartWriter));
+                    else
+                        usedElementIds.Add(flowchartWriter.WriteSubgraph(group.Key.FullName, subgraphWriter =>
+                            WriteDependencies(group, subgraphWriter)));
+                }
+                foreach (var usingElementId in usingElementIds)
+                    flowchartWriter.WriteArrow(usingElementId, buildingBlockId, "depends on");
+                foreach (var usedElementId in usedElementIds)
+                    flowchartWriter.WriteArrow(buildingBlockId, usedElementId, "depends on");
             });
         }
         mermaidWriter.WriteHeading("Related process steps", 3);
@@ -97,7 +114,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
-        DomainBuildingBlockPage buildingBlockPage => _dependencies
+        DomainBuildingBlockPage buildingBlockPage => _usedElements
             .Select(d => d.BuildingBlock)
             .Contains(buildingBlockPage.MainElement),
         ProcessStepPage processStepPage => _processSteps.Contains(processStepPage.MainElement),

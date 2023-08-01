@@ -19,7 +19,21 @@ public class DomainBuildingBlockPageFactory : MermaidPageFactory
                     .Elements<DomainModule>().RelatedTo(buildingBlock)
                     .ByRelation<DomainModule.ContainsBuildingBlock>())
                 .SingleOrDefault();
-            var dependencies = modelGraph
+            var usingElements = modelGraph
+                .Execute(query => query
+                    .Elements<DomainBuildingBlock>()
+                    .RelatedTo(buildingBlock)
+                    .ByRelation<DomainBuildingBlock.DependsOnBuildingBlock>())
+                .Select(dependency => (
+                    Dependency: dependency,
+                    Module: modelGraph
+                        .Execute(query => query
+                            .Elements<DomainModule>()
+                            .RelatedTo(dependency)
+                            .ByRelation<DomainModule.ContainsBuildingBlock>())
+                        .SingleOrDefault()))
+                .ToHashSet();
+            var usedElements = modelGraph
                 .Execute(query => query
                     .Elements<DomainBuildingBlock>()
                     .RelatedTo(buildingBlock)
@@ -38,6 +52,7 @@ public class DomainBuildingBlockPageFactory : MermaidPageFactory
                     .Elements<ProcessStep>()
                     .RelatedTo(buildingBlock)
                     .ByRelation<ProcessStep.DependsOnBuildingBlock>());
-            return new DomainBuildingBlockPage(outputDirectory, buildingBlock, module, dependencies, processSteps);
+            return new DomainBuildingBlockPage(outputDirectory, buildingBlock, module, usingElements, 
+                usedElements, processSteps);
         });
 }
