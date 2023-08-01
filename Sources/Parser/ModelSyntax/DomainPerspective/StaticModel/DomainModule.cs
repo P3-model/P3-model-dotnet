@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text.Json.Serialization;
 using Humanizer;
 using P3Model.Parser.ModelSyntax.Technology;
@@ -10,6 +11,9 @@ public record DomainModule(HierarchyId Id) : HierarchyElement
     
     [JsonIgnore]
     public string Name => Id.LastPart.Humanize(LetterCasing.Title);
+    
+    [JsonIgnore]
+    public string FullName => string.Join(" / ", Id.Parts.Select(p => p.Humanize(LetterCasing.Title)));
 
     [JsonIgnore]
     public int Level => Id.Level;
