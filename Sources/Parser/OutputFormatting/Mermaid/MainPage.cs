@@ -67,14 +67,28 @@ public class MainPage : MermaidPageBase
             flowchartWriter.WriteBidirectionalArrow(externalSystemsId, systemId, "are integrated with");
             var teamsId = flowchartWriter.WriteSubgraph("Development Teams", subgraphWriter =>
             {
-                foreach (var team in _developmentTeams.OrderBy(t => t.Name)) 
-                    subgraphWriter.WriteStadiumShape(team.Name);
+                if (_developmentTeams.Count == 0)
+                {
+                    subgraphWriter.WriteStadiumShape("no teams found");
+                }
+                else
+                {
+                    foreach (var team in _developmentTeams.OrderBy(t => t.Name)) 
+                        subgraphWriter.WriteStadiumShape(team.Name);
+                }
             });
             flowchartWriter.WriteBackwardArrow(teamsId, systemId, "develops & maintains");
             var businessUnitsId = flowchartWriter.WriteSubgraph("Business Units", subgraphWriter =>
             {
-                foreach (var unit in _organizationalUnits.OrderBy(u => u.Name)) 
-                    subgraphWriter.WriteStadiumShape(unit.Name);
+                if (_organizationalUnits.Count == 0)
+                {
+                    subgraphWriter.WriteStadiumShape("no units found");
+                }
+                else
+                {
+                    foreach (var unit in _organizationalUnits.OrderBy(u => u.Name)) 
+                        subgraphWriter.WriteStadiumShape(unit.Name);
+                }
             });
             flowchartWriter.WriteBackwardArrow(businessUnitsId, systemId, "owns");
         });
