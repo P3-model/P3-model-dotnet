@@ -144,9 +144,12 @@ public static class SymbolExtensions
     public static bool SourcesAreIn(this ISymbol symbol, DirectoryInfo directory) => symbol.Locations
         .Any(location => location.SourceTree?.FilePath.StartsWith(directory.FullName) ?? false);
 
-    public static bool SourcesAreIn(this ISymbol symbol, IEnumerable<DirectoryInfo> directories) => symbol.Locations
+    public static bool SourcesAreInAny(this ISymbol symbol, IEnumerable<DirectoryInfo> directories) => symbol.Locations
         .Any(location => directories
             .Any(directory => location.SourceTree?.FilePath.StartsWith(directory.FullName) ?? false));
+
+    public static bool ContainsSourcesOf(this DirectoryInfo directory, IAssemblySymbol symbol) =>
+        SourcesAreIn(symbol, directory);
 
     public static bool IsFrom(this ISymbol symbol, IAssemblySymbol assemblySymbol) => symbol switch
     {

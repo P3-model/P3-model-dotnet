@@ -49,7 +49,7 @@ public class ProcessStepPage : MermaidPageBase
         : Path.Combine("Domain", "Processes", Path.Combine(_process.Id.Parts.ToArray()),
             $"{_step.Name.Dehumanize()}.md");
 
-    public override Element? MainElement => _step;
+    public override Element MainElement => _step;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

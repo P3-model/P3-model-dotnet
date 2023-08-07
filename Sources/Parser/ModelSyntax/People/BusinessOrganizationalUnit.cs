@@ -6,9 +6,6 @@ public record BusinessOrganizationalUnit(string Name) : Element
 {
     public Perspective Perspective => Perspective.People;
     
-    public record OwnsModelBoundary(BusinessOrganizationalUnit Source, ModelBoundary Destination) 
-        : Relation<BusinessOrganizationalUnit, ModelBoundary>;
-    
     public record OwnsDomainModule(BusinessOrganizationalUnit Source, DomainModule Destination) 
         : Relation<BusinessOrganizationalUnit, DomainModule>;
 }

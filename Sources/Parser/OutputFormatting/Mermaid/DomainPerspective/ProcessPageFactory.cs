@@ -41,28 +41,28 @@ public class ProcessPageFactory : MermaidPageFactory
                     .Elements<ProcessStep>()
                     .RelatedTo(process)
                     .ByReverseRelation<Process.ContainsProcessStep>());
-                var modelBoundaries = modelGraph.Execute(query => query
-                    .Elements<ModelBoundary>()
+                var modules = modelGraph.Execute(query => query
+                    .Elements<DomainModule>()
                     .RelatedToAny(allSteps)
-                    .ByRelation<ModelBoundary.ContainsProcessStep>());
+                    .ByRelation<DomainModule.ContainsProcessStep>());
                 var deployableUnits = modelGraph.Execute(query => query
                     .Elements<DeployableUnit>()
-                    .RelatedToAny(modelBoundaries)
-                    .ByReverseRelation<ModelBoundary.IsDeployedInDeployableUnit>());
+                    .RelatedToAny(modules)
+                    .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>());
                 var actors = modelGraph.Execute(query => query
                     .Elements<Actor>()
                     .RelatedToAny(allSteps)
                     .ByRelation<Actor.UsesProcessStep>());
                 var developmentTeams = modelGraph.Execute(query => query
                     .Elements<DevelopmentTeam>()
-                    .RelatedToAny(modelBoundaries)
-                    .ByRelation<DevelopmentTeam.OwnsModelBoundary>());
+                    .RelatedToAny(modules)
+                    .ByRelation<DevelopmentTeam.OwnsDomainModule>());
                 var organizationalUnits = modelGraph.Execute(query => query
                         .Elements<BusinessOrganizationalUnit>()
-                        .RelatedToAny(modelBoundaries)
-                        .ByRelation<BusinessOrganizationalUnit.OwnsModelBoundary>());
+                        .RelatedToAny(modules)
+                        .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>());
                 return new ProcessPage(outputDirectory, process, parent, children, processHasNextSubProcessRelations,
-                    directSteps, modelBoundaries, deployableUnits!, actors, developmentTeams,
+                    directSteps, modules, deployableUnits!, actors, developmentTeams,
                     organizationalUnits);
             });
     }

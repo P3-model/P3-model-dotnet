@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using P3Model.Annotations.Domain;
-using P3Model.Annotations.Domain.DynamicModel;
 using P3Model.Parser.Configuration;
 
 // This runner in only for initial tests of Parser POC !!!
@@ -20,7 +19,6 @@ await P3
         .UseDefaults(options => options
             .TreatNamespacesAsDomainModules(namespaces => namespaces
                 .OnlyFromAssembliesAnnotatedWith<DomainModelAttribute>()
-                .ExcludeAnnotatedWith<ProcessAttribute>()
                 .RemoveRootNamespace("MyCompany.ECommerce"))))
     .OutputFormat(formatters => formatters
         .UseMermaid(options => options

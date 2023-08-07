@@ -26,14 +26,16 @@ public class DeployableUnitAnalyzer : SymbolAnalyzer<IAssemblySymbol>
         ElementsProvider elements) => symbol
         .GetReferencedAssembliesFromSameRepository()
         .SelectRecursively(assemblySymbol => assemblySymbol.GetReferencedAssembliesFromSameRepository())
-        .Distinct(SymbolEqualityComparer.Default)
+        .Distinct<IAssemblySymbol>(SymbolEqualityComparer.Default)
         .SelectMany(assemblySymbol => elements
-            .OfType<ElementInfo<ModelBoundary>>()
-            .Where(elementInfo => AreRelated(elementInfo, assemblySymbol)))
+            .OfType<ElementInfo<DomainModule>>()
+            .Where(info => info.Symbols.Contains(assemblySymbol) ||
+                           info.Symbols.Any(s => s.IsFrom(assemblySymbol)) ||
+                           info.Directories.Any(d => d.ContainsSourcesOf(assemblySymbol))))
         .Distinct()
-        .Select(elementInfo => new ModelBoundary.IsDeployedInDeployableUnit(elementInfo.Element, deployableUnit));
+        .Select(elementInfo => new DomainModule.IsDeployedInDeployableUnit(elementInfo.Element, deployableUnit));
 
     private static bool AreRelated(ElementInfo elementInfo, ISymbol symbol) =>
         elementInfo.Symbols.Contains(symbol) ||
-        symbol.SourcesAreIn(elementInfo.Directories);
+        symbol.SourcesAreInAny(elementInfo.Directories);
 }

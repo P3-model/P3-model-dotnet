@@ -28,7 +28,6 @@ public class ExampleElements : IEnumerable<Element>
         new DomainBuildingBlock("ExampleBuildingBlock", null),
         new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleF")),
         new ExternalSoftwareSystem("ExampleExternalSystem"),
-        new ModelBoundary("ExampleModelBoundary"),
         new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
         new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA")),
         new Tier("ExampleTier")
