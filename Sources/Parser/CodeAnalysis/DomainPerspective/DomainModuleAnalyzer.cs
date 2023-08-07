@@ -4,16 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Humanizer;
 using Microsoft.CodeAnalysis;
-using P3Model.Annotations.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 
 namespace P3Model.Parser.CodeAnalysis.DomainPerspective;
 
-public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<IAssemblySymbol>, SymbolAnalyzer<INamespaceSymbol>
+// TODO: support for defining domain modules structure without namespaces
+public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbol>
 {
     private readonly Func<INamespaceSymbol, bool> _isDomainModelNamespace;
     private readonly Func<INamespaceSymbol, string> _getModulesHierarchy;
@@ -24,7 +23,7 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<IAssemblySymbol
         _isDomainModelNamespace = isDomainModelNamespace;
         _getModulesHierarchy = getModulesHierarchy;
     }
-    
+
     public async Task Analyze(FileInfo fileInfo, ModelBuilder modelBuilder)
     {
         if (fileInfo.Directory is null)
@@ -55,15 +54,6 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<IAssemblySymbol
         }
     }
 
-    public void Analyze(IAssemblySymbol symbol, ModelBuilder modelBuilder)
-    {
-        if (!symbol.TryGetAttribute(typeof(DomainModuleAttribute), out var attribute))
-            return;
-        var name = attribute.ConstructorArguments[0].Value?.ToString() ?? symbol.Name.Humanize(LetterCasing.Title);
-        var module = new DomainModule(HierarchyId.FromValue(name));
-        modelBuilder.Add(module, symbol);
-    }
-
     public void Analyze(INamespaceSymbol symbol, ModelBuilder modelBuilder)
     {
         if (symbol.IsGlobalNamespace || !_isDomainModelNamespace(symbol))
@@ -73,6 +63,8 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<IAssemblySymbol
             return;
         var module = new DomainModule(HierarchyId.FromValue(modulesHierarchy));
         modelBuilder.Add(module, symbol);
+        // TODO: relation to teams and business units defined at namespace level
+        //  Requires parsing types within the namespace annotated with DevelopmentOwnerAttribute and ApplyOnNamespace == true.
         modelBuilder.Add(elements => GetRelationToParent(symbol, module, elements));
     }
 
@@ -82,9 +74,7 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<IAssemblySymbol
         // TODO: warning logging if more than one
         var parentModule = elements
             .OfType<ElementInfo<DomainModule>>()
-            .Where(info => info.Symbols.Contains(symbol.ContainingNamespace, SymbolEqualityComparer.Default) ||
-                           info.Symbols.Contains(symbol.ContainingAssembly, SymbolEqualityComparer.Default) ||
-                           symbol.SourcesAreInAny(info.Directories))
+            .Where(info => info.Symbols.Contains(symbol.ContainingNamespace, SymbolEqualityComparer.Default))
             .Select(info => info.Element)
             .SingleOrDefault();
         if (parentModule != null)

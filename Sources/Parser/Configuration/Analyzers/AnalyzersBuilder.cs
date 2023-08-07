@@ -20,10 +20,12 @@ public class AnalyzersBuilder
         configure?.Invoke(builder);
         _symbolAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<SymbolAnalyzer>());
         var options = builder.Build();
-        _symbolAnalyzers.Add(new DomainModuleAnalyzer(
+        var domainModuleAnalyzer = new DomainModuleAnalyzer(
             options.NamespaceOptions.Predicate,
-            options.NamespaceOptions.Filter));
+            options.NamespaceOptions.Filter);
+        _symbolAnalyzers.Add(domainModuleAnalyzer);
         _fileAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<FileAnalyzer>());
+        _fileAnalyzers.Add(domainModuleAnalyzer);
         return this;
     }
     
