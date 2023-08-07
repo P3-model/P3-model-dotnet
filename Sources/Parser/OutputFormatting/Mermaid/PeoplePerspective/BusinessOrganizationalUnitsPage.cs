@@ -9,10 +9,10 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 public class BusinessOrganizationalUnitsPage : MermaidPageBase
 {
     private readonly DocumentedSystem _system;
-    private readonly IEnumerable<BusinessOrganizationalUnit> _organizationalUnits;
+    private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
 
     public BusinessOrganizationalUnitsPage(string outputDirectory, DocumentedSystem system,
-        IEnumerable<BusinessOrganizationalUnit> organizationalUnits) : base(outputDirectory)
+        IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits) : base(outputDirectory)
     {
         _system = system;
         _organizationalUnits = organizationalUnits;
@@ -34,8 +34,15 @@ public class BusinessOrganizationalUnitsPage : MermaidPageBase
         mermaidWriter.WriteHeading("Units structure", 2);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            foreach (var organizationalUnit in _organizationalUnits.OrderBy(u => u.Name))
-                flowchartWriter.WriteRectangle(organizationalUnit.Name, Style.PeoplePerspective);
+            if (_organizationalUnits.Count == 0)
+            {
+                flowchartWriter.WriteStadiumShape("no units found");
+            }
+            else
+            {
+                foreach (var organizationalUnit in _organizationalUnits.OrderBy(u => u.Name))
+                    flowchartWriter.WriteRectangle(organizationalUnit.Name, Style.PeoplePerspective);
+            }
         });
     }
 

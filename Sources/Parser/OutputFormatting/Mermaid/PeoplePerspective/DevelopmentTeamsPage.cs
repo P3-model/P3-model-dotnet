@@ -9,9 +9,9 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 public class DevelopmentTeamsPage : MermaidPageBase
 {
     private readonly DocumentedSystem _system;
-    private readonly IEnumerable<DevelopmentTeam> _teams;
+    private readonly IReadOnlySet<DevelopmentTeam> _teams;
 
-    public DevelopmentTeamsPage(string outputDirectory, DocumentedSystem system, IEnumerable<DevelopmentTeam> teams)
+    public DevelopmentTeamsPage(string outputDirectory, DocumentedSystem system, IReadOnlySet<DevelopmentTeam> teams)
         : base(outputDirectory)
     {
         _system = system;
@@ -32,8 +32,15 @@ public class DevelopmentTeamsPage : MermaidPageBase
         mermaidWriter.WriteHeading("Teams and their relations", 2);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            foreach (var team in _teams.OrderBy(t => t.Name))
-                flowchartWriter.WriteRectangle(team.Name, Style.PeoplePerspective);
+            if (_teams.Count == 0)
+            {
+                flowchartWriter.WriteStadiumShape("no teams found");
+            }
+            else
+            {
+                foreach (var team in _teams.OrderBy(t => t.Name))
+                    flowchartWriter.WriteRectangle(team.Name, Style.PeoplePerspective);
+            }
         });
     }
 
