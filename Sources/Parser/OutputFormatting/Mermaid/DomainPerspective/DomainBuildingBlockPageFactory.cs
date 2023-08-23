@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.ModelQuerying;
-using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
@@ -18,7 +17,7 @@ public class DomainBuildingBlockPageFactory : MermaidPageFactory
                 .Execute(query => query
                     .Elements<DomainModule>().RelatedTo(buildingBlock)
                     .ByRelation<DomainModule.ContainsBuildingBlock>())
-                .SingleOrDefault();
+                .FirstOrDefault();
             var usingElements = modelGraph
                 .Execute(query => query
                     .Elements<DomainBuildingBlock>()
@@ -31,7 +30,7 @@ public class DomainBuildingBlockPageFactory : MermaidPageFactory
                             .Elements<DomainModule>()
                             .RelatedTo(dependency)
                             .ByRelation<DomainModule.ContainsBuildingBlock>())
-                        .SingleOrDefault()))
+                        .FirstOrDefault()))
                 .ToHashSet();
             var usedElements = modelGraph
                 .Execute(query => query
@@ -45,14 +44,8 @@ public class DomainBuildingBlockPageFactory : MermaidPageFactory
                             .Elements<DomainModule>()
                             .RelatedTo(dependency)
                             .ByRelation<DomainModule.ContainsBuildingBlock>())
-                        .SingleOrDefault()))
+                        .FirstOrDefault()))
                 .ToHashSet();
-            var processSteps = modelGraph
-                .Execute(query => query
-                    .Elements<ProcessStep>()
-                    .RelatedTo(buildingBlock)
-                    .ByRelation<ProcessStep.DependsOnBuildingBlock>());
-            return new DomainBuildingBlockPage(outputDirectory, buildingBlock, module, usingElements, 
-                usedElements, processSteps);
+            return new DomainBuildingBlockPage(outputDirectory, buildingBlock, module, usingElements, usedElements);
         });
 }

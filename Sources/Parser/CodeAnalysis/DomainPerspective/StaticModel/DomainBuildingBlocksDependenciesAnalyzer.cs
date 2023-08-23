@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-namespace P3Model.Parser.CodeAnalysis.DomainPerspective;
+namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
 [UsedImplicitly]
 public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSymbol>,
@@ -48,6 +48,13 @@ public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSym
         var destinations = elements.For(destinationSymbol).OfType<DomainBuildingBlock>().ToList();
         foreach (var source in sources)
         foreach (var destination in destinations.Where(destination => !source.Equals(destination)))
-            yield return new DomainBuildingBlock.DependsOnBuildingBlock(source, destination);
+            yield return CreateRelation(source, destination);
     }
+
+    private static DomainBuildingBlock.DependsOnBuildingBlock CreateRelation(DomainBuildingBlock source,
+        DomainBuildingBlock destination) => source switch
+    {
+        ProcessStep processStep => new ProcessStep.DependsOnBuildingBlock(processStep, destination),
+        _ => new DomainBuildingBlock.DependsOnBuildingBlock(source, destination)
+    };
 }

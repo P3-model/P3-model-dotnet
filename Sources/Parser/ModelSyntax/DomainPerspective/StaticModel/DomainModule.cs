@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Text.Json.Serialization;
 using Humanizer;
-using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.CodeAnalysis;
-using P3Model.Parser.CodeAnalysis.DomainPerspective;
+using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
 namespace P3Model.Parser.Configuration.Analyzers;
 

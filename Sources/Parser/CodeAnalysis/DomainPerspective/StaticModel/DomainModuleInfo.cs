@@ -1,6 +1,6 @@
 using System;
 
-namespace P3Model.Parser.CodeAnalysis.DomainPerspective;
+namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
 public class DomainModuleInfo
 {

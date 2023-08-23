@@ -4,27 +4,35 @@ using System.IO;
 using System.Linq;
 using Humanizer;
 using Microsoft.CodeAnalysis;
+using P3Model.Annotations.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel.Ddd;
+namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
-public abstract class DddBuildingBlockAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
+public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnalyzer<IMethodSymbol>
 {
     protected abstract Type AttributeType { get; }
 
-    public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder)
+    public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder) => Analyze((ISymbol)symbol, modelBuilder);
+
+    public void Analyze(IMethodSymbol symbol, ModelBuilder modelBuilder) =>  Analyze((ISymbol)symbol, modelBuilder);
+
+    private void Analyze(ISymbol symbol, ModelBuilder modelBuilder)
     {
         // TODO: Support for duplicated symbols (partial classes)
         if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
             return;
-        var name = buildingBlockAttribute.GetConstructorArgumentValue<string?>() 
-                   ?? symbol.GetFullName().Humanize(LetterCasing.Title);
+        var name = GetName(symbol, buildingBlockAttribute);
         var descriptionFile = GetDescriptionFile(symbol);
         var buildingBlock = CreateBuildingBlock(name, descriptionFile);
         modelBuilder.Add(buildingBlock, symbol);
-        modelBuilder.Add(elements => GetRelations(symbol, buildingBlock, elements));
+        modelBuilder.Add(elements => GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements));
     }
+
+    private static string GetName(ISymbol symbol, AttributeData buildingBlockAttribute) =>
+        buildingBlockAttribute.GetConstructorArgumentValue<string?>(nameof(DomainBuildingBlockAttribute.Name))
+        ?? symbol.GetFullName().Humanize(LetterCasing.Title);
 
     private static FileInfo? GetDescriptionFile(ISymbol symbol) => symbol.Locations
         .Where(location => location.SourceTree != null)
@@ -41,8 +49,8 @@ public abstract class DddBuildingBlockAnalyzer : SymbolAnalyzer<INamedTypeSymbol
 
     protected abstract DomainBuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile);
 
-    private static IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
-        ElementsProvider elements)
+    protected virtual IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock, 
+        AttributeData buildingBlockAttribute, ElementsProvider elements)
     {
         var module = elements.For(symbol.ContainingNamespace)
             .OfType<DomainModule>()

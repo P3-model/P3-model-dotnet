@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using Humanizer;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
@@ -14,19 +13,15 @@ public class DomainBuildingBlockPage : MermaidPageBase
     private readonly DomainModule? _module;
     private readonly IReadOnlySet<(DomainBuildingBlock BuildingBlock, DomainModule? Module)> _usingElements;
     private readonly IReadOnlySet<(DomainBuildingBlock BuildingBlock, DomainModule? Module)> _usedElements;
-    private readonly IReadOnlySet<ProcessStep> _processSteps;
 
     public DomainBuildingBlockPage(string outputDirectory, DomainBuildingBlock buildingBlock, DomainModule? module,
-        
         IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usingElements,
-        IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usedElements,
-        IReadOnlySet<ProcessStep> processSteps) : base(outputDirectory)
+        IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usedElements) : base(outputDirectory)
     {
         _buildingBlock = buildingBlock;
         _module = module;
         _usingElements = usingElements;
         _usedElements = usedElements;
-        _processSteps = processSteps;
     }
 
     protected override string Description =>
@@ -88,7 +83,12 @@ public class DomainBuildingBlockPage : MermaidPageBase
             });
         }
         mermaidWriter.WriteHeading("Related process steps", 3);
-        if (_processSteps.Count == 0)
+        var processSteps = _usingElements
+            .Select(e => e.BuildingBlock)
+            .OfType<ProcessStep>()
+            .OrderBy(step => step.Name)
+            .ToList();
+        if (processSteps.Count == 0)
         {
             mermaidWriter.WriteLine("No related processes were found.");
         }
@@ -97,7 +97,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
                 var buildingBlockId = flowchartWriter.WriteRectangle(_buildingBlock.Name, Style.DomainPerspective);
-                foreach (var processStep in _processSteps.OrderBy(step => step.Name))
+                foreach (var processStep in processSteps.OrderBy(step => step.Name))
                 {
                     var processStepId = flowchartWriter.WriteStadiumShape(processStep.Name, Style.DomainPerspective);
                     flowchartWriter.WriteArrow(buildingBlockId, processStepId, "is used in");
@@ -115,9 +115,12 @@ public class DomainBuildingBlockPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
         DomainBuildingBlockPage buildingBlockPage => _usedElements
-            .Select(d => d.BuildingBlock)
+            .Select(e => e.BuildingBlock)
             .Contains(buildingBlockPage.MainElement),
-        ProcessStepPage processStepPage => _processSteps.Contains(processStepPage.MainElement),
+        ProcessStepPage processStepPage => _usingElements
+            .Select(e => e.BuildingBlock)
+            .OfType<ProcessStep>()
+            .Contains(processStepPage.MainElement),
         _ => false
     };
 

@@ -129,6 +129,12 @@ public static class SymbolExtensions
         return true;
     }
 
+    public static string GetFullName(this ISymbol symbol) => symbol switch
+    {
+        INamedTypeSymbol typeSymbol => GetFullName(typeSymbol),
+        _ => symbol.Name
+    };
+
     public static string GetFullName(this INamedTypeSymbol symbol) =>
         symbol.ContainingSymbol is INamedTypeSymbol containingSymbol
             ? $"{containingSymbol.GetFullName()} {symbol.Name}"

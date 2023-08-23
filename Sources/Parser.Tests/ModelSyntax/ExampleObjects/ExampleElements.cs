@@ -29,7 +29,7 @@ public class ExampleElements : IEnumerable<Element>
         new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleF")),
         new ExternalSoftwareSystem("ExampleExternalSystem"),
         new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
-        new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA")),
+        new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA"), null),
         new Tier("ExampleTier")
     };
     

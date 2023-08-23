@@ -3,10 +3,9 @@ using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-namespace P3Model.Parser.CodeAnalysis.DomainPerspective;
+namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
 [UsedImplicitly]
 public class ProcessStepDependenciesAnalyzer : SymbolAnalyzer<IFieldSymbol>,

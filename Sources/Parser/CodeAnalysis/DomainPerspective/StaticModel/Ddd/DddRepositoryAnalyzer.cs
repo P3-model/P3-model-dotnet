@@ -8,7 +8,7 @@ using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel.Ddd;
 namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel.Ddd;
 
 [UsedImplicitly]
-public class DddRepositoryAnalyzer : DddBuildingBlockAnalyzer
+public class DddRepositoryAnalyzer : DomainBuildingBlockAnalyzerBase
 {
     protected override Type AttributeType => typeof(DddRepositoryAttribute);
 

@@ -21,7 +21,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                     .Elements<Process>()
                     .RelatedTo(step)
                     .ByRelation<Process.ContainsProcessStep>())
-                .SingleOrDefault();
+                .FirstOrDefault();
             // TODO: warning logging if more than one element (non unique names o process steps)
             var module = modelGraph.Execute(query => query
                     .Elements<DomainModule>()

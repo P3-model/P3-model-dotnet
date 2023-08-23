@@ -8,9 +8,9 @@ namespace P3Model.Annotations.Domain.StaticModel;
                 AttributeTargets.Struct |
                 AttributeTargets.Enum |
                 AttributeTargets.Delegate)]
-public class ModelBuildingBlockAttribute : Attribute
+public class DomainBuildingBlockAttribute : Attribute
 {
     public string? Name { get; }
 
-    public ModelBuildingBlockAttribute(string? name = null) => Name = name;
+    public DomainBuildingBlockAttribute(string? name = null) => Name = name;
 }

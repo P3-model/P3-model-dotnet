@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using P3Model.Annotations.Domain.StaticModel;
 
 namespace P3Model.Annotations.Domain.DynamicModel;
 
@@ -7,21 +8,18 @@ namespace P3Model.Annotations.Domain.DynamicModel;
                 AttributeTargets.Interface |
                 AttributeTargets.Delegate |
                 AttributeTargets.Method)]
-public class ProcessStepAttribute : Attribute
+public class ProcessStepAttribute : DomainBuildingBlockAttribute
 {
-    public string? Name { get; }
     public string? Process { get; init; }
     public string[] NextSteps { get; init; }
 
-    public ProcessStepAttribute(string? name = null)
+    public ProcessStepAttribute(string? name = null) : base(name)
     {
-        Name = name;
         NextSteps = Array.Empty<string>();
     }
 
-    public ProcessStepAttribute(string name, string process)
+    public ProcessStepAttribute(string name, string process) : base(name)
     {
-        Name = name;
         Process = process;
         NextSteps = Array.Empty<string>();
     }

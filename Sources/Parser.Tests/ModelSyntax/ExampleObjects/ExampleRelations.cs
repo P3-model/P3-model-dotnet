@@ -15,7 +15,7 @@ public class ExampleRelations : IEnumerable<Relation>
     {
         new Actor.UsesProcessStep(
             new Actor("ExampleActor"),
-            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA"))),
+            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA"), null)),
         new BusinessOrganizationalUnit.OwnsDomainModule(
             new BusinessOrganizationalUnit("ExampleBusinessOrganizationalUnit"),
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
@@ -36,13 +36,13 @@ public class ExampleRelations : IEnumerable<Relation>
             new DomainBuildingBlock("ExampleDomainBuildingBlock", null)),
         new DomainModule.ContainsProcessStep(
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
-            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA"))),
+            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA"), null)),
         new DomainModule.IsDeployedInDeployableUnit(
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
             new DeployableUnit("ExampleDeployableUnit")),
         new Process.ContainsProcessStep(
             new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
-            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA"))),
+            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA"), null)),
         new Process.ContainsSubProcess(
             new Process(HierarchyId.FromParts("ExampleProcessX")),
             new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY"))),
@@ -50,10 +50,10 @@ public class ExampleRelations : IEnumerable<Relation>
             new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
             new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessZ"))),
         new ProcessStep.HasNextStep(
-            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA")),
-            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepB"))),
+            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA"), null),
+            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepB"), null)),
             new ProcessStep.DependsOnBuildingBlock(
-            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepZ")),
+            new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepZ"), null),
             new DomainBuildingBlock("ExampleBuildingBlock", null)),
         new Tier.ContainsDeployableUnit(
             new Tier("ExampleTier"),

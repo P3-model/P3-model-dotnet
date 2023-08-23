@@ -9,7 +9,7 @@ using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 
-namespace P3Model.Parser.CodeAnalysis.DomainPerspective;
+namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
 // TODO: support for defining domain modules structure without namespaces
 public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbol>
