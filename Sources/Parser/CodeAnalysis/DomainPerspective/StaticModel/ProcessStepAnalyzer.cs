@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
-using P3Model.Annotations.Domain.DynamicModel;
 using P3Model.Annotations.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
@@ -22,9 +21,9 @@ public class ProcessStepAnalyzer : DomainBuildingBlockAnalyzerBase
     protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) =>
         new ProcessStep(module, name);
 
-    protected override IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
+    protected override IEnumerable<Relation> GetRelations(DomainBuildingBlock buildingBlock,
         AttributeData buildingBlockAttribute, ElementsProvider elements) => base
-        .GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements)
+        .GetRelations(buildingBlock, buildingBlockAttribute, elements)
         .Union(GetRelationsToNextSteps((ProcessStep)buildingBlock, buildingBlockAttribute, elements))
         .Union(GetRelationsToProcesses((ProcessStep)buildingBlock, buildingBlockAttribute, elements));
 

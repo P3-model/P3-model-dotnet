@@ -28,11 +28,16 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
         // TODO: Support for duplicated symbols (partial classes)
         if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
             return;
-        _moduleFinder.TryFind(symbol, out var module);
+        var hasModule = _moduleFinder.TryFind(symbol, out var module);
         var name = GetName(symbol, buildingBlockAttribute);
         var buildingBlock = CreateBuildingBlock(module, name);
         modelBuilder.Add(buildingBlock, symbol);
-        modelBuilder.Add(elements => GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements));
+        modelBuilder.Add(elements => GetRelations(buildingBlock, buildingBlockAttribute, elements));
+        if (hasModule)
+        {
+            modelBuilder.Add(module!, symbol);
+            modelBuilder.Add(new DomainModule.ContainsBuildingBlock(module!, buildingBlock));
+        }
         AddDescriptionTrait(symbol, buildingBlock, modelBuilder);
     }
 
@@ -42,14 +47,10 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
 
     protected abstract DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name);
 
-    protected virtual IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock, 
+    protected virtual IEnumerable<Relation> GetRelations(DomainBuildingBlock buildingBlock,
         AttributeData buildingBlockAttribute, ElementsProvider elements)
     {
-        var module = elements.For(symbol.ContainingNamespace)
-            .OfType<DomainModule>()
-            .SingleOrDefault();
-        if (module != null)
-            yield return new DomainModule.ContainsBuildingBlock(module, buildingBlock);
+        yield break;
     }
     
     private static void AddDescriptionTrait(ISymbol symbol, DomainBuildingBlock buildingBlock, ModelBuilder modelBuilder)
