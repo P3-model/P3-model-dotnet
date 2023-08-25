@@ -44,10 +44,22 @@ public class DomainModulePageFactory : MermaidPageFactory
                     .Elements<Process>()
                     .RelatedToAny(steps)
                     .ByRelation<Process.ContainsProcessStep>());
-                var deployableUnits = modelGraph.Execute(query => query
+                var ancestorDeployableUnit = modelGraph.Execute(query => query
                     .Elements<DeployableUnit>()
-                    .RelatedTo(module)
+                    .RelatedToAny(subQuery => subQuery
+                        .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
+                    .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>(filter => filter
+                        .MaxBy(r => r.Source)));
+                var descendantsDeployableUnits = modelGraph.Execute(query => query
+                    .Elements<DeployableUnit>()
+                    .RelatedToAny(subQuery => subQuery
+                        .Descendants<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>());
+                var deployableUnits = ancestorDeployableUnit != null
+                    ? descendantsDeployableUnits
+                        .Union(new[] { ancestorDeployableUnit })
+                        .ToHashSet()
+                    : descendantsDeployableUnits;
                 var developmentTeams = modelGraph.Execute(query => query
                     .Elements<DevelopmentTeam>()
                     .RelatedToAny(subQuery => subQuery
