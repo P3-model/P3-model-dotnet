@@ -10,14 +10,17 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 public class DomainBuildingBlockPageFactory : MermaidPageFactory
 {
     public IEnumerable<MermaidPage> Create(string outputDirectory, ModelGraph modelGraph) => modelGraph
-        .Execute(query => query.AllElements<DomainBuildingBlock>())
+        .Execute(query => query
+            .AllElements<DomainBuildingBlock>())
+        .Where(buildingBlock => buildingBlock is not ProcessStep)
         .Select(buildingBlock =>
         {
             var module = modelGraph
                 .Execute(query => query
-                    .Elements<DomainModule>().RelatedTo(buildingBlock)
+                    .Elements<DomainModule>()
+                    .RelatedTo(buildingBlock)
                     .ByRelation<DomainModule.ContainsBuildingBlock>())
-                .FirstOrDefault();
+                .SingleOrDefault();
             var usingElements = modelGraph
                 .Execute(query => query
                     .Elements<DomainBuildingBlock>()
@@ -30,7 +33,7 @@ public class DomainBuildingBlockPageFactory : MermaidPageFactory
                             .Elements<DomainModule>()
                             .RelatedTo(dependency)
                             .ByRelation<DomainModule.ContainsBuildingBlock>())
-                        .FirstOrDefault()))
+                        .SingleOrDefault()))
                 .ToHashSet();
             var usedElements = modelGraph
                 .Execute(query => query
@@ -44,7 +47,7 @@ public class DomainBuildingBlockPageFactory : MermaidPageFactory
                             .Elements<DomainModule>()
                             .RelatedTo(dependency)
                             .ByRelation<DomainModule.ContainsBuildingBlock>())
-                        .FirstOrDefault()))
+                        .SingleOrDefault()))
                 .ToHashSet();
             return new DomainBuildingBlockPage(outputDirectory, buildingBlock, module, usingElements, usedElements);
         });

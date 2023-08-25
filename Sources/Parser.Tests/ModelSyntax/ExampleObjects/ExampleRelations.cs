@@ -37,9 +37,6 @@ public class ExampleRelations : IEnumerable<Relation>
         new DomainModule.ContainsBuildingBlock(
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
             new DomainBuildingBlock(DomainModule, "ExampleDomainBuildingBlock")),
-        new DomainModule.ContainsProcessStep(
-            new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
-            new ProcessStep(DomainModule, "StepA")),
         new DomainModule.IsDeployedInDeployableUnit(
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
             new DeployableUnit("ExampleDeployableUnit")),

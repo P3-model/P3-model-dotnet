@@ -172,6 +172,7 @@ public class DomainModulePage : MermaidPageBase
     {
         DomainModulePage modulePage => _children.Contains(modulePage.MainElement) ,
         DomainBuildingBlockPage buildingBlockPage => _directBuildingBlocks.Contains(buildingBlockPage.MainElement),
+        ProcessStepPage stepPage => _directBuildingBlocks.Contains(stepPage.MainElement),
         ProcessPage processPage => _processes.Contains(processPage.MainElement),
         DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),

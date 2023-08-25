@@ -23,9 +23,6 @@ public record DomainModule(HierarchyId Id) : HierarchyElement
 
     public record ContainsBuildingBlock(DomainModule Source, DomainBuildingBlock Destination) 
         : Relation<DomainModule, DomainBuildingBlock>;
-    
-    public record ContainsProcessStep(DomainModule Source, ProcessStep Destination) 
-        : Relation<DomainModule, ProcessStep>;
 
     public record IsDeployedInDeployableUnit(DomainModule Source, DeployableUnit Destination) 
         : Relation<DomainModule, DeployableUnit>;

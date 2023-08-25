@@ -43,8 +43,9 @@ public class ProcessPageFactory : MermaidPageFactory
                     .ByReverseRelation<Process.ContainsProcessStep>());
                 var modules = modelGraph.Execute(query => query
                     .Elements<DomainModule>()
-                    .RelatedToAny(allSteps)
-                    .ByRelation<DomainModule.ContainsProcessStep>());
+                    // TODO: passing more specific objects as an argument to RelatedTo / RelatedToAny
+                    .RelatedToAny(allSteps.Cast<DomainBuildingBlock>().ToHashSet())
+                    .ByRelation<DomainModule.ContainsBuildingBlock>());
                 var deployableUnits = modelGraph.Execute(query => query
                     .Elements<DeployableUnit>()
                     .RelatedToAny(modules)

@@ -44,11 +44,11 @@ public class ProcessStepPage : MermaidPageBase
 - related deployable unit
 - engaged people: actors, development teams, business stakeholders";
 
-    public override string RelativeFilePath => _process is null
-        ? Path.Combine("Domain", "Processes", $"{_step.Name.Dehumanize()}.md")
-        : Path.Combine("Domain", "Processes", Path.Combine(_process.Id.Parts.ToArray()),
+    public override string RelativeFilePath => _step.Module is null
+        ? Path.Combine("Domain", "Concepts", $"{_step.Name.Dehumanize()}.md")
+        : Path.Combine("Domain", "Concepts", Path.Combine(_step.Module.Id.Parts.ToArray()),
             $"{_step.Name.Dehumanize()}.md");
-
+    
     public override Element MainElement => _step;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
@@ -140,6 +140,7 @@ public class ProcessStepPage : MermaidPageBase
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
+        DomainBuildingBlockPage buildingBlockPage => _buildingBlocks.Contains(buildingBlockPage.MainElement),
         DeployableUnitPage deployableUnitPage => _deployableUnit?.Equals(deployableUnitPage.MainElement) ?? false,
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
         BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage
@@ -147,6 +148,10 @@ public class ProcessStepPage : MermaidPageBase
         _ => false
     };
 
-    protected override bool IncludeInZoomOutPages(MermaidPage page) =>
-        page is ProcessPage processPage && processPage.MainElement!.Equals(_process);
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => page switch
+    {
+        DomainModulePage modulePage => modulePage.MainElement!.Equals(_step.Module),
+        ProcessPage processPage => processPage.MainElement!.Equals(_process),
+        _ => false
+    };
 }
