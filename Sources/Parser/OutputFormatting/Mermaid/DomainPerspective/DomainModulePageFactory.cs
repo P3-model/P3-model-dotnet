@@ -36,10 +36,13 @@ public class DomainModulePageFactory : MermaidPageFactory
                     .RelatedToAny(subQuery => subQuery
                         .DescendantsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByReverseRelation<DomainModule.ContainsBuildingBlock>());
-                var steps = modelGraph.Execute(query => query
-                    .Elements<ProcessStep>()
-                    .RelatedToAny(allBuildingBlocks)
-                    .ByRelation<ProcessStep.DependsOnBuildingBlock>());
+                var steps = allBuildingBlocks
+                    .OfType<ProcessStep>()
+                    .Union(modelGraph.Execute(query => query
+                        .Elements<ProcessStep>()
+                        .RelatedToAny(allBuildingBlocks)
+                        .ByRelation<ProcessStep.DependsOnBuildingBlock>()))
+                    .ToHashSet();
                 var processes = modelGraph.Execute(query => query
                     .Elements<Process>()
                     .RelatedToAny(steps)
