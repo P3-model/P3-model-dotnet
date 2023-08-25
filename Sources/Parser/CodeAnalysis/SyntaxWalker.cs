@@ -58,6 +58,13 @@ internal class SyntaxWalker : CSharpSyntaxWalker
         base.VisitStructDeclaration(node);
     }
 
+    public override void VisitEnumDeclaration(EnumDeclarationSyntax node)
+    {
+        var symbol = _semanticModel.GetDeclaredSymbol(node) ?? throw new InvalidOperationException();
+        Analyze(symbol);
+        base.VisitEnumDeclaration(node);
+    }
+
     public override void VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
     {
         var symbol = _semanticModel.GetDeclaredSymbol(node) ?? throw new InvalidOperationException();
