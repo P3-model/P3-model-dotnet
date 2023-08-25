@@ -64,7 +64,7 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbo
         // TODO: warning logging if more than one
         var parentModule = elements
             .OfType<ElementInfo<DomainModule>>()
-            .Where(info => info.Symbols.Contains(symbol.ContainingNamespace, SymbolEqualityComparer.Default))
+            .Where(info => info.Symbols.Contains(symbol.ContainingNamespace))
             .Select(info => info.Element)
             .SingleOrDefault();
         if (parentModule != null)
