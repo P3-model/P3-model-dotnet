@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
@@ -17,8 +16,8 @@ public class ProcessStepAnalyzer : DomainBuildingBlockAnalyzerBase
 {
     protected override Type AttributeType => typeof(ProcessStepAttribute);
 
-    protected override DomainBuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile) =>
-        new ProcessStep(HierarchyId.FromValue(name), descriptionFile);
+    protected override DomainBuildingBlock CreateBuildingBlock(string name) =>
+        new ProcessStep(HierarchyId.FromValue(name));
 
     protected override IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
         AttributeData buildingBlockAttribute, ElementsProvider elements) => base

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.ModelQuerying;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -14,6 +15,11 @@ public class DomainGlossaryPageFactory : MermaidPageFactory
             modelGraph.Execute(query => query
                 .Hierarchy<DomainModule, DomainModule.ContainsDomainModule>()),
             modelGraph.Execute(query => query
-                .Relations<DomainModule.ContainsBuildingBlock>()));
+                    .Relations<DomainModule.ContainsBuildingBlock>())
+                .Select(r => new DomainGlossaryPage.BuildingBlockInfo(r.Destination, r.Source, modelGraph
+                    .Execute(traitQuery => traitQuery
+                        .Traits<DomainBuildingBlockDescription>(trait => trait.Element.Equals(r.Destination)))
+                    .SingleOrDefault()))
+                .ToList());
     }
 }

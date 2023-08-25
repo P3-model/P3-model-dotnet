@@ -1,10 +1,8 @@
-using System.IO;
 using Humanizer;
 
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-public record ProcessStep(HierarchyId Id, FileInfo? DescriptionFile) : DomainBuildingBlock(
-    Id.LastPart.Humanize(LetterCasing.Title), DescriptionFile)
+public record ProcessStep(HierarchyId Id) : DomainBuildingBlock(Id.LastPart.Humanize(LetterCasing.Title))
 {
     public new record DependsOnBuildingBlock(ProcessStep Source, DomainBuildingBlock Destination) : 
         DomainBuildingBlock.DependsOnBuildingBlock(Source, Destination), 

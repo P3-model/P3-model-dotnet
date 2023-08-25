@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using JetBrains.Annotations;
 using P3Model.Annotations.Domain.StaticModel.DDD;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -12,6 +11,5 @@ public class DddFactoryAnalyzer : DomainBuildingBlockAnalyzerBase
 {
     protected override Type AttributeType => typeof(DddFactoryAttribute);
 
-    protected override DomainBuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile) =>
-        new DddFactory(name, descriptionFile);
+    protected override DomainBuildingBlock CreateBuildingBlock(string name) => new DddFactory(name);
 }

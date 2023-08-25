@@ -24,16 +24,37 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
         if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
             return;
         var name = GetName(symbol, buildingBlockAttribute);
-        var descriptionFile = GetDescriptionFile(symbol);
-        var buildingBlock = CreateBuildingBlock(name, descriptionFile);
+        var buildingBlock = CreateBuildingBlock(name);
         modelBuilder.Add(buildingBlock, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements));
+        AddDescriptionTrait(symbol, buildingBlock, modelBuilder);
     }
 
     private static string GetName(ISymbol symbol, AttributeData buildingBlockAttribute) =>
         buildingBlockAttribute.GetConstructorArgumentValue<string?>(nameof(DomainBuildingBlockAttribute.Name))
         ?? symbol.GetFullName().Humanize(LetterCasing.Title);
 
+    protected abstract DomainBuildingBlock CreateBuildingBlock(string name);
+
+    protected virtual IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock, 
+        AttributeData buildingBlockAttribute, ElementsProvider elements)
+    {
+        var module = elements.For(symbol.ContainingNamespace)
+            .OfType<DomainModule>()
+            .SingleOrDefault();
+        if (module != null)
+            yield return new DomainModule.ContainsBuildingBlock(module, buildingBlock);
+    }
+    
+    private static void AddDescriptionTrait(ISymbol symbol, DomainBuildingBlock buildingBlock, ModelBuilder modelBuilder)
+    {
+        var descriptionFile = GetDescriptionFile(symbol);
+        if (descriptionFile == null) 
+            return;
+        var descriptionTrait = new DomainBuildingBlockDescription(buildingBlock, descriptionFile);
+        modelBuilder.Add(descriptionTrait);
+    }
+    
     private static FileInfo? GetDescriptionFile(ISymbol symbol) => symbol.Locations
         .Where(location => location.SourceTree != null)
         .Select(location =>
@@ -46,16 +67,4 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
             return new FileInfo(path);
         })
         .SingleOrDefault(file => file.Exists);
-
-    protected abstract DomainBuildingBlock CreateBuildingBlock(string name, FileInfo? descriptionFile);
-
-    protected virtual IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock, 
-        AttributeData buildingBlockAttribute, ElementsProvider elements)
-    {
-        var module = elements.For(symbol.ContainingNamespace)
-            .OfType<DomainModule>()
-            .SingleOrDefault();
-        if (module != null)
-            yield return new DomainModule.ContainsBuildingBlock(module, buildingBlock);
-    }
 }

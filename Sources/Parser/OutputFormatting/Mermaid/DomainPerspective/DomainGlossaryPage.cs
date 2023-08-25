@@ -9,7 +9,7 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 public class DomainGlossaryPage : MermaidPageBase
 {
     private readonly Hierarchy<DomainModule> _modulesHierarchy;
-    private readonly IReadOnlySet<DomainModule.ContainsBuildingBlock> _containsBuildingBlockRelations;
+    private readonly IReadOnlyCollection<BuildingBlockInfo> _buildingBlocks;
 
     public override string Header => "Domain Glossary";
     protected override string Description => "This view contains definitions of key domain terms.";
@@ -18,11 +18,11 @@ public class DomainGlossaryPage : MermaidPageBase
     public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 
     public DomainGlossaryPage(string outputDirectory, Hierarchy<DomainModule> modulesHierarchy,
-        IReadOnlySet<DomainModule.ContainsBuildingBlock> containsBuildingBlockRelations)
+        IReadOnlyCollection<BuildingBlockInfo> buildingBlocks)
         : base(outputDirectory)
     {
         _modulesHierarchy = modulesHierarchy;
-        _containsBuildingBlockRelations = containsBuildingBlockRelations;
+        _buildingBlocks = buildingBlocks;
     }
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
@@ -39,23 +39,23 @@ public class DomainGlossaryPage : MermaidPageBase
         foreach (var childModule in _modulesHierarchy.GetChildrenFor(parentModule).OrderBy(r => r.Name))
             Write(childModule, mermaidWriter, level + 1);
 
-        foreach (var buildingBlock in _containsBuildingBlockRelations
-                     .Where(r => r.Source.Equals(parentModule))
-                     .Select(r => r.Destination)
-                     .OrderBy(r => r.Name))
+        foreach (var buildingBlockInfo in _buildingBlocks
+                     .Where(r => r.Module.Equals(parentModule))
+                     .OrderBy(r => r.BuildingBlock.Name))
         {
-            mermaidWriter.WriteInline($"**{buildingBlock.Name}**");
-            WriteDescriptionLink(mermaidWriter, buildingBlock);
+            mermaidWriter.WriteInline($"**{buildingBlockInfo.BuildingBlock.Name}**");
+            WriteDescriptionLink(mermaidWriter, buildingBlockInfo.BuildingBlock, buildingBlockInfo.DescriptionTrait);
             mermaidWriter.WriteLineBreak();
             mermaidWriter.WriteLineBreak();
         }
     }
 
-    private void WriteDescriptionLink(MermaidWriter mermaidWriter, DomainBuildingBlock buildingBlock)
+    private void WriteDescriptionLink(MermaidWriter mermaidWriter, DomainBuildingBlock buildingBlock, 
+        DomainBuildingBlockDescription? descriptionTrait)
     {
-        if (buildingBlock.DescriptionFile is null)
+        if (descriptionTrait is null)
             return;
-        var sourceFileInfo = buildingBlock.DescriptionFile;
+        var sourceFileInfo = descriptionTrait.DescriptionFile;
         var relativeFilePath = Path.Combine("Domain", "Glossary", sourceFileInfo.Name);
         var fileInfo = sourceFileInfo.CopyTo(GetAbsolutePath(relativeFilePath));
         var pathRelativeToPageFile = GetPathRelativeToPageFile(fileInfo.FullName);
@@ -67,4 +67,8 @@ public class DomainGlossaryPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => false;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
+
+    public record BuildingBlockInfo(DomainBuildingBlock BuildingBlock, 
+        DomainModule Module,
+        DomainBuildingBlockDescription? DescriptionTrait);
 }

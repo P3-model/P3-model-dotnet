@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel.Ddd;
 
-public record DddValueObject(string Name, FileInfo? DescriptionFile) : DomainBuildingBlock(Name, DescriptionFile);
+public record DddValueObject(string Name) : DomainBuildingBlock(Name);

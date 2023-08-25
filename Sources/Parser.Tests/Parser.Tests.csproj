@@ -27,4 +27,10 @@
       <ProjectReference Include="..\Parser\Parser.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="ModelSyntax\ExampleObjects\ExampleDomainBuildingBlockDescription.md">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
