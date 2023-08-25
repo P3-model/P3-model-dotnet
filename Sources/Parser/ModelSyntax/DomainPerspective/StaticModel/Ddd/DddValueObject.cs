@@ -1,3 +1,3 @@
 namespace P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel.Ddd;
 
-public record DddValueObject(string Name) : DomainBuildingBlock(Name);
+public record DddValueObject(DomainModule? Module, string Name) : DomainBuildingBlock(Module, Name);

@@ -11,5 +11,8 @@ public class DddDomainServiceAnalyzer : DomainBuildingBlockAnalyzerBase
 {
     protected override Type AttributeType => typeof(DddDomainServiceAttribute);
 
-    protected override DomainBuildingBlock CreateBuildingBlock(string name) => new DddDomainService(name);
+    public DddDomainServiceAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
+
+    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
+        new DddDomainService(module, name);
 }

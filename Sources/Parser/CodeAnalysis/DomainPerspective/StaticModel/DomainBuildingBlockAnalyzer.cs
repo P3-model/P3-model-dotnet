@@ -9,6 +9,9 @@ namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 public class DomainBuildingBlockAnalyzer : DomainBuildingBlockAnalyzerBase
 {
     protected override Type AttributeType => typeof(DomainBuildingBlockAttribute);
-    
-    protected override DomainBuildingBlock CreateBuildingBlock(string name) => new(name);
+
+    public DomainBuildingBlockAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
+
+    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
+        new(module, name);
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.CodeAnalysis;
 using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
+using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel.Ddd;
 
 namespace P3Model.Parser.Configuration.Analyzers;
 
@@ -20,10 +21,26 @@ public class AnalyzersBuilder
         configure?.Invoke(builder);
         _symbolAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<SymbolAnalyzer>());
         var options = builder.Build();
-        var domainModuleAnalyzer = new DomainModuleAnalyzer(
-            options.NamespaceOptions.Predicate,
-            options.NamespaceOptions.Filter);
+        var domainModuleFinder = new DomainModuleFinders(
+            new NamespaceDomainModuleFinder(options.NamespaceOptions.Predicate, options.NamespaceOptions.Filter));
+        var domainModuleAnalyzer = new DomainModuleAnalyzer(domainModuleFinder);
+        var domainBuildingBlockAnalyzer = new DomainBuildingBlockAnalyzer(domainModuleFinder);
+        var dddAggregateAnalyzer = new DddAggregateAnalyzer(domainModuleFinder);
+        var dddDomainServiceAnalyzer = new DddDomainServiceAnalyzer(domainModuleFinder);
+        var dddEntityAnalyzer = new DddEntityAnalyzer(domainModuleFinder);
+        var dddFactoryAnalyzer = new DddFactoryAnalyzer(domainModuleFinder);
+        var dddRepositoryAnalyzer = new DddRepositoryAnalyzer(domainModuleFinder);
+        var dddValueObjectAnalyzer = new DddValueObjectAnalyzer(domainModuleFinder);
+        var processStepAnalyzer = new ProcessStepAnalyzer(domainModuleFinder);
         _symbolAnalyzers.Add(domainModuleAnalyzer);
+        _symbolAnalyzers.Add(domainBuildingBlockAnalyzer);
+        _symbolAnalyzers.Add(dddAggregateAnalyzer);
+        _symbolAnalyzers.Add(dddDomainServiceAnalyzer);
+        _symbolAnalyzers.Add(dddEntityAnalyzer);
+        _symbolAnalyzers.Add(dddFactoryAnalyzer);
+        _symbolAnalyzers.Add(dddRepositoryAnalyzer);
+        _symbolAnalyzers.Add(dddValueObjectAnalyzer);
+        _symbolAnalyzers.Add(processStepAnalyzer);
         _fileAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<FileAnalyzer>());
         _fileAnalyzers.Add(domainModuleAnalyzer);
         return this;

@@ -1,7 +1,6 @@
 using System.Collections;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
-using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel.Ddd;
 
 namespace Parser.Tests.ModelSyntax.ExampleObjects;
 
@@ -9,10 +8,13 @@ public class ExampleTraits : IEnumerable<Trait>
 {
     private readonly Dictionary<Type, Trait> _traits = new();
 
+    private static readonly DomainModule DomainModule =
+        new(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleC"));
+    
     public static readonly ExampleTraits All = new()
     {
         new DomainBuildingBlockDescription(
-            new DomainBuildingBlock("ExampleDomainBuildingBlock"),
+            new DomainBuildingBlock(DomainModule, "ExampleDomainBuildingBlock"),
             new FileInfo("ModelSyntax/ExampleObjects/ExampleDomainBuildingBlockDescription.md"))   
     };
     

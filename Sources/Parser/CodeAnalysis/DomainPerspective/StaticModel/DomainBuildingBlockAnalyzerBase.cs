@@ -12,6 +12,11 @@ namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
 public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnalyzer<IMethodSymbol>
 {
+    private readonly DomainModuleFinder _moduleFinder;
+    
+    protected DomainBuildingBlockAnalyzerBase(DomainModuleFinder moduleFinder) => 
+        _moduleFinder = moduleFinder;
+
     protected abstract Type AttributeType { get; }
 
     public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder) => Analyze((ISymbol)symbol, modelBuilder);
@@ -23,8 +28,9 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
         // TODO: Support for duplicated symbols (partial classes)
         if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
             return;
+        _moduleFinder.TryFind(symbol, out var module);
         var name = GetName(symbol, buildingBlockAttribute);
-        var buildingBlock = CreateBuildingBlock(name);
+        var buildingBlock = CreateBuildingBlock(module, name);
         modelBuilder.Add(buildingBlock, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements));
         AddDescriptionTrait(symbol, buildingBlock, modelBuilder);
@@ -34,7 +40,7 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
         buildingBlockAttribute.GetConstructorArgumentValue<string?>(nameof(DomainBuildingBlockAttribute.Name))
         ?? symbol.GetFullName().Humanize(LetterCasing.Title);
 
-    protected abstract DomainBuildingBlock CreateBuildingBlock(string name);
+    protected abstract DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name);
 
     protected virtual IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock, 
         AttributeData buildingBlockAttribute, ElementsProvider elements)

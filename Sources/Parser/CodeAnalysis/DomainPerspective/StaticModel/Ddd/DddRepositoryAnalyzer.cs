@@ -11,5 +11,8 @@ public class DddRepositoryAnalyzer : DomainBuildingBlockAnalyzerBase
 {
     protected override Type AttributeType => typeof(DddRepositoryAttribute);
 
-    protected override DomainBuildingBlock CreateBuildingBlock(string name) => new DddRepository(name);
+    public DddRepositoryAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
+
+    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
+        new DddRepository(module, name);
 }

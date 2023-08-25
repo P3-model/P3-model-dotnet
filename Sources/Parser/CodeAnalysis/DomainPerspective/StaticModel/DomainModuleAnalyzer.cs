@@ -14,15 +14,9 @@ namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 // TODO: support for defining domain modules structure without namespaces
 public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbol>
 {
-    private readonly Func<INamespaceSymbol, bool> _isDomainModelNamespace;
-    private readonly Func<INamespaceSymbol, string> _getModulesHierarchy;
+    private readonly DomainModuleFinder _domainModuleFinder;
 
-    public DomainModuleAnalyzer(Func<INamespaceSymbol, bool> isDomainModelNamespace,
-        Func<INamespaceSymbol, string> getModulesHierarchy)
-    {
-        _isDomainModelNamespace = isDomainModelNamespace;
-        _getModulesHierarchy = getModulesHierarchy;
-    }
+    public DomainModuleAnalyzer(DomainModuleFinder domainModuleFinder) => _domainModuleFinder = domainModuleFinder;
 
     public async Task Analyze(FileInfo fileInfo, ModelBuilder modelBuilder)
     {
@@ -56,12 +50,8 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbo
 
     public void Analyze(INamespaceSymbol symbol, ModelBuilder modelBuilder)
     {
-        if (symbol.IsGlobalNamespace || !_isDomainModelNamespace(symbol))
+        if (!_domainModuleFinder.TryFind(symbol, out var module))
             return;
-        var modulesHierarchy = _getModulesHierarchy(symbol);
-        if (string.IsNullOrEmpty(modulesHierarchy))
-            return;
-        var module = new DomainModule(HierarchyId.FromValue(modulesHierarchy));
         modelBuilder.Add(module, symbol);
         // TODO: relation to teams and business units defined at namespace level
         //  Requires parsing types within the namespace annotated with DevelopmentOwnerAttribute and ApplyOnNamespace == true.

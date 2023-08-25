@@ -12,24 +12,27 @@ public class ExampleElements : IEnumerable<Element>
 {
     private readonly Dictionary<Type, Element> _elements = new();
 
+    private static readonly DomainModule DomainModule =
+        new(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleC"));
+
     public static readonly ExampleElements All = new()
     {
         new Actor("ExampleActor"),
         new BusinessOrganizationalUnit("ExampleBusinessOrganizationalUnit"),
         new CodeStructure("ExampleCodeStructure"),
-        new DddAggregate("ExampleDddAggregate"),
-        new DddDomainService("ExampleDddDomainService"),
-        new DddEntity("ExampleDddEntity"),
-        new DddFactory("ExampleDddFactory"),
-        new DddRepository("ExampleDddRepository"),
-        new DddValueObject("ExampleDddValueObject"),
+        new DddAggregate(DomainModule, "ExampleDddAggregate"),
+        new DddDomainService(DomainModule, "ExampleDddDomainService"),
+        new DddEntity(DomainModule, "ExampleDddEntity"),
+        new DddFactory(DomainModule, "ExampleDddFactory"),
+        new DddRepository(DomainModule, "ExampleDddRepository"),
+        new DddValueObject(DomainModule, "ExampleDddValueObject"),
         new DeployableUnit("ExampleDeployableUnit"),
         new DevelopmentTeam("ExampleDevelopmentTeam"),
-        new DomainBuildingBlock("ExampleBuildingBlock"),
-        new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleF")),
+        new DomainBuildingBlock(DomainModule, "ExampleBuildingBlock"),
+        DomainModule,
         new ExternalSoftwareSystem("ExampleExternalSystem"),
         new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
-        new ProcessStep(HierarchyId.FromParts("ExampleProcessX", "ProcessY", "StepA")),
+        new ProcessStep(DomainModule, "StepA"),
         new Tier("ExampleTier")
     };
     

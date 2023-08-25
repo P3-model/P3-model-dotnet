@@ -11,5 +11,8 @@ public class DddAggregateAnalyzer : DomainBuildingBlockAnalyzerBase
 {
     protected override Type AttributeType => typeof(DddAggregateAttribute);
 
-    protected override DomainBuildingBlock CreateBuildingBlock(string name) => new DddAggregate(name);
+    public DddAggregateAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
+
+    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
+        new DddAggregate(module, name);
 }

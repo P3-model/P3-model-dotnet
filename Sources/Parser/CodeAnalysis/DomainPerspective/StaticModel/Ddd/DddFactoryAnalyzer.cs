@@ -11,5 +11,8 @@ public class DddFactoryAnalyzer : DomainBuildingBlockAnalyzerBase
 {
     protected override Type AttributeType => typeof(DddFactoryAttribute);
 
-    protected override DomainBuildingBlock CreateBuildingBlock(string name) => new DddFactory(name);
+    public DddFactoryAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
+
+    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
+        new DddFactory(module, name);
 }

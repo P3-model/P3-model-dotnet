@@ -11,5 +11,8 @@ public class DddEntityAnalyzer : DomainBuildingBlockAnalyzerBase
 {
     protected override Type AttributeType => typeof(DddEntityAttribute);
 
-    protected override DomainBuildingBlock CreateBuildingBlock(string name) => new DddEntity(name);
+    public DddEntityAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
+
+    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
+        new DddEntity(module, name);
 }
