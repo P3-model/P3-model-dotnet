@@ -52,7 +52,7 @@ public class DomainModulePageFactory : MermaidPageFactory
                     .RelatedToAny(subQuery => subQuery
                         .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>(filter => filter
-                        .MaxBy(r => r.Source)));
+                        .MaxBy(r => r.Source.Level)));
                 var descendantsDeployableUnits = modelGraph.Execute(query => query
                     .Elements<DeployableUnit>()
                     .RelatedToAny(subQuery => subQuery
@@ -63,22 +63,40 @@ public class DomainModulePageFactory : MermaidPageFactory
                         .Union(new[] { ancestorDeployableUnit })
                         .ToHashSet()
                     : descendantsDeployableUnits;
-                var developmentTeams = modelGraph.Execute(query => query
+                var ancestorTeam = modelGraph.Execute(query => query
                     .Elements<DevelopmentTeam>()
                     .RelatedToAny(subQuery => subQuery
                         .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByRelation<DevelopmentTeam.OwnsDomainModule>(filter => filter
-                        .GroupBy(r => r.Destination)
-                        .MaxBy(g => g.Key.Level) ?? Enumerable.Empty<DevelopmentTeam.OwnsDomainModule>()));
-                var organizationalUnits = modelGraph.Execute(query => query
+                        .MaxBy(g => g.Destination.Level)));
+                var descendantsTeams = modelGraph.Execute(query => query
+                    .Elements<DevelopmentTeam>()
+                    .RelatedToAny(subQuery => subQuery
+                        .Descendants<DomainModule, DomainModule.ContainsDomainModule>(module))
+                    .ByRelation<DevelopmentTeam.OwnsDomainModule>());
+                var teams = ancestorTeam != null
+                    ? descendantsTeams
+                        .Union(new[] { ancestorTeam })
+                        .ToHashSet()
+                    : descendantsTeams;
+                var ancestorOrganizationalUnit = modelGraph.Execute(query => query
                     .Elements<BusinessOrganizationalUnit>()
                     .RelatedToAny(subQuery => subQuery
                         .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>(filter => filter
-                        .GroupBy(r => r.Destination)
-                        .MaxBy(g => g.Key.Level) ?? Enumerable.Empty<BusinessOrganizationalUnit.OwnsDomainModule>()));
+                        .MaxBy(g => g.Destination.Level)));
+                var descendantsOrganizationalUnits = modelGraph.Execute(query => query
+                    .Elements<BusinessOrganizationalUnit>()
+                    .RelatedToAny(subQuery => subQuery
+                        .Descendants<DomainModule, DomainModule.ContainsDomainModule>(module))
+                    .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>());
+                var organizationalUnits = ancestorOrganizationalUnit != null
+                    ? descendantsOrganizationalUnits
+                        .Union(new[] { ancestorOrganizationalUnit })
+                        .ToHashSet()
+                    : descendantsOrganizationalUnits;
                 return new DomainModulePage(outputDirectory, module, parent, children, processes, directBuildingBlocks,
-                    deployableUnits, developmentTeams, organizationalUnits);
+                    deployableUnits, teams, organizationalUnits);
             });
     }
 }

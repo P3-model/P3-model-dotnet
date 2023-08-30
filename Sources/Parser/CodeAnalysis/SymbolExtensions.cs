@@ -28,6 +28,14 @@ public static class SymbolExtensions
             attributeData.AttributeClass?.Name == type.Name &&
             attributeData.AttributeClass?.ContainingNamespace.ToDisplayString() == type.Namespace);
 
+    public static T GetArgumentValue<T>(this AttributeData attributeData, string argumentName)
+    {
+        if (!TryGetConstructorArgumentValue(attributeData, argumentName, out T? value) &&
+            !TryGetNamedArgumentValue(attributeData, argumentName, out value))
+            throw new InvalidOperationException();
+        return value;
+    }
+
     public static bool TryGetArgumentValue<T>(this AttributeData attributeData, string argumentName,
         [NotNullWhen(true)] out T? value) =>
         TryGetConstructorArgumentValue(attributeData, argumentName, out value) ||
@@ -149,7 +157,7 @@ public static class SymbolExtensions
 
     public static bool ContainsSourcesOf(this DirectoryInfo directory, ISymbol symbol) =>
         SourcesAreIn(symbol, directory);
-    
+
     public static bool SourcesAreIn(this ISymbol symbol, DirectoryInfo directory) => symbol.Locations
         .Any(location => location.SourceTree?.FilePath.StartsWith(directory.FullName) ?? false);
 
