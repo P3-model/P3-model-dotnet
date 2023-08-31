@@ -7,26 +7,68 @@ using Microsoft.CodeAnalysis;
 
 namespace P3Model.Parser.CodeAnalysis;
 
+[Flags]
+public enum GetAttributeOptions
+{
+    Default = 0,
+    IncludeAttributeBaseTypes = 1
+}
+
 // TODO: missing vs. null argument value
 public static class SymbolExtensions
 {
     // TODO: support for attributes from different versions of annotation assembly
     public static bool TryGetAttribute(this ISymbol symbol, Type type,
+        [NotNullWhen(true)] out AttributeData? attributeData) =>
+        TryGetAttribute(symbol, type, GetAttributeOptions.Default, out attributeData);
+
+    public static bool TryGetAttribute(this ISymbol symbol, Type type, GetAttributeOptions options,
         [NotNullWhen(true)] out AttributeData? attributeData)
     {
+        if (options.HasFlag(GetAttributeOptions.IncludeAttributeBaseTypes))
+        {
+            attributeData = symbol
+                .GetAttributes()
+                .SingleOrDefault(a => a.AttributeClass.IsAssignableFrom(type));
+            return attributeData != null;
+        }
         attributeData = symbol
             .GetAttributes()
-            .SingleOrDefault(a =>
-                a.AttributeClass?.Name == type.Name &&
-                a.AttributeClass?.ContainingNamespace.ToDisplayString() == type.Namespace);
+            .SingleOrDefault(a => a.AttributeClass.IsExactlyOf(type));
         return attributeData != null;
     }
 
-    public static IEnumerable<AttributeData> GetAttributes(this ISymbol symbol, Type type) => symbol
-        .GetAttributes()
-        .Where(attributeData =>
-            attributeData.AttributeClass?.Name == type.Name &&
-            attributeData.AttributeClass?.ContainingNamespace.ToDisplayString() == type.Namespace);
+    public static IEnumerable<AttributeData> GetAttributes(this ISymbol symbol, Type type) =>
+        GetAttributes(symbol, type, GetAttributeOptions.Default);
+
+    public static IEnumerable<AttributeData> GetAttributes(this ISymbol symbol, Type type, GetAttributeOptions options)
+    {
+        if (options.HasFlag(GetAttributeOptions.IncludeAttributeBaseTypes))
+        {
+            return symbol
+                .GetAttributes()
+                .Where(attribute => attribute.AttributeClass.IsAssignableFrom(type));
+        }
+        return symbol
+            .GetAttributes()
+            .Where(attribute => attribute.AttributeClass.IsExactlyOf(type));
+    }
+
+    private static bool IsAssignableFrom(this INamedTypeSymbol? attributeSymbol, Type type)
+    {
+        while (attributeSymbol != null)
+        {
+            if (attributeSymbol.IsExactlyOf(type))
+                return true;
+            attributeSymbol = attributeSymbol.BaseType;
+        }
+        return false;
+    }
+
+    private static bool IsExactlyOf(this INamedTypeSymbol? attributeSymbol, Type type) =>
+        attributeSymbol != null &&
+        attributeSymbol.Name == type.Name &&
+        attributeSymbol.ContainingNamespace.ToDisplayString() == type.Namespace;
 
     public static T GetArgumentValue<T>(this AttributeData attributeData, string argumentName)
     {
