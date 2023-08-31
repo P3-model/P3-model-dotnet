@@ -6,8 +6,5 @@ namespace P3Model.Annotations.Domain;
 [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class)]
 public class DomainModelAttribute : Attribute, NamespaceApplicable
 {
-    public bool ApplyOnNamespace { get; }
-
-    public DomainModelAttribute(bool applyOnNamespace = false) => ApplyOnNamespace = applyOnNamespace;
-
+    public bool ApplyOnNamespace { get; init; }
 }

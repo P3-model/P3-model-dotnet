@@ -9,6 +9,7 @@ using P3Model.Parser.ModelSyntax.People;
 
 namespace P3Model.Parser.CodeAnalysis.People;
 
+// TODO: support for defining business owners at assembly level
 [UsedImplicitly]
 public class BusinessOrganizationalUnitAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
 {

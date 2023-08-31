@@ -13,13 +13,7 @@ namespace P3Model.Annotations.Domain.StaticModel;
 public class DomainModuleAttribute : Attribute, NamespaceApplicable
 {
     public string? Name { get; }
-    public bool ApplyOnNamespace { get; }
+    public bool ApplyOnNamespace { get; init;  }
 
-    public DomainModuleAttribute(string? name = null, bool applyOnNamespace = false)
-    {
-        Name = name;
-        ApplyOnNamespace = applyOnNamespace;
-    }
-    
-    public DomainModuleAttribute(bool applyOnNamespace) => ApplyOnNamespace = applyOnNamespace;
+    public DomainModuleAttribute(string? name = null) => Name = name;
 }

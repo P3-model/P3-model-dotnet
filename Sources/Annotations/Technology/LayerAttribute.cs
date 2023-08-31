@@ -7,11 +7,7 @@ namespace P3Model.Annotations.Technology;
 public class LayerAttribute : Attribute, NamespaceApplicable
 {
     public string Name { get; }
-    public bool ApplyOnNamespace { get; }
+    public bool ApplyOnNamespace { get; init; }
 
-    public LayerAttribute(string name, bool applyOnNamespace = false)
-    {
-        Name = name;
-        ApplyOnNamespace = applyOnNamespace;
-    }
+    public LayerAttribute(string name) => Name = name;
 }

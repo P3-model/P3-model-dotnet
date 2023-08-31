@@ -7,11 +7,7 @@ namespace P3Model.Annotations.People;
 public class DevelopmentOwnerAttribute : Attribute, NamespaceApplicable
 {
     public string Name { get; }
-    public bool ApplyOnNamespace { get; }
+    public bool ApplyOnNamespace { get; init; }
 
-    public DevelopmentOwnerAttribute(string name, bool applyOnNamespace = false)
-    {
-        Name = name;
-        ApplyOnNamespace = applyOnNamespace;
-    }
+    public DevelopmentOwnerAttribute(string name) => Name = name;
 }

@@ -12,7 +12,5 @@ namespace P3Model.Annotations.Domain.StaticModel;
                 AttributeTargets.Module)]
 public class NotDomainModuleAttribute : Attribute, NamespaceApplicable
 {
-    public bool ApplyOnNamespace { get; }
-
-    public NotDomainModuleAttribute(bool applyOnNamespace = true) => ApplyOnNamespace = applyOnNamespace;
+    public bool ApplyOnNamespace { get; init; } = true;
 }

@@ -7,11 +7,7 @@ namespace P3Model.Annotations.People;
 public class BusinessOwnerAttribute : Attribute, NamespaceApplicable
 {
     public string Name { get; }
-    public bool ApplyOnNamespace { get; }
+    public bool ApplyOnNamespace { get; init;}
 
-    public BusinessOwnerAttribute(string name, bool applyOnNamespace = false)
-    {
-        Name = name;
-        ApplyOnNamespace = applyOnNamespace;
-    }
+    public BusinessOwnerAttribute(string name) => Name = name;
 }
