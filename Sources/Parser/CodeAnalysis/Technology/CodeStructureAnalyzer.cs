@@ -14,13 +14,19 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
     public void Analyze(IAssemblySymbol symbol, ModelBuilder modelBuilder)
     {
         var cSharpProject = new CSharpProject(symbol.Name);
-        modelBuilder.Add(cSharpProject);
+        modelBuilder.Add(cSharpProject, symbol);
+        modelBuilder.Add(elements => symbol
+            .GetReferencedAssembliesFromSameRepository()
+            .SelectMany(referencedSymbol => elements
+                .For(referencedSymbol)
+                .OfType<CSharpProject>())
+            .Select(referencedProject => new CSharpProject.ReferencesProject(cSharpProject, referencedProject)));
     }
 
     public void Analyze(INamespaceSymbol symbol, ModelBuilder modelBuilder)
     {
         var cSharpNamespace = new CSharpNamespace(symbol.Name);
-        modelBuilder.Add(cSharpNamespace);
+        modelBuilder.Add(cSharpNamespace, symbol);
         if (symbol.ContainingNamespace.IsGlobalNamespace)
             modelBuilder.Add(elements => elements
                 .For(symbol.ContainingAssembly)
@@ -36,7 +42,7 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
     public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder)
     {
         var cSharpType = new CSharpType(symbol.GetFullName());
-        modelBuilder.Add(cSharpType);
+        modelBuilder.Add(cSharpType, symbol);
         modelBuilder.Add(elements => elements
             .For(symbol.ContainingNamespace)
             .OfType<CSharpNamespace>()
