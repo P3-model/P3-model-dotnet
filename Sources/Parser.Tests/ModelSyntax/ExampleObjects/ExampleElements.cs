@@ -5,6 +5,7 @@ using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel.Ddd;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
+using P3Model.Parser.ModelSyntax.Technology.CSharp;
 
 namespace Parser.Tests.ModelSyntax.ExampleObjects;
 
@@ -20,6 +21,9 @@ public class ExampleElements : IEnumerable<Element>
         new Actor("ExampleActor"),
         new BusinessOrganizationalUnit("ExampleBusinessOrganizationalUnit"),
         new CodeStructure("ExampleCodeStructure"),
+        new CSharpProject("ExampleCSharpProject"),
+        new CSharpNamespace("ExampleCSharpNamespace"),
+        new CSharpType("ExampleCSharpType"),
         new DddAggregate(DomainModule, "ExampleDddAggregate"),
         new DddDomainService(DomainModule, "ExampleDddDomainService"),
         new DddEntity(DomainModule, "ExampleDddEntity"),
@@ -31,6 +35,7 @@ public class ExampleElements : IEnumerable<Element>
         new DomainBuildingBlock(DomainModule, "ExampleBuildingBlock"),
         DomainModule,
         new ExternalSoftwareSystem("ExampleExternalSystem"),
+        new Layer("ExampleLayer"),
         new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
         new ProcessStep(DomainModule, "StepA"),
         new Tier("ExampleTier")

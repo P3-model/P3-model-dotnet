@@ -4,6 +4,7 @@ using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
+using P3Model.Parser.ModelSyntax.Technology.CSharp;
 
 namespace Parser.Tests.ModelSyntax.ExampleObjects;
 
@@ -22,9 +23,24 @@ public class ExampleRelations : IEnumerable<Relation>
         new BusinessOrganizationalUnit.OwnsDomainModule(
             new BusinessOrganizationalUnit("ExampleBusinessOrganizationalUnit"),
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
-        new DeployableUnit.ContainsCodeStructure(
+        new CodeStructure.BelongsToLayer(
+            new CSharpProject("ExampleCodeStructure"),
+            new Layer("ExampleLayer")),
+        new CSharpProject.ReferencesProject(
+            new CSharpProject("ExampleCSharpProjectA"),
+            new CSharpProject("ExampleCSharpProjectB")),
+        new CSharpProject.ContainsNamespace(
+            new CSharpProject("ExampleCSharpProjectA"),
+            new CSharpNamespace("ExampleCSharpNamespace")),
+        new CSharpNamespace.ContainsNamespace(
+            new CSharpNamespace("ExampleCSharpNamespaceA"),
+            new CSharpNamespace("ExampleCSharpNamespaceB")),
+        new CSharpNamespace.ContainsType(
+            new CSharpNamespace("ExampleCSharpNamespace"),
+            new CSharpType("ExampleCSharpType")),
+        new DeployableUnit.ContainsCSharpProject(
             new DeployableUnit("ExampleDeployableUnit"),
-            new CodeStructure("ExampleCodeStructure")),
+            new CSharpProject("ExampleCSharpProject")),
         new DevelopmentTeam.OwnsDomainModule(
             new DevelopmentTeam("ExampleDevelopmentTeam"),
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
