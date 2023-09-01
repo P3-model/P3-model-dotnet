@@ -6,6 +6,7 @@ using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
+using P3Model.Parser.ModelSyntax.Technology.CSharp;
 using P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 using P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 
@@ -15,16 +16,19 @@ public class DeployableUnitPage : MermaidPageBase
 {
     private readonly DeployableUnit _unit;
     private readonly Tier? _tier;
+    private readonly IReadOnlySet<CSharpProject> _cSharpProjects;
     private readonly IReadOnlySet<DomainModule> _modules;
     private readonly IReadOnlySet<DevelopmentTeam> _teams;
 
     public DeployableUnitPage(string outputDirectory, DeployableUnit unit, Tier? tier,
-        IReadOnlySet<DomainModule> modules, IReadOnlySet<DevelopmentTeam> teams) : base(outputDirectory)
+        IReadOnlySet<CSharpProject> cSharpProjects, IReadOnlySet<DomainModule> modules, 
+        IReadOnlySet<DevelopmentTeam> teams) : base(outputDirectory)
     {
         _unit = unit;
         _tier = tier;
         _modules = modules;
         _teams = teams;
+        _cSharpProjects = cSharpProjects;
     }
 
     protected override string Description =>
@@ -34,7 +38,7 @@ public class DeployableUnitPage : MermaidPageBase
 
     public override string RelativeFilePath => Path.Combine("Technology", "DeployableUnits", 
         $"{_unit.Name.Dehumanize()}.md");
-    public override Element? MainElement => _unit;
+    public override Element MainElement => _unit;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -48,10 +52,34 @@ public class DeployableUnitPage : MermaidPageBase
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                if (_tier != null)
-                    flowchartWriter.WriteSubgraph(_tier.Name, WriteUnitWithModules);
-                else
-                    WriteUnitWithModules(flowchartWriter);
+                var unitId = flowchartWriter.WriteRectangle(_unit.Name, Style.TechnologyPerspective);
+                foreach (var module in _modules.OrderBy(m => m.Name))
+                {
+                    var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteArrow(moduleId, unitId, "is deployed in");
+                }
+            });
+        }
+        
+        mermaidWriter.WriteHeading("Technology Perspective", 2);
+        if (_tier != null)
+            mermaidWriter.WriteHeading($"Tier: {_tier.Name}", 3);
+        mermaidWriter.WriteHeading("Related c# projects", 3);
+        if (_cSharpProjects.Count == 0)
+        {
+            mermaidWriter.WriteLine("No related c# projects were found.");
+        }
+        else
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
+            {
+                var unitId = flowchartWriter.WriteRectangle(_unit.Name, Style.TechnologyPerspective);
+                foreach (var project in _cSharpProjects.OrderBy(t => t.Name))
+                {
+                    var projectId = flowchartWriter.WriteStadiumShape(project.Name, Style.TechnologyPerspective);
+                    flowchartWriter.WriteArrow(unitId, projectId, "contains");
+                }
+                
             });
         }
 
@@ -72,16 +100,6 @@ public class DeployableUnitPage : MermaidPageBase
                     flowchartWriter.WriteArrow(teamId, unitId, "maintains");
                 }
             });
-        }
-    }
-
-    private void WriteUnitWithModules(FlowchartElementsWriter flowchartWriter)
-    {
-        var unitId = flowchartWriter.WriteRectangle(_unit.Name, Style.TechnologyPerspective);
-        foreach (var module in _modules.OrderBy(m => m.Name))
-        {
-            var moduleId = flowchartWriter.WriteStadiumShape(module.Name, Style.DomainPerspective);
-            flowchartWriter.WriteArrow(moduleId, unitId, "is deployed in");
         }
     }
 

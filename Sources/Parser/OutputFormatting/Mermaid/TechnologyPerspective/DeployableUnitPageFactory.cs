@@ -5,6 +5,7 @@ using P3Model.Parser.ModelQuerying;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
+using P3Model.Parser.ModelSyntax.Technology.CSharp;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.TechnologyPerspective;
 
@@ -21,6 +22,10 @@ public class DeployableUnitPageFactory : MermaidPageFactory
                     .RelatedTo(unit)
                     .ByRelation<Tier.ContainsDeployableUnit>())
                 .SingleOrDefault();
+            var projects = modelGraph.Execute(query => query
+                .Elements<CSharpProject>()
+                .RelatedTo(unit)
+                .ByReverseRelation<DeployableUnit.ContainsCSharpProject>());
             var domainModules = modelGraph.Execute(query => query
                     .Elements<DomainModule>()
                     .RelatedTo(unit)
@@ -31,6 +36,6 @@ public class DeployableUnitPageFactory : MermaidPageFactory
                 .Elements<DevelopmentTeam>()
                 .RelatedToAny(domainModules)
                 .ByRelation<DevelopmentTeam.OwnsDomainModule>());
-            return new DeployableUnitPage(outputDirectory, unit, tier, domainModules, teams);
+            return new DeployableUnitPage(outputDirectory, unit, tier, projects, domainModules, teams);
         });
 }
