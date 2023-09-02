@@ -5,5 +5,7 @@ namespace P3Model.Annotations.Technology.CleanArchitecture;
 [PublicAPI]
 public class UseCasesLayerAttribute : LayerAttribute
 {
-    public UseCasesLayerAttribute() : base("UseCases") { }
+    public new const string Name = "Use Cases";
+    
+    public UseCasesLayerAttribute() : base(Name) { }
 }
