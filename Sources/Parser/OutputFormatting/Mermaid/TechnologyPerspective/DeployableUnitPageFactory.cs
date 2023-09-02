@@ -22,10 +22,25 @@ public class DeployableUnitPageFactory : MermaidPageFactory
                     .RelatedTo(unit)
                     .ByRelation<Tier.ContainsDeployableUnit>())
                 .SingleOrDefault();
-            var projects = modelGraph.Execute(query => query
-                .Elements<CSharpProject>()
-                .RelatedTo(unit)
-                .ByReverseRelation<DeployableUnit.ContainsCSharpProject>());
+            var startupProject = modelGraph
+                .Execute(query => query
+                    .Elements<CSharpProject>()
+                    .RelatedTo(unit)
+                    .ByReverseRelation<DeployableUnit.ContainsCSharpProject>())
+                .SingleOrDefault();
+            var referencedProjects = startupProject != null
+                ? modelGraph
+                    .Execute(query => query
+                        .Elements<CSharpProject>()
+                        .RelatedTo(startupProject)
+                        .ByReverseRelation<CSharpProject.ReferencesProject>())
+                    .Select(project => (project, modelGraph
+                        .Execute(query2 => query2
+                            .Elements<Layer>()
+                            .RelatedTo((CodeStructure)project)
+                            .ByReverseRelation<CodeStructure.BelongsToLayer>())))
+                    .ToHashSet()
+                : new HashSet<(CSharpProject, IReadOnlySet<Layer>)>();
             var domainModules = modelGraph.Execute(query => query
                     .Elements<DomainModule>()
                     .RelatedTo(unit)
@@ -36,6 +51,7 @@ public class DeployableUnitPageFactory : MermaidPageFactory
                 .Elements<DevelopmentTeam>()
                 .RelatedToAny(domainModules)
                 .ByRelation<DevelopmentTeam.OwnsDomainModule>());
-            return new DeployableUnitPage(outputDirectory, unit, tier, projects, domainModules, teams);
+            return new DeployableUnitPage(outputDirectory, unit, tier, startupProject, referencedProjects,
+                domainModules, teams);
         });
 }

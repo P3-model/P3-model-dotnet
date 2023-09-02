@@ -16,19 +16,21 @@ public class DeployableUnitPage : MermaidPageBase
 {
     private readonly DeployableUnit _unit;
     private readonly Tier? _tier;
-    private readonly IReadOnlySet<CSharpProject> _cSharpProjects;
+    private readonly CSharpProject? _startupProject;
+    private readonly HashSet<(CSharpProject Project, IReadOnlySet<Layer> Layers)> _referencedProjects;
     private readonly IReadOnlySet<DomainModule> _modules;
     private readonly IReadOnlySet<DevelopmentTeam> _teams;
 
     public DeployableUnitPage(string outputDirectory, DeployableUnit unit, Tier? tier,
-        IReadOnlySet<CSharpProject> cSharpProjects, IReadOnlySet<DomainModule> modules, 
-        IReadOnlySet<DevelopmentTeam> teams) : base(outputDirectory)
+        CSharpProject? startupProject, HashSet<(CSharpProject, IReadOnlySet<Layer>)> referencedProjects,
+        IReadOnlySet<DomainModule> modules, IReadOnlySet<DevelopmentTeam> teams) : base(outputDirectory)
     {
         _unit = unit;
         _tier = tier;
+        _startupProject = startupProject;
+        _referencedProjects = referencedProjects;
         _modules = modules;
         _teams = teams;
-        _cSharpProjects = cSharpProjects;
     }
 
     protected override string Description =>
@@ -36,8 +38,9 @@ public class DeployableUnitPage : MermaidPageBase
 - related domain modules
 - related development teams";
 
-    public override string RelativeFilePath => Path.Combine("Technology", "DeployableUnits", 
+    public override string RelativeFilePath => Path.Combine("Technology", "DeployableUnits",
         $"{_unit.Name.Dehumanize()}.md");
+
     public override Element MainElement => _unit;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
@@ -60,26 +63,26 @@ public class DeployableUnitPage : MermaidPageBase
                 }
             });
         }
-        
+
         mermaidWriter.WriteHeading("Technology Perspective", 2);
-        if (_tier != null)
-            mermaidWriter.WriteHeading($"Tier: {_tier.Name}", 3);
-        mermaidWriter.WriteHeading("Related c# projects", 3);
-        if (_cSharpProjects.Count == 0)
+        if (_startupProject is null)
         {
-            mermaidWriter.WriteLine("No related c# projects were found.");
+            if (_tier == null)
+                mermaidWriter.WriteLine("No related tier and c# projects were found.");
+            else
+                mermaidWriter.WriteFlowchart(flowchartWriter => flowchartWriter
+                    .WriteSubgraph($"{_tier.Name} Tier", subgraphWriter => subgraphWriter
+                        .WriteRectangle(_unit.Name, Style.TechnologyPerspective)));
         }
         else
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var unitId = flowchartWriter.WriteRectangle(_unit.Name, Style.TechnologyPerspective);
-                foreach (var project in _cSharpProjects.OrderBy(t => t.Name))
-                {
-                    var projectId = flowchartWriter.WriteStadiumShape(project.Name, Style.TechnologyPerspective);
-                    flowchartWriter.WriteArrow(unitId, projectId, "contains");
-                }
-                
+                if (_tier == null)
+                    flowchartWriter.WriteSubgraph(_unit.Name, WriteProjectsAndLayers);
+                else
+                    flowchartWriter.WriteSubgraph($"{_tier.Name} Tier", tierSubgraphWriter => tierSubgraphWriter
+                        .WriteSubgraph(_unit.Name, WriteProjectsAndLayers));
             });
         }
 
@@ -99,6 +102,39 @@ public class DeployableUnitPage : MermaidPageBase
                     var teamId = flowchartWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
                     flowchartWriter.WriteArrow(teamId, unitId, "maintains");
                 }
+            });
+        }
+    }
+
+    private void WriteProjectsAndLayers(FlowchartElementsWriter writer)
+    {
+        var undefinedLayerProjects = new HashSet<CSharpProject>();
+        var layersToProjects = new Dictionary<Layer, HashSet<CSharpProject>>
+        {
+            { new Layer("Undefined"),  undefinedLayerProjects}
+        };
+        foreach (var (project, layers) in _referencedProjects)
+        {
+            if (layers.Count == 0)
+            {
+                undefinedLayerProjects.Add(project);
+            }
+            else
+            {
+                foreach (var layer in layers)
+                {
+                    if (!layersToProjects.TryGetValue(layer, out var projects))
+                        layersToProjects.Add(layer, projects = new HashSet<CSharpProject>());
+                    projects.Add(project);
+                }
+            }
+        }
+        foreach (var (layer, projects) in layersToProjects.OrderBy(pair => pair.Key.Name))
+        {
+            writer.WriteSubgraph($"{layer.Name} Layer", layerSubgraphWriter =>
+            {
+                foreach (var project in projects.OrderBy(p => p.Name))
+                    layerSubgraphWriter.WriteStadiumShape(project.Name, Style.TechnologyPerspective);
             });
         }
     }
