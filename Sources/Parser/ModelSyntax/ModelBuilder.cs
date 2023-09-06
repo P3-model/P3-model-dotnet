@@ -117,8 +117,15 @@ public class ModelBuilder : ElementsProvider
             Add(trait);
 
         return new Model(_system,
-            _elements.Keys.ToImmutableArray(),
-            _relations.ToImmutableArray(),
-            _traits.ToImmutableArray());
+            _elements.Keys
+                .OrderBy(e => e.GetType().FullName)
+                .ThenBy(e => e.Name)
+                .ToImmutableArray(),
+            _relations
+                .OrderBy(r => r.GetType().Name)
+                .ToImmutableArray(),
+            _traits
+                .OrderBy(t => t.GetType().Name)
+                .ToImmutableArray());
     }
 }
