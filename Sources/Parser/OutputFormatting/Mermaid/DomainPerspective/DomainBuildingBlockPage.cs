@@ -53,7 +53,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
                 var usingElementIds = new List<string>();
                 foreach (var group in _usingElements
                              .GroupBy(t => t.Module, t => t.BuildingBlock)
-                             .OrderBy(t => t.Key is null ? string.Empty : t.Key.Name))
+                             .OrderBy(t => t.Key is null ? string.Empty : t.Key.FullName))
                 {
                     if (group.Key is null)
                         usingElementIds.AddRange(WriteDependencies(group, flowchartWriter));
@@ -68,7 +68,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
                 var usedElementIds = new List<string>();
                 foreach (var group in _usedElements
                              .GroupBy(t => t.Module, t => t.BuildingBlock)
-                             .OrderBy(t => t.Key is null ? string.Empty : t.Key.Name))
+                             .OrderBy(t => t.Key is null ? string.Empty : t.Key.FullName))
                 {
                     if (group.Key is null)
                         usedElementIds.AddRange(WriteDependencies(group, flowchartWriter));
@@ -86,7 +86,8 @@ public class DomainBuildingBlockPage : MermaidPageBase
         var processSteps = _usingElements
             .Select(e => e.BuildingBlock)
             .OfType<ProcessStep>()
-            .OrderBy(step => step.Name)
+            .OrderBy(step => step.Module is null ? string.Empty : step.Module.FullName)
+            .ThenBy(step => step.Name)
             .ToList();
         if (processSteps.Count == 0)
         {
@@ -97,7 +98,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
                 var buildingBlockId = flowchartWriter.WriteRectangle(_buildingBlock.Name, Style.DomainPerspective);
-                foreach (var processStep in processSteps.OrderBy(step => step.Name))
+                foreach (var processStep in processSteps)
                 {
                     var processStepId = flowchartWriter.WriteStadiumShape(processStep.Name, Style.DomainPerspective);
                     flowchartWriter.WriteArrow(buildingBlockId, processStepId, "is used in");
