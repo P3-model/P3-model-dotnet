@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Humanizer;
 using Microsoft.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
@@ -32,7 +33,7 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbo
         if (moduleInfo is null)
             return;
         // TODO: Rethink adding same element from different analyzers (relations and symbols are no problem, but element's data are).
-        var module = new DomainModule(HierarchyId.FromValue(moduleInfo.DomainModule));
+        var module = new DomainModule(HierarchyId.FromValue(moduleInfo.DomainModule.Dehumanize()));
         modelBuilder.Add(module, fileInfo.Directory);
         if (moduleInfo.DevelopmentOwner != null)
         {
