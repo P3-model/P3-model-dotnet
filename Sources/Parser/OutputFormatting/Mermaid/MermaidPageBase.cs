@@ -40,11 +40,8 @@ public abstract class MermaidPageBase : MermaidPage
         .Select(g => new PerspectiveLinks(g.Key, g
             .GroupBy(p => p.MainElement?.GetType())
             .Select(g2 => new ElementTypeLinks(g2.Key, g2
-                .GroupBy(p => p.MainElement)
-                .Select(g3 => new ElementLinks(g3.Key, g3
-                    .OrderBy(p => p.LinkText)
-                    .ToList()))
-                .OrderBy(l => l.Element?.Name)
+                .OrderBy(p => p.LinkText)
+                .ThenBy(p => p.RelativeFilePath)
                 .ToList()))
             .OrderBy(l => l.ElementType?.Name)
             .ToList()))
@@ -126,23 +123,9 @@ public abstract class MermaidPageBase : MermaidPage
                     var elementTypeName = elementTypeLinks.ElementType.Name.Humanize(LetterCasing.Title).Pluralize();
                     mermaidWriter.WriteHeading(elementTypeName, 5);
                 }
-                foreach (var elementLinks in elementTypeLinks.Links)
-                {
-                    if (elementLinks.Pages.Count == 1)
-                    {
-                        var page = elementLinks.Pages[0];
-                        mermaidWriter.WriteLine(MermaidWriter.FormatLink(page.LinkText,
-                            GetRelativePathFor(page)));
-                    }
-                    else
-                    {
-                        if (elementLinks.Element != null)
-                            mermaidWriter.WriteHeading(elementLinks.Element.Name, 6);
-                        foreach (var page in elementLinks.Pages)
-                            mermaidWriter.WriteLine(MermaidWriter.FormatLink(page.LinkText,
-                                GetRelativePathFor(page)));
-                    }
-                }
+                foreach (var page in elementTypeLinks.Pages)
+                    mermaidWriter.WriteLine(MermaidWriter.FormatLink(page.LinkText,
+                        GetRelativePathFor(page)));
             }
         }
     }
@@ -165,7 +148,5 @@ public abstract class MermaidPageBase : MermaidPage
 
     private record PerspectiveLinks(Perspective? Perspective, IReadOnlyList<ElementTypeLinks> Links);
 
-    private record ElementTypeLinks(Type? ElementType, IReadOnlyList<ElementLinks> Links);
-
-    private record ElementLinks(Element? Element, IReadOnlyList<MermaidPage> Pages);
+    private record ElementTypeLinks(Type? ElementType, IReadOnlyList<MermaidPage> Pages);
 }
