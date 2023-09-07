@@ -39,6 +39,8 @@ public class DomainModulePage : MermaidPageBase
         _organizationalUnits = organizationalUnits;
     }
 
+    public override string LinkText => string.Join(" | ", _module.Id.Parts.Select(p => p.Humanize()));
+
     protected override string Description =>
         @$"This view contains details information about {_module.Name} domain module, including:
 - other related modules
