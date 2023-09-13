@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
@@ -52,7 +53,10 @@ public class MainPage : MermaidPageBase
         mermaidWriter.WriteHeading("System Landscape", 2);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            var systemId = flowchartWriter.WriteRectangle(_system.Name);
+            var systemName = _system.Name.EndsWith("system", StringComparison.InvariantCultureIgnoreCase)
+                ? _system.Name
+                : $"{_system.Name} system";
+            var systemId = flowchartWriter.WriteRectangle(systemName);
             var actorsId = flowchartWriter.WriteSubgraph("Actors", subgraphWriter =>
             {
                 foreach (var actor in _actors.OrderBy(a => a.Name)) 
