@@ -6,6 +6,8 @@ using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
+using P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
+using P3Model.Parser.OutputFormatting.Mermaid.TechnologyPerspective;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 
@@ -76,6 +78,8 @@ public class DevelopmentTeamPage : MermaidPageBase
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
+        DomainModulePage modulePage => _modules.Contains(modulePage.MainElement),
+        DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
         _ => false
     };
 
