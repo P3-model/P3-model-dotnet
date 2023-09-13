@@ -5,6 +5,7 @@ using Humanizer;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
+using P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 
@@ -50,7 +51,11 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
         }
     }
 
-    protected override bool IncludeInZoomInPages(MermaidPage page) => false;
+    protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
+    {
+        DomainModulePage modulePage => _modules.Contains(modulePage.MainElement),
+        _ => false
+    };
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is BusinessOrganizationalUnitsPage;
 }
