@@ -22,11 +22,13 @@ public class DomainModuleOwnersPageFactory : MermaidPageFactory
         {
             var teams = modelGraph.Execute(query => query
                 .Elements<DevelopmentTeam>()
-                .RelatedTo(module)
+                .RelatedToAny(subQuery => subQuery
+                    .DescendantsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                 .ByRelation<DevelopmentTeam.OwnsDomainModule>());
             var units = modelGraph.Execute(query => query
                 .Elements<BusinessOrganizationalUnit>()
-                .RelatedTo(module)
+                .RelatedToAny(subQuery => subQuery
+                    .DescendantsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                 .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>());
             yield return new DomainModuleOwners(module, teams, units);
         }
