@@ -10,14 +10,16 @@ public class DomainModulesPage : MermaidPageBase
     private readonly Hierarchy<DomainModule> _modulesHierarchy;
 
     public override string Header => "Domain Modules";
+
     protected override string Description => @"This view shows domain model modularization.  
 First level modules can be treated as separate sub-models or DDD Bounded Contexts.  
 All modules can be divided into sub-modules to reflect hierarchical structure of the domain.";
+
     public override string RelativeFilePath => Path.Combine("Domain", "Concepts", "DomainModules.md");
     public override Element? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 
-    public DomainModulesPage(string outputDirectory, Hierarchy<DomainModule> modulesHierarchy) 
+    public DomainModulesPage(string outputDirectory, Hierarchy<DomainModule> modulesHierarchy)
         : base(outputDirectory) =>
         _modulesHierarchy = modulesHierarchy;
 
@@ -44,8 +46,9 @@ All modules can be divided into sub-modules to reflect hierarchical structure of
             Write(child, childId, flowchartWriter);
         }
     }
-    
-    protected override bool IncludeInZoomInPages(MermaidPage page) => page is DomainModulePage;
+
+    protected override bool IncludeInZoomInPages(MermaidPage page) => page is DomainModulePage or
+        DomainModuleOwnersPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
 }

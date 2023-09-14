@@ -32,7 +32,7 @@ public class DevelopmentTeamPage : MermaidPageBase
     public override string RelativeFilePath => Path.Combine("People", "DevelopmentTeams", 
         $"{_team.Name.Dehumanize()}.md");
 
-    public override Element? MainElement => _team;
+    public override Element MainElement => _team;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -83,5 +83,6 @@ public class DevelopmentTeamPage : MermaidPageBase
         _ => false
     };
 
-    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is DevelopmentTeamsPage;
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is DevelopmentTeamsPage or
+        DomainModuleOwnersPage;
 }

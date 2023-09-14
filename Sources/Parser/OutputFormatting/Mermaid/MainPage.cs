@@ -113,6 +113,7 @@ public class MainPage : MermaidPageBase
     protected override bool IncludeInZoomInPages(MermaidPage page) => page is
         DomainGlossaryPage or
         DomainModulesPage or
+        DomainModuleOwnersPage or
         ProcessesPage or
         DevelopmentTeamsPage or
         BusinessOrganizationalUnitsPage or

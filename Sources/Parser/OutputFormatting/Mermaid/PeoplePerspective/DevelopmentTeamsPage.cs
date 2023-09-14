@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.People;
+using P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 
@@ -44,7 +45,8 @@ public class DevelopmentTeamsPage : MermaidPageBase
         });
     }
 
-    protected override bool IncludeInZoomInPages(MermaidPage page) => page is DevelopmentTeamPage;
+    protected override bool IncludeInZoomInPages(MermaidPage page) => page is DevelopmentTeamPage or
+        DomainModuleOwnersPage;
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page is MainPage;
 }

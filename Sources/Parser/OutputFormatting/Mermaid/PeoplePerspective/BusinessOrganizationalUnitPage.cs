@@ -14,20 +14,21 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
     private readonly BusinessOrganizationalUnit _organizationalUnit;
     private readonly IReadOnlySet<DomainModule> _modules;
 
-    public BusinessOrganizationalUnitPage(string outputDirectory, BusinessOrganizationalUnit organizationalUnit, 
+    public BusinessOrganizationalUnitPage(string outputDirectory, BusinessOrganizationalUnit organizationalUnit,
         IReadOnlySet<DomainModule> modules) : base(outputDirectory)
     {
         _organizationalUnit = organizationalUnit;
         _modules = modules;
     }
-    
-    protected override string Description => @$"This view contains details information about {_organizationalUnit.Name}, including:
+
+    protected override string Description =>
+        @$"This view contains details information about {_organizationalUnit.Name}, including:
 - related domain modules";
 
     public override string RelativeFilePath => Path.Combine(
         "People", "BusinessOrganizationalUnits", $"{_organizationalUnit.Name.Dehumanize()}.md");
 
-    public override Element? MainElement => _organizationalUnit;
+    public override Element MainElement => _organizationalUnit;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -57,5 +58,6 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
         _ => false
     };
 
-    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is BusinessOrganizationalUnitsPage;
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => page is BusinessOrganizationalUnitsPage or
+        DomainModuleOwnersPage;
 }
