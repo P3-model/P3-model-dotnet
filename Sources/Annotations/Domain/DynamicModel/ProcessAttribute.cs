@@ -6,9 +6,8 @@ namespace P3Model.Annotations.Domain.DynamicModel;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
 public class ProcessAttribute : Attribute, NamespaceApplicable
 {
-    public string[] FullName { get; }
+    public string Name { get; }
     public bool ApplyOnNamespace { get; init; }
-    public string[]? NextSubProcesses { get; init; }
 
-    public ProcessAttribute(params string[] fullName) => FullName = fullName;
+    public ProcessAttribute(string name) => Name = name;
 }
