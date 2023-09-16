@@ -41,10 +41,15 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
         AddDescriptionTrait(symbol, buildingBlock, modelBuilder);
     }
 
-    private static string GetName(ISymbol symbol, AttributeData buildingBlockAttribute) =>
-        (buildingBlockAttribute.GetConstructorArgumentValue<string?>(nameof(DomainBuildingBlockAttribute.Name))
-         ?? symbol.GetFullName())
-        .Humanize(LetterCasing.Title);
+    private static string GetName(ISymbol symbol, AttributeData buildingBlockAttribute)
+    {
+        if (!buildingBlockAttribute.TryGetConstructorArgumentValue<string?>(
+                nameof(DomainBuildingBlockAttribute.Name),
+                out var name) ||
+            string.IsNullOrWhiteSpace(name))
+            name = symbol.GetFullName();
+        return name.Humanize(LetterCasing.Title);
+    }
 
     protected abstract DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name);
 
