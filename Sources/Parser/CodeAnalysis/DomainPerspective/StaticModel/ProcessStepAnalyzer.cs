@@ -30,16 +30,12 @@ public class ProcessStepAnalyzer : DomainBuildingBlockAnalyzerBase
     private static IEnumerable<Relation> GetRelationsToProcesses(ProcessStep step, AttributeData stepAttribute,
         ElementsProvider elements)
     {
-        if (!TryGetProcessName(stepAttribute, out var processFullName))
+        if (!TryGetProcessName(stepAttribute, out var processName))
             yield break;
-        var processes = elements
-            .OfType<Process>()
-            .Where(p => p.Id.Full.Equals(processFullName, StringComparison.InvariantCulture))
-            .ToList();
-        // TODO: warning logging if process not found
-        // TODO: warning logging if more than one element (non unique names o processes)
-        if (processes.Count == 1)
-            yield return new Process.ContainsProcessStep(processes[0], step);
+        foreach (var process in elements
+                     .OfType<Process>()
+                     .Where(p => p.Name.Equals(processName, StringComparison.InvariantCulture)))
+            yield return new Process.ContainsProcessStep(process, step);
     }
 
     private static IEnumerable<Relation> GetRelationsToNextSteps(ProcessStep step, AttributeData stepAttribute,

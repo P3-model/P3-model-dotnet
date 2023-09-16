@@ -57,14 +57,8 @@ public class ExampleRelations : IEnumerable<Relation>
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
             new DeployableUnit("ExampleDeployableUnit")),
         new Process.ContainsProcessStep(
-            new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
+            new Process("ExampleProcess"),
             new ProcessStep(DomainModule, "StepA")),
-        new Process.ContainsSubProcess(
-            new Process(HierarchyId.FromParts("ExampleProcessX")),
-            new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY"))),
-        new Process.HasNextSubProcess(
-            new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
-            new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessZ"))),
         new ProcessStep.HasNextStep(
             new ProcessStep(DomainModule, "StepA"),
             new ProcessStep(DomainModule, "StepB")),

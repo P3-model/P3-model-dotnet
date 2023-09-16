@@ -5,7 +5,6 @@ using P3Model.Parser.ModelQuerying;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
-using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
@@ -20,51 +19,27 @@ public class ProcessPageFactory : MermaidPageFactory
                 .AllElements<Process>())
             .Select(process =>
             {
-                var parent = modelGraph.Execute(query => query
-                        .Elements<Process>()
-                        .RelatedTo(process)
-                        .ByRelation<Process.ContainsSubProcess>())
-                    .SingleOrDefault();
-                var children = modelGraph.Execute(query => query
-                    .Elements<Process>()
-                    .RelatedTo(process)
-                    .ByReverseRelation<Process.ContainsSubProcess>());
-                var processHasNextSubProcessRelations = modelGraph.Execute(query => query
-                    .Relations<Process.HasNextSubProcess>(r => children.Contains(r.Source) &&
-                                                               children.Contains(r.Destination)));
-                var allSteps = modelGraph.Execute(query => query
-                    .Elements<ProcessStep>()
-                    .RelatedToAny(subQuery => subQuery
-                        .DescendantsAndSelf<Process, Process.ContainsSubProcess>(process))
-                    .ByReverseRelation<Process.ContainsProcessStep>());
-                var directSteps = modelGraph.Execute(query => query
+                var steps = modelGraph.Execute(query => query
                     .Elements<ProcessStep>()
                     .RelatedTo(process)
                     .ByReverseRelation<Process.ContainsProcessStep>());
                 var modules = modelGraph.Execute(query => query
                     .Elements<DomainModule>()
                     // TODO: passing more specific objects as an argument to RelatedTo / RelatedToAny
-                    .RelatedToAny(allSteps.Cast<DomainBuildingBlock>().ToHashSet())
+                    .RelatedToAny(steps.Cast<DomainBuildingBlock>().ToHashSet())
                     .ByRelation<DomainModule.ContainsBuildingBlock>());
-                var deployableUnits = modelGraph.Execute(query => query
-                    .Elements<DeployableUnit>()
-                    .RelatedToAny(modules)
-                    .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>());
+                var topLevelModules = modules
+                    .Select(module => modulesHierarchy.GetRootFor(module))
+                    .ToHashSet();
+                var deployableUnits = modelGraph.GetDeployableUnitsFor(modules);
                 var actors = modelGraph.Execute(query => query
                     .Elements<Actor>()
-                    .RelatedToAny(allSteps)
+                    .RelatedToAny(steps)
                     .ByRelation<Actor.UsesProcessStep>());
-                var developmentTeams = modelGraph.Execute(query => query
-                    .Elements<DevelopmentTeam>()
-                    .RelatedToAny(modules)
-                    .ByRelation<DevelopmentTeam.OwnsDomainModule>());
-                var organizationalUnits = modelGraph.Execute(query => query
-                        .Elements<BusinessOrganizationalUnit>()
-                        .RelatedToAny(modules)
-                        .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>());
-                return new ProcessPage(outputDirectory, process, parent, children, processHasNextSubProcessRelations,
-                    directSteps, modules, deployableUnits!, actors, developmentTeams,
-                    organizationalUnits);
+                var developmentTeams = modelGraph.GetDevelopmentTeamsFor(modules);
+                var organizationalUnits = modelGraph.GetBusinessOrganizationalUnitsFor(modules);
+                return new ProcessPage(outputDirectory, process, steps, topLevelModules, deployableUnits!, actors, 
+                    developmentTeams, organizationalUnits);
             });
     }
 }

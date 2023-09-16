@@ -12,6 +12,6 @@ public class ProcessesPageFactory : MermaidPageFactory
     {
         yield return new ProcessesPage(outputDirectory,
             modelGraph.Execute(query => query
-                .Hierarchy<Process, Process.ContainsSubProcess>()));
+                .AllElements<Process>()));
     }
 }

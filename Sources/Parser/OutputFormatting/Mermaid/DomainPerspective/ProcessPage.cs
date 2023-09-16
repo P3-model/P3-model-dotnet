@@ -15,9 +15,6 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 public class ProcessPage : MermaidPageBase
 {
     private readonly Process _process;
-    private readonly Process? _parent;
-    private readonly IReadOnlySet<Process> _children;
-    private readonly IReadOnlySet<Process.HasNextSubProcess> _processHasNextSubProcessRelations;
     private readonly IReadOnlySet<ProcessStep> _steps;
     private readonly IReadOnlySet<DomainModule> _modules;
     private readonly IReadOnlySet<DeployableUnit> _deployableUnits;
@@ -25,16 +22,12 @@ public class ProcessPage : MermaidPageBase
     private readonly IReadOnlySet<DevelopmentTeam> _developmentTeams;
     private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
 
-    public ProcessPage(string outputDirectory, Process process, Process? parent, IReadOnlySet<Process> children,
-        IReadOnlySet<Process.HasNextSubProcess> processHasNextSubProcessRelations, IReadOnlySet<ProcessStep> steps,
+    public ProcessPage(string outputDirectory, Process process, IReadOnlySet<ProcessStep> steps,
         IReadOnlySet<DomainModule> modules, IReadOnlySet<DeployableUnit> deployableUnits, 
         IReadOnlySet<Actor> actors, IReadOnlySet<DevelopmentTeam> developmentTeams, 
         IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits) : base(outputDirectory)
     {
         _process = process;
-        _parent = parent;
-        _children = children;
-        _processHasNextSubProcessRelations = processHasNextSubProcessRelations;
         _steps = steps;
         _modules = modules;
         _deployableUnits = deployableUnits;
@@ -45,59 +38,28 @@ public class ProcessPage : MermaidPageBase
 
     protected override string Description =>
         @$"This view contains details information about {_process.Name} business process, including:
-- other related processes
 - process steps
 - related domain modules
 - related deployable units
 - engaged people: actors, development teams, business stakeholders";
 
-    public override string RelativeFilePath => Path.Combine(
-        "Domain", "Processes", Path.Combine(_process.Id.Parts.ToArray()), $"{_process.Name.Dehumanize()}.md");
+    public override string RelativeFilePath => Path.Combine("Domain", "Processes", $"{_process.Name.Dehumanize()}.md");
 
-    public override Element? MainElement => _process;
+    public override Element MainElement => _process;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
         mermaidWriter.WriteHeading("Domain Perspective", 2);
-        mermaidWriter.WriteHeading("Related processes and steps", 3);
-        if (_parent is null && _children.Count == 0 && _steps.Count == 0)
+        mermaidWriter.WriteHeading("Related process steps", 3);
+        if (_steps.Count == 0)
         {
-            
-            mermaidWriter.WriteLine("No related processes and steps were found.");
+            mermaidWriter.WriteLine("No related process steps were found.");
         }
         else
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                string processId;
-                if (_parent is null)
-                {
-                    processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
-                }
-                else
-                {
-                    var parentId = flowchartWriter.WriteStadiumShape(_parent.Name, Style.DomainPerspective);
-                    processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
-                    flowchartWriter.WriteBackwardArrow(processId, parentId, "is part of");
-                }
-
-                var subProcessIds = new Dictionary<Process, string>();
-                foreach (var subProcess in _children.OrderBy(c => c.Name))
-                {
-                    var subProcessId = flowchartWriter.WriteStadiumShape(subProcess.Name, Style.DomainPerspective);
-                    subProcessIds.Add(subProcess, subProcessId);
-                    flowchartWriter.WriteArrow(processId, subProcessId, "contains");
-                }
-
-                foreach (var relation in _processHasNextSubProcessRelations
-                             .OrderBy(r => r.Source.Name)
-                             .ThenBy(r => r.Destination.Name))
-                {
-                    var currentProcessId = subProcessIds[relation.Source];
-                    var nextProcessId = subProcessIds[relation.Destination];
-                    flowchartWriter.WriteArrow(currentProcessId, nextProcessId, LineStyle.Dotted);
-                }
-
+                var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
                 foreach (var step in _steps.OrderBy(s => s.Name))
                 {
                     var stepId = flowchartWriter.WriteStadiumShape(step.Name, Style.DomainPerspective);
@@ -106,7 +68,7 @@ public class ProcessPage : MermaidPageBase
             });
         }
 
-        mermaidWriter.WriteHeading("Related domain modules", 3);
+        mermaidWriter.WriteHeading("Related top level domain modules", 3);
         if (_modules.Count == 0)
         {
             mermaidWriter.WriteLine("No related domain modules were found.");
@@ -218,7 +180,6 @@ public class ProcessPage : MermaidPageBase
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
-        ProcessPage processPage => _children.Contains(processPage.MainElement),
         ProcessStepPage stepPage => _steps.Contains(stepPage.MainElement),
         DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),

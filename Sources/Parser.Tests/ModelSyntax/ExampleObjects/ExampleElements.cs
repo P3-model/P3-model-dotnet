@@ -36,7 +36,7 @@ public class ExampleElements : IEnumerable<Element>
         DomainModule,
         new ExternalSoftwareSystem("ExampleExternalSystem"),
         new Layer("ExampleLayer"),
-        new Process(HierarchyId.FromParts("ExampleProcessX", "ProcessY")),
+        new Process("ExampleProcessX"),
         new ProcessStep(DomainModule, "StepA"),
         new Tier("ExampleTier")
     };
