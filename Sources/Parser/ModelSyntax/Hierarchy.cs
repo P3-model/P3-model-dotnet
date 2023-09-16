@@ -31,6 +31,8 @@ public class Hierarchy<TElement>
         return new(parentToChildren, childToParent);
     }
 
+    public TElement GetRootFor(TElement module) => GetAncestorsFor(module, true).MinBy(m => m.Id.Level)!;
+
     public IReadOnlySet<TElement> GetAncestorsFor(TElement element, bool includeSelf = false)
     {
         var ancestors = new HashSet<TElement>();
