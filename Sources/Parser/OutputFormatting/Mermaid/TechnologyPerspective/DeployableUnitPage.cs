@@ -18,17 +18,20 @@ public class DeployableUnitPage : MermaidPageBase
     private readonly Tier? _tier;
     private readonly CSharpProject? _startupProject;
     private readonly HashSet<(CSharpProject Project, IReadOnlySet<Layer> Layers)> _referencedProjects;
+    private readonly IReadOnlySet<(Database Database, DatabaseCluster? Cluster)> _databases;
     private readonly IReadOnlySet<DomainModule> _modules;
     private readonly IReadOnlySet<DevelopmentTeam> _teams;
 
     public DeployableUnitPage(string outputDirectory, DeployableUnit unit, Tier? tier,
         CSharpProject? startupProject, HashSet<(CSharpProject, IReadOnlySet<Layer>)> referencedProjects,
-        IReadOnlySet<DomainModule> modules, IReadOnlySet<DevelopmentTeam> teams) : base(outputDirectory)
+        IReadOnlySet<(Database, DatabaseCluster?)> databases, IReadOnlySet<DomainModule> modules, 
+        IReadOnlySet<DevelopmentTeam> teams) : base(outputDirectory)
     {
         _unit = unit;
         _tier = tier;
         _startupProject = startupProject;
         _referencedProjects = referencedProjects;
+        _databases = databases;
         _modules = modules;
         _teams = teams;
     }
@@ -65,6 +68,7 @@ public class DeployableUnitPage : MermaidPageBase
         }
 
         mermaidWriter.WriteHeading("Technology Perspective", 2);
+        mermaidWriter.WriteHeading("Tier, CSharp Projects and their Layers", 3);
         if (_startupProject is null)
         {
             if (_tier == null)
@@ -83,6 +87,40 @@ public class DeployableUnitPage : MermaidPageBase
                 else
                     flowchartWriter.WriteSubgraph($"{_tier.Name} Tier", tierSubgraphWriter => tierSubgraphWriter
                         .WriteSubgraph(_unit.Name, WriteProjectsAndLayers));
+            });
+        }
+        mermaidWriter.WriteHeading("Infrastructure", 3);
+        if (_databases.Count == 0)
+        {
+            mermaidWriter.WriteLine("No infrastructure elements were found.");
+        }
+        else
+        {
+            mermaidWriter.WriteFlowchart(flowchartWriter =>
+            {
+                var unitId = flowchartWriter.WriteRectangle(_unit.Name, Style.TechnologyPerspective);
+                foreach (var group in _databases.GroupBy(item => item.Cluster, item => item.Database))
+                {
+                    var cluster = group.Key;
+                    if (cluster is null)
+                    {
+                        foreach (var database in group)
+                        {
+                            var databaseId = flowchartWriter.WriteStadiumShape(database.Name, 
+                                Style.TechnologyPerspective);
+                            flowchartWriter.WriteArrow(unitId, databaseId, "uses");
+                        }
+                    }
+                    else
+                    {
+                        var clusterId = flowchartWriter.WriteSubgraph(cluster.Name, subgraphWriter =>
+                        {
+                            foreach (var database in group)
+                                subgraphWriter.WriteStadiumShape(database.Name, Style.TechnologyPerspective);
+                        });
+                        flowchartWriter.WriteArrow(unitId, clusterId, "uses");
+                    }
+                }
             });
         }
 

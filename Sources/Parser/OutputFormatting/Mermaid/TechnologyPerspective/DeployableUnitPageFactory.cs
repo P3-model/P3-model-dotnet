@@ -41,6 +41,17 @@ public class DeployableUnitPageFactory : MermaidPageFactory
                             .ByReverseRelation<CodeStructure.BelongsToLayer>())))
                     .ToHashSet()
                 : new HashSet<(CSharpProject, IReadOnlySet<Layer>)>();
+            var databases = modelGraph
+                .Execute(query => query
+                    .Elements<Database>()
+                    .RelatedTo(unit)
+                    .ByReverseRelation<DeployableUnit.UsesDatabase>())
+                .Select(database => (database, modelGraph.Execute(subQuery => subQuery
+                        .Elements<DatabaseCluster>()
+                        .RelatedTo(database)
+                        .ByReverseRelation<Database.BelongsToCluster>())
+                    .SingleOrDefault()))
+                .ToHashSet();
             var domainModules = modelGraph.Execute(query => query
                     .Elements<DomainModule>()
                     .RelatedTo(unit)
@@ -52,6 +63,6 @@ public class DeployableUnitPageFactory : MermaidPageFactory
                 .RelatedToAny(domainModules)
                 .ByRelation<DevelopmentTeam.OwnsDomainModule>());
             return new DeployableUnitPage(outputDirectory, unit, tier, startupProject, referencedProjects,
-                domainModules, teams);
+                databases, domainModules, teams);
         });
 }
