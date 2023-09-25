@@ -1,6 +1,7 @@
 using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
+using P3Model.Annotations;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Technology.CSharp;
 
@@ -13,6 +14,8 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
 {
     public void Analyze(IAssemblySymbol symbol, ModelBuilder modelBuilder)
     {
+        if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
+            return;
         var cSharpProject = new CSharpProject(symbol.Name);
         modelBuilder.Add(cSharpProject, symbol);
         modelBuilder.Add(elements => symbol
@@ -25,6 +28,8 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
 
     public void Analyze(INamespaceSymbol symbol, ModelBuilder modelBuilder)
     {
+        if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
+            return;
         var cSharpNamespace = new CSharpNamespace(symbol.Name);
         modelBuilder.Add(cSharpNamespace, symbol);
         if (symbol.ContainingNamespace.IsGlobalNamespace)
@@ -41,6 +46,8 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
 
     public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder)
     {
+        if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
+            return;
         var cSharpType = new CSharpType(symbol.GetFullName());
         modelBuilder.Add(cSharpType, symbol);
         modelBuilder.Add(elements => elements
