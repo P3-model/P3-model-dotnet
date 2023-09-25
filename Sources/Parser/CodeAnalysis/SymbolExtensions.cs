@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using P3Model.Parser.ModelSyntax;
 
 namespace P3Model.Parser.CodeAnalysis;
 
@@ -210,7 +211,10 @@ public static class SymbolExtensions
     public static bool IsFrom(this ISymbol symbol, IAssemblySymbol assemblySymbol) => symbol switch
     {
         INamespaceSymbol namespaceSymbol => namespaceSymbol.ConstituentNamespaces
-            .Any(n => n.ContainingAssembly.Equals(assemblySymbol, SymbolEqualityComparer.Default)),
-        _ => symbol.ContainingAssembly.Equals(assemblySymbol, SymbolEqualityComparer.Default)
+            .Any(n => n.ContainingAssembly.CompilationIndependentEquals(assemblySymbol)),
+        _ => symbol.ContainingAssembly.CompilationIndependentEquals(assemblySymbol)
     };
+
+    private static bool CompilationIndependentEquals(this ISymbol symbol, ISymbol other) =>
+        CompilationIndependentSymbolEqualityComparer.Default.Equals(symbol, other);
 }
