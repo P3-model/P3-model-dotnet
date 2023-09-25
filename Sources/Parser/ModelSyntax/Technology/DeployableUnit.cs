@@ -8,4 +8,6 @@ public record DeployableUnit(string Name) : Element
     
     public record ContainsCSharpProject(DeployableUnit Source, CSharpProject Destination) 
         : Relation<DeployableUnit, CSharpProject>;
+
+    public record UsesDatabase(DeployableUnit Source, Database Destination) : Relation<DeployableUnit, Database>;
 }

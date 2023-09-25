@@ -22,6 +22,7 @@ public class DeployableUnitAnalyzer : SymbolAnalyzer<IAssemblySymbol>
         modelBuilder.Add(deployableUnit, symbol);
         modelBuilder.Add(elements => GetRelationsToDomainModules(symbol, deployableUnit, elements));
         modelBuilder.Add(elements => GetRelationsToCodeStructures(symbol, deployableUnit, elements));
+        modelBuilder.Add(elements => GetRelationsToDatabases(symbol, deployableUnit, elements));
     }
 
     private static IEnumerable<Relation> GetRelationsToDomainModules(IAssemblySymbol symbol,
@@ -34,11 +35,21 @@ public class DeployableUnitAnalyzer : SymbolAnalyzer<IAssemblySymbol>
             .Where(info => info.Symbols.Contains(assemblySymbol) ||
                            info.Symbols.Any(s => s.IsFrom(assemblySymbol)) ||
                            info.Directories.Any(d => d.ContainsSourcesOf(assemblySymbol)))
-            .Select(elementInfo => new DomainModule.IsDeployedInDeployableUnit(elementInfo.Element, deployableUnit)));
+            .Select(info => new DomainModule.IsDeployedInDeployableUnit(info.Element, deployableUnit)));
 
     private static IEnumerable<Relation> GetRelationsToCodeStructures(ISymbol symbol,
         DeployableUnit deployableUnit, ElementsProvider elements) => elements
         .OfType<ElementInfo<CSharpProject>>()
         .Where(info => info.Symbols.Contains(symbol))
         .Select(elementInfo => new DeployableUnit.ContainsCSharpProject(deployableUnit, elementInfo.Element));
+
+    private static IEnumerable<Relation> GetRelationsToDatabases(IAssemblySymbol symbol,
+        DeployableUnit deployableUnit, ElementsProvider elements) => symbol
+        .GetReferencedAssembliesFromSameRepository()
+        .SelectRecursively(assemblySymbol => assemblySymbol.GetReferencedAssembliesFromSameRepository())
+        .Distinct<IAssemblySymbol>(CompilationIndependentSymbolEqualityComparer.Default)
+        .SelectMany(assemblySymbol => elements
+            .OfType<ElementInfo<Database>>()
+            .Where(info => info.Symbols.Any(s => s.IsFrom(assemblySymbol))))
+        .Select(info => new DeployableUnit.UsesDatabase(deployableUnit, info.Element));
 }
