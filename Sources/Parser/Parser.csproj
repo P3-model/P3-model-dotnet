@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <AssemblyName>P3Model.Parser</AssemblyName>
         <RootNamespace>P3Model.Parser</RootNamespace>
-        <Version>0.1.0-preview6</Version>
+        <Version>0.1.0-preview7</Version>
         <Title>P3 Model Parser</Title>
         <Authors>Marcin Markowski</Authors>
         <PackageProjectUrl>https://github.com/P3-model/P3-model-dotnet</PackageProjectUrl>
@@ -14,7 +14,7 @@
         <RepositoryUrl>https://github.com/P3-model/P3-model-dotnet</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Description>P3 Model Parser is a tool that generate documentation from C# source code enriched with metadata like: annotations, markdown files and more.</Description>
-        <PackageReleaseNotes>small fixes</PackageReleaseNotes>
+        <PackageReleaseNotes>simple databases analysis</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <Company>P3 Model</Company>
         <AssemblyVersion>0.1.0</AssemblyVersion>
