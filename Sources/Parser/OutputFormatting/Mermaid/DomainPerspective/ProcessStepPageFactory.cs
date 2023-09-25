@@ -39,7 +39,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                     .RelatedToAny(subQuery => subQuery
                         .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>(filter => filter
-                        .MaxBy(r => r.Source)));
+                        .MaxBy(r => r.Source.Level)));
             var actors = modelGraph.Execute(query => query
                 .Elements<Actor>()
                 .RelatedTo(step)
