@@ -34,12 +34,16 @@ public class DeployableUnitsPage : MermaidPageBase
         mermaidWriter.WriteHeading("Deployable units and their tires", 2);
         mermaidWriter.WriteFlowchart(flowchartWriter =>
         {
-            foreach (var relation in _tierContainsDeploymentUnitRelations
-                         .OrderBy(r => r.Source.Name)
-                         .ThenBy(r => r.Destination.Name))
-                flowchartWriter.WriteSubgraph(relation.Source.Name, elementsWriter => elementsWriter
-                    .WriteRectangle(relation.Destination.Name, Style.TechnologyPerspective));
-
+            foreach (var group in _tierContainsDeploymentUnitRelations
+                         .GroupBy(r => r.Source)
+                         .OrderBy(r => r.Key.Name))
+            {
+                flowchartWriter.WriteSubgraph(group.Key.Name, subGraphWriter =>
+                {
+                    foreach (var relation in group)
+                        subGraphWriter.WriteRectangle(relation.Destination.Name, Style.TechnologyPerspective);
+                });
+            }
             foreach (var unit in _unitsWithoutTier.OrderBy(u => u.Name))
                 flowchartWriter.WriteRectangle(unit.Name, Style.TechnologyPerspective);
         });
