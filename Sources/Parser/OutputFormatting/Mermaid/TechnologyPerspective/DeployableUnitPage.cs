@@ -99,12 +99,14 @@ public class DeployableUnitPage : MermaidPageBase
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
                 var unitId = flowchartWriter.WriteRectangle(_unit.Name, Style.TechnologyPerspective);
-                foreach (var group in _databases.GroupBy(item => item.Cluster, item => item.Database))
+                foreach (var group in _databases
+                             .GroupBy(item => item.Cluster, item => item.Database)
+                             .OrderBy(item => item.Key?.Name))
                 {
                     var cluster = group.Key;
                     if (cluster is null)
                     {
-                        foreach (var database in group)
+                        foreach (var database in group.OrderBy(d => d.Name))
                         {
                             var databaseId = flowchartWriter.WriteStadiumShape(database.Name, 
                                 Style.TechnologyPerspective);
@@ -115,7 +117,7 @@ public class DeployableUnitPage : MermaidPageBase
                     {
                         var clusterId = flowchartWriter.WriteSubgraph(cluster.Name, subgraphWriter =>
                         {
-                            foreach (var database in group)
+                            foreach (var database in group.OrderBy(d => d.Name))
                                 subgraphWriter.WriteStadiumShape(database.Name, Style.TechnologyPerspective);
                         });
                         flowchartWriter.WriteArrow(unitId, clusterId, "uses");
