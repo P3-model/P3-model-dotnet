@@ -24,7 +24,7 @@ public class DeployableUnitPage : MermaidPageBase
 
     public DeployableUnitPage(string outputDirectory, DeployableUnit unit, Tier? tier,
         CSharpProject? startupProject, HashSet<(CSharpProject, IReadOnlySet<Layer>)> referencedProjects,
-        IReadOnlySet<(Database, DatabaseCluster?)> databases, IReadOnlySet<DomainModule> modules, 
+        IReadOnlySet<(Database, DatabaseCluster?)> databases, IReadOnlySet<DomainModule> modules,
         IReadOnlySet<DevelopmentTeam> teams) : base(outputDirectory)
     {
         _unit = unit;
@@ -108,7 +108,7 @@ public class DeployableUnitPage : MermaidPageBase
                     {
                         foreach (var database in group.OrderBy(d => d.Name))
                         {
-                            var databaseId = flowchartWriter.WriteStadiumShape(database.Name, 
+                            var databaseId = flowchartWriter.WriteStadiumShape(database.Name,
                                 Style.TechnologyPerspective);
                             flowchartWriter.WriteArrow(unitId, databaseId, "uses");
                         }
@@ -149,10 +149,7 @@ public class DeployableUnitPage : MermaidPageBase
     private void WriteProjectsAndLayers(FlowchartElementsWriter writer)
     {
         var undefinedLayerProjects = new HashSet<CSharpProject>();
-        var layersToProjects = new Dictionary<Layer, HashSet<CSharpProject>>
-        {
-            { new Layer("Undefined"),  undefinedLayerProjects}
-        };
+        var layersToProjects = new Dictionary<Layer, HashSet<CSharpProject>>();
         foreach (var (project, layers) in _referencedProjects)
         {
             if (layers.Count == 0)
@@ -169,6 +166,8 @@ public class DeployableUnitPage : MermaidPageBase
                 }
             }
         }
+        if (undefinedLayerProjects.Count > 0)
+            layersToProjects.Add(new Layer("Undefined"), undefinedLayerProjects);
         foreach (var (layer, projects) in layersToProjects.OrderBy(pair => pair.Key.Name))
         {
             writer.WriteSubgraph($"{layer.Name} Layer", layerSubgraphWriter =>
