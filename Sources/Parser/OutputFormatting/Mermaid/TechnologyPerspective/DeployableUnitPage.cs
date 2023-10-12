@@ -166,8 +166,6 @@ public class DeployableUnitPage : MermaidPageBase
                 }
             }
         }
-        if (undefinedLayerProjects.Count > 0)
-            layersToProjects.Add(new Layer("Undefined"), undefinedLayerProjects);
         foreach (var (layer, projects) in layersToProjects.OrderBy(pair => pair.Key.Name))
         {
             writer.WriteSubgraph($"{layer.Name} Layer", layerSubgraphWriter =>
@@ -176,6 +174,12 @@ public class DeployableUnitPage : MermaidPageBase
                     layerSubgraphWriter.WriteStadiumShape(project.Name, Style.TechnologyPerspective);
             });
         }
+        if (undefinedLayerProjects.Count > 0)
+            writer.WriteSubgraph("Undefined Layer", layerSubgraphWriter =>
+            {
+                foreach (var project in undefinedLayerProjects.OrderBy(p => p.Name))
+                    layerSubgraphWriter.WriteStadiumShape(project.Name, Style.TechnologyPerspective);
+            });
     }
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
