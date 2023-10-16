@@ -4,6 +4,7 @@ using System.Linq;
 using Humanizer;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
+using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
@@ -13,15 +14,18 @@ public class DomainBuildingBlockPage : MermaidPageBase
     private readonly DomainModule? _module;
     private readonly IReadOnlySet<(DomainBuildingBlock BuildingBlock, DomainModule? Module)> _usingElements;
     private readonly IReadOnlySet<(DomainBuildingBlock BuildingBlock, DomainModule? Module)> _usedElements;
+    private readonly IReadOnlySet<CodeStructure> _codeStructures;
 
     public DomainBuildingBlockPage(string outputDirectory, DomainBuildingBlock buildingBlock, DomainModule? module,
         IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usingElements,
-        IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usedElements) : base(outputDirectory)
+        IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usedElements, 
+        IReadOnlySet<CodeStructure> codeStructures) : base(outputDirectory)
     {
         _buildingBlock = buildingBlock;
         _module = module;
         _usingElements = usingElements;
         _usedElements = usedElements;
+        _codeStructures = codeStructures;
     }
 
     protected override string Description =>
@@ -105,7 +109,17 @@ public class DomainBuildingBlockPage : MermaidPageBase
                 }
             });
         }
+        
+        mermaidWriter.WriteHeading("Technology Perspective", 2);
+        mermaidWriter.WriteHeading("Source code", 3);
+        if (_codeStructures.Count == 1)
+            mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
+        else
+            mermaidWriter.WriteUnorderedList(_codeStructures, FormatSourceCodeLink);
     }
+
+    private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
+        .FormatLink(Path.GetFileName(codeStructure.Path), GetPathRelativeToPageFile(codeStructure.Path));
 
     private static IEnumerable<string> WriteDependencies(IEnumerable<DomainBuildingBlock> dependencies,
         FlowchartElementsWriter flowchartWriter) => dependencies

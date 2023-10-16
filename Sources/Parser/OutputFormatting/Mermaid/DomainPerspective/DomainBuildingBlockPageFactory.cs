@@ -3,6 +3,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.ModelQuerying;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
+using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
@@ -49,6 +50,11 @@ public class DomainBuildingBlockPageFactory : MermaidPageFactory
                             .ByRelation<DomainModule.ContainsBuildingBlock>())
                         .SingleOrDefault()))
                 .ToHashSet();
-            return new DomainBuildingBlockPage(outputDirectory, buildingBlock, module, usingElements, usedElements);
+            var codeStructures = modelGraph.Execute(query => query
+                .Elements<CodeStructure>()
+                .RelatedTo(buildingBlock)
+                .ByReverseRelation<DomainBuildingBlock.IsImplementedBy>());
+            return new DomainBuildingBlockPage(outputDirectory, buildingBlock, module, usingElements, usedElements,
+                codeStructures);
         });
 }
