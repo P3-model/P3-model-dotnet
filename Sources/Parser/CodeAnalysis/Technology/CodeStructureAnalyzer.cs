@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
@@ -30,7 +31,9 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
     {
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
-        var cSharpNamespace = new CSharpNamespace(symbol.Name, symbol.GetSourceCodePaths().First());
+        // TODO: getting all folders for namespace 
+        var cSharpNamespace = new CSharpNamespace(symbol.Name, 
+            Path.GetDirectoryName(symbol.GetSourceCodePaths().First())!);
         modelBuilder.Add(cSharpNamespace, symbol);
         if (symbol.ContainingNamespace.IsGlobalNamespace)
             modelBuilder.Add(elements => elements

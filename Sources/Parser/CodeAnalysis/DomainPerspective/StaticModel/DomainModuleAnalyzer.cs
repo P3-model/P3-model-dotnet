@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
+using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
@@ -57,6 +58,7 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbo
         // TODO: relation to teams and business units defined at namespace level
         //  Requires parsing types within the namespace annotated with DevelopmentOwnerAttribute and ApplyOnNamespace == true.
         modelBuilder.Add(elements => GetRelationToParent(symbol, module, elements));
+        modelBuilder.Add(elements => GetRelationsToCodeStructures(symbol, module, elements));
     }
 
     private static IEnumerable<Relation> GetRelationToParent(ISymbol symbol, DomainModule module,
@@ -71,4 +73,10 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbo
         if (parentModule != null)
             yield return new DomainModule.ContainsDomainModule(parentModule, module);
     }
+    
+    private static IEnumerable<Relation> GetRelationsToCodeStructures(ISymbol symbol, DomainModule module,
+        ElementsProvider elements) => elements
+        .For(symbol)
+        .OfType<CodeStructure>()
+        .Select(codeStructure => new DomainModule.IsImplementedBy(module, codeStructure));
 }

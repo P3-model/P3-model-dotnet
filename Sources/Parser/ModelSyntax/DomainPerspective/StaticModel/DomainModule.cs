@@ -26,4 +26,7 @@ public record DomainModule(HierarchyId Id) : HierarchyElement
 
     public record IsDeployedInDeployableUnit(DomainModule Source, DeployableUnit Destination) 
         : Relation<DomainModule, DeployableUnit>;
+    
+    public record IsImplementedBy(DomainModule Source, CodeStructure Destination)
+        : Relation<DomainModule, CodeStructure>;
 }
