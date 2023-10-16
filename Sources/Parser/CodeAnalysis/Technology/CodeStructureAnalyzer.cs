@@ -16,7 +16,7 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
     {
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
-        var cSharpProject = new CSharpProject(symbol.Name);
+        var cSharpProject = new CSharpProject(symbol.Name, symbol.GetSourceCodePaths().First());
         modelBuilder.Add(cSharpProject, symbol);
         modelBuilder.Add(elements => symbol
             .GetReferencedAssembliesFromSameRepository()
@@ -30,7 +30,7 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
     {
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
-        var cSharpNamespace = new CSharpNamespace(symbol.Name);
+        var cSharpNamespace = new CSharpNamespace(symbol.Name, symbol.GetSourceCodePaths().First());
         modelBuilder.Add(cSharpNamespace, symbol);
         if (symbol.ContainingNamespace.IsGlobalNamespace)
             modelBuilder.Add(elements => elements
@@ -48,7 +48,7 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
     {
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
-        var cSharpType = new CSharpType(symbol.GetFullName());
+        var cSharpType = new CSharpType(symbol.GetFullName(), symbol.GetSourceCodePaths().First());
         modelBuilder.Add(cSharpType, symbol);
         modelBuilder.Add(elements => elements
             .For(symbol.ContainingNamespace)

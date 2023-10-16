@@ -24,23 +24,23 @@ public class ExampleRelations : IEnumerable<Relation>
             new BusinessOrganizationalUnit("ExampleBusinessOrganizationalUnit"),
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
         new CodeStructure.BelongsToLayer(
-            new CSharpProject("ExampleCodeStructure"),
+            new CSharpProject("ExampleCodeStructure", "ExampleDirectory/ExampleCodeStructure"),
             new Layer("ExampleLayer")),
         new CSharpProject.ReferencesProject(
-            new CSharpProject("ExampleCSharpProjectA"),
-            new CSharpProject("ExampleCSharpProjectB")),
+            new CSharpProject("ExampleCSharpProjectA", "ExampleDirectory/ExampleCSharpProjectA"),
+            new CSharpProject("ExampleCSharpProjectB", "ExampleDirectory/ExampleCSharpProjectB")),
         new CSharpProject.ContainsNamespace(
-            new CSharpProject("ExampleCSharpProjectA"),
-            new CSharpNamespace("ExampleCSharpNamespace")),
+            new CSharpProject("ExampleCSharpProjectA", "ExampleDirectory/ExampleCSharpProjectA"),
+            new CSharpNamespace("ExampleCSharpNamespace", "ExampleDirectory/ExampleCSharpNamespace")),
         new CSharpNamespace.ContainsNamespace(
-            new CSharpNamespace("ExampleCSharpNamespaceA"),
-            new CSharpNamespace("ExampleCSharpNamespaceB")),
+            new CSharpNamespace("ExampleCSharpNamespaceA", "ExampleDirectory/ExampleCSharpNamespaceA"),
+            new CSharpNamespace("ExampleCSharpNamespaceB", "ExampleDirectory/ExampleCSharpNamespaceB")),
         new CSharpNamespace.ContainsType(
-            new CSharpNamespace("ExampleCSharpNamespace"),
-            new CSharpType("ExampleCSharpType")),
+            new CSharpNamespace("ExampleCSharpNamespace", "ExampleDirectory/"),
+            new CSharpType("ExampleCSharpType", "ExampleDirectory/ExampleCSharpType")),
         new DeployableUnit.ContainsCSharpProject(
             new DeployableUnit("ExampleDeployableUnit"),
-            new CSharpProject("ExampleCSharpProject")),
+            new CSharpProject("ExampleCSharpProject", "ExampleDirectory/ExampleCSharpProject")),
         new DevelopmentTeam.OwnsDomainModule(
             new DevelopmentTeam("ExampleDevelopmentTeam"),
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),

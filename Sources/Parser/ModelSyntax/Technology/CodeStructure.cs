@@ -1,6 +1,7 @@
 namespace P3Model.Parser.ModelSyntax.Technology;
 
-public record CodeStructure(string Name) : Element
+// TODO: support for code structures placed in several files
+public record CodeStructure(string Name, string Path) : Element
 {
     public Perspective Perspective => Perspective.Technology;
 

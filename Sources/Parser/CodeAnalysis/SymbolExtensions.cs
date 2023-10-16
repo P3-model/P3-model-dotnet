@@ -215,6 +215,11 @@ public static class SymbolExtensions
         _ => symbol.ContainingAssembly.CompilationIndependentEquals(assemblySymbol)
     };
 
+    public static IEnumerable<string> GetSourceCodePaths(this ISymbol symbol) => symbol
+        .Locations
+        .Select(location => location.SourceTree?.FilePath)
+        .Where(path => path != null)!;
+
     private static bool CompilationIndependentEquals(this ISymbol symbol, ISymbol other) =>
         CompilationIndependentSymbolEqualityComparer.Default.Equals(symbol, other);
 }
