@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
+using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
 
@@ -32,7 +33,7 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
         var name = GetName(symbol, buildingBlockAttribute);
         var buildingBlock = CreateBuildingBlock(module, name);
         modelBuilder.Add(buildingBlock, symbol);
-        modelBuilder.Add(elements => GetRelations(buildingBlock, buildingBlockAttribute, elements));
+        modelBuilder.Add(elements => GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements));
         if (hasModule)
         {
             modelBuilder.Add(module!, symbol);
@@ -53,11 +54,11 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
 
     protected abstract DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name);
 
-    protected virtual IEnumerable<Relation> GetRelations(DomainBuildingBlock buildingBlock,
-        AttributeData buildingBlockAttribute, ElementsProvider elements)
-    {
-        yield break;
-    }
+    protected virtual IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
+        AttributeData buildingBlockAttribute, ElementsProvider elements) => elements
+        .For(symbol)
+        .OfType<CodeStructure>()
+        .Select(codeStructure => new DomainBuildingBlock.IsImplementedBy(buildingBlock, codeStructure));
 
     private static void AddDescriptionTrait(ISymbol symbol, DomainBuildingBlock buildingBlock,
         ModelBuilder modelBuilder)

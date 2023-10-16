@@ -21,9 +21,9 @@ public class ProcessStepAnalyzer : DomainBuildingBlockAnalyzerBase
     protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) =>
         new ProcessStep(module, name);
 
-    protected override IEnumerable<Relation> GetRelations(DomainBuildingBlock buildingBlock,
+    protected override IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
         AttributeData buildingBlockAttribute, ElementsProvider elements) => base
-        .GetRelations(buildingBlock, buildingBlockAttribute, elements)
+        .GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements)
         .Union(GetRelationsToNextSteps((ProcessStep)buildingBlock, buildingBlockAttribute, elements))
         .Union(GetRelationsToProcesses((ProcessStep)buildingBlock, buildingBlockAttribute, elements));
 
