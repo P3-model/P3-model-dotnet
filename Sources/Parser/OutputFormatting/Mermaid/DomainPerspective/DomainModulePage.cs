@@ -22,11 +22,13 @@ public class DomainModulePage : MermaidPageBase
     private readonly IReadOnlySet<DeployableUnit> _deployableUnits;
     private readonly IReadOnlySet<DevelopmentTeam> _developmentTeams;
     private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
+    private readonly IReadOnlySet<CodeStructure> _codeStructures;
 
     public DomainModulePage(string outputDirectory, DomainModule module, DomainModule? parent,
         IReadOnlySet<DomainModule> children, IReadOnlySet<Process> processes, 
         IReadOnlySet<DomainBuildingBlock> directBuildingBlocks, IReadOnlySet<DeployableUnit> deployableUnits, 
-        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits) 
+        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits, 
+        IReadOnlySet<CodeStructure> codeStructures) 
         : base(outputDirectory)
     {
         _module = module;
@@ -37,6 +39,7 @@ public class DomainModulePage : MermaidPageBase
         _deployableUnits = deployableUnits;
         _developmentTeams = developmentTeams;
         _organizationalUnits = organizationalUnits;
+        _codeStructures = codeStructures;
     }
 
     public override string LinkText => string.Join(" | ", _module.Id.Parts.Select(p => p.Humanize()));
@@ -143,6 +146,11 @@ public class DomainModulePage : MermaidPageBase
                 }
             });
         }
+        mermaidWriter.WriteHeading("Source code", 3);
+        if (_codeStructures.Count == 1)
+            mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
+        else
+            mermaidWriter.WriteUnorderedList(_codeStructures, FormatSourceCodeLink);
 
         mermaidWriter.WriteHeading("People Perspective", 2);
         mermaidWriter.WriteHeading("Engaged people", 3);
@@ -169,6 +177,9 @@ public class DomainModulePage : MermaidPageBase
             });
         }
     }
+    
+    private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
+        .FormatLink(codeStructure.Name, GetPathRelativeToPageFile(codeStructure.Path));
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {

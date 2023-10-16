@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using P3Model.Parser.ModelQuerying;
 using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
+using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
@@ -48,8 +49,12 @@ public class DomainModulePageFactory : MermaidPageFactory
                 var deployableUnits = modelGraph.GetDeployableUnitsFor(module);
                 var teams = modelGraph.GetDevelopmentTeamsFor(module);
                 var organizationalUnits = modelGraph.GetBusinessOrganizationalUnitsFor(module);
+                var codeStructures = modelGraph.Execute(query => query
+                    .Elements<CodeStructure>()
+                    .RelatedTo(module)
+                    .ByReverseRelation<DomainModule.IsImplementedBy>());
                 return new DomainModulePage(outputDirectory, module, parent, children, processes, directBuildingBlocks,
-                    deployableUnits, teams, organizationalUnits);
+                    deployableUnits, teams, organizationalUnits, codeStructures);
             });
     }
 }
