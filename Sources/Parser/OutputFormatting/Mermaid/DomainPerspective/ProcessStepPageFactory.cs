@@ -62,7 +62,11 @@ public class ProcessStepPageFactory : MermaidPageFactory
                     .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>(filter => filter
                         .GroupBy(r => r.Destination)
                         .MaxBy(g => g.Key.Level) ?? Enumerable.Empty<BusinessOrganizationalUnit.OwnsDomainModule>()));
+            var codeStructures = modelGraph.Execute(query => query
+                .Elements<CodeStructure>()
+                .RelatedTo((DomainBuildingBlock)step)
+                .ByReverseRelation<DomainBuildingBlock.IsImplementedBy>());
             return new ProcessStepPage(outputDirectory, step, process, buildingBlocks, deployableUnit, actors,
-                developmentTeams, organizationalUnits);
+                developmentTeams, organizationalUnits, codeStructures);
         });
 }

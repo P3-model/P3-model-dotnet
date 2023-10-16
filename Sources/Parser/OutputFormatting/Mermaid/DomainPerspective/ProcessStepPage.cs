@@ -21,10 +21,12 @@ public class ProcessStepPage : MermaidPageBase
     private readonly IReadOnlySet<Actor> _actors;
     private readonly IReadOnlySet<DevelopmentTeam> _developmentTeams;
     private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
+    private readonly IReadOnlySet<CodeStructure> _codeStructures;
 
     public ProcessStepPage(string outputDirectory, ProcessStep step, Process? process,
         IReadOnlySet<DomainBuildingBlock> buildingBlocks, DeployableUnit? deployableUnit, IReadOnlySet<Actor> actors,
-        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits)
+        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits, 
+        IReadOnlySet<CodeStructure> codeStructures)
         : base(outputDirectory)
     {
         _step = step;
@@ -34,6 +36,7 @@ public class ProcessStepPage : MermaidPageBase
         _actors = actors;
         _developmentTeams = developmentTeams;
         _organizationalUnits = organizationalUnits;
+        _codeStructures = codeStructures;
     }
 
     protected override string Description =>
@@ -105,6 +108,11 @@ public class ProcessStepPage : MermaidPageBase
                 flowchartWriter.WriteArrow(stepId, deployableUnitId, "is deployed in");
             });
         }
+        mermaidWriter.WriteHeading("Source code", 3);
+        if (_codeStructures.Count == 1)
+            mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
+        else
+            mermaidWriter.WriteUnorderedList(_codeStructures, FormatSourceCodeLink);
 
         mermaidWriter.WriteHeading("People Perspective", 2);
         if (_actors.Count == 0 && _developmentTeams.Count == 0 && _organizationalUnits.Count == 0)
@@ -138,6 +146,9 @@ public class ProcessStepPage : MermaidPageBase
         }
     }
 
+    private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
+        .FormatLink(Path.GetFileName(codeStructure.Path), GetPathRelativeToPageFile(codeStructure.Path));
+    
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
         DomainBuildingBlockPage buildingBlockPage => _buildingBlocks.Contains(buildingBlockPage.MainElement),
