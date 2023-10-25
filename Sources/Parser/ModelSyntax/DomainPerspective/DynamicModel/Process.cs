@@ -5,6 +5,7 @@ namespace P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
 public record Process(string Name) : Element
 {
     public Perspective Perspective => Perspective.Domain;
+    public string Id => Name;
 
     public record ContainsProcessStep(Process Source, ProcessStep Destination) : Relation<Process, ProcessStep>;
 }

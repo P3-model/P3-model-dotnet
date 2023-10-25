@@ -4,7 +4,7 @@ using System.Linq;
 namespace P3Model.Parser.ModelSyntax;
 
 public class Hierarchy<TElement>
-    where TElement : HierarchyElement
+    where TElement : class, HierarchyElement
 {
     private readonly Dictionary<TElement, List<TElement>> _parentToChildren;
     private readonly Dictionary<TElement, TElement> _childToParent;

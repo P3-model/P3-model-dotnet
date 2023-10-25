@@ -6,6 +6,8 @@ public record ProcessStep(DomainModule? Module, string Name) : DomainBuildingBlo
         DomainBuildingBlock.DependsOnBuildingBlock(Source, Destination), 
         Relation<ProcessStep, DomainBuildingBlock>
     {
+        Element Relation.Source => Source;
+
         public new ProcessStep Source { get; } = Source;
     }
     

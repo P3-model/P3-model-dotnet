@@ -24,20 +24,25 @@ public class ExampleRelations : IEnumerable<Relation>
             new BusinessOrganizationalUnit("ExampleBusinessOrganizationalUnit"),
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
         new CodeStructure.BelongsToLayer(
-            new CSharpProject("ExampleCodeStructure", "ExampleDirectory/ExampleCodeStructure"),
+            new CSharpProject("ExampleCSharpProjectA", "ExampleDirectory/ExampleCodeStructure"),
             new Layer("ExampleLayer")),
         new CSharpProject.ReferencesProject(
             new CSharpProject("ExampleCSharpProjectA", "ExampleDirectory/ExampleCSharpProjectA"),
             new CSharpProject("ExampleCSharpProjectB", "ExampleDirectory/ExampleCSharpProjectB")),
         new CSharpProject.ContainsNamespace(
             new CSharpProject("ExampleCSharpProjectA", "ExampleDirectory/ExampleCSharpProjectA"),
-            new CSharpNamespace("ExampleCSharpNamespace", "ExampleDirectory/ExampleCSharpNamespace")),
+            new CSharpNamespace(HierarchyId.FromParts("ExampleCSharpNamespace"), 
+                "ExampleDirectory/ExampleCSharpNamespace")),
         new CSharpNamespace.ContainsNamespace(
-            new CSharpNamespace("ExampleCSharpNamespaceA", "ExampleDirectory/ExampleCSharpNamespaceA"),
-            new CSharpNamespace("ExampleCSharpNamespaceB", "ExampleDirectory/ExampleCSharpNamespaceB")),
+            new CSharpNamespace(HierarchyId.FromParts("ExampleCSharpNamespaceA"), 
+                "ExampleDirectory/ExampleCSharpNamespaceA"),
+            new CSharpNamespace(HierarchyId.FromParts("ExampleCSharpNamespaceB"), 
+                "ExampleDirectory/ExampleCSharpNamespaceB")),
         new CSharpNamespace.ContainsType(
-            new CSharpNamespace("ExampleCSharpNamespace", "ExampleDirectory/"),
-            new CSharpType("ExampleCSharpType", "ExampleDirectory/ExampleCSharpType")),
+            new CSharpNamespace(HierarchyId.FromParts("ExampleCSharpNamespace"), "ExampleDirectory/"),
+            new CSharpType(HierarchyId.FromParts("ExampleCSharpType"),
+                "ExampleCSharpType",
+                "ExampleDirectory/ExampleCSharpType")),
         new DeployableUnit.ContainsCSharpProject(
             new DeployableUnit("ExampleDeployableUnit"),
             new CSharpProject("ExampleCSharpProject", "ExampleDirectory/ExampleCSharpProject")),

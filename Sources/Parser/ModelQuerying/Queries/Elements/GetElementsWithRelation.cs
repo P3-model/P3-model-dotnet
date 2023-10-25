@@ -6,7 +6,7 @@ using P3Model.Parser.ModelSyntax;
 namespace P3Model.Parser.ModelQuerying.Queries.Elements;
 
 public class GetElementsWithRelation<TSource, TRelation> : ElementsQuery<TSource>
-    where TSource : Element
+    where TSource : class, Element
     where TRelation : RelationFrom<TSource>
 {
     private readonly Func<TRelation, bool> _predicate;

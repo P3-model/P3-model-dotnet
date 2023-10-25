@@ -29,32 +29,32 @@ public class ModelGraph
         _model.Relations.OfType<TRelation>();
 
     public Hierarchy<TElement> HierarchyFor<TElement, TRelation>()
-        where TElement : HierarchyElement
+        where TElement : class, HierarchyElement
         where TRelation : HierarchyRelation<TElement> => Hierarchy<TElement>.Create(RelationsOfType<TRelation>());
 
     public IEnumerable<TRelation> RelationsFrom<TElement, TRelation>(TElement element)
-        where TElement : Element, IEquatable<TElement>
+        where TElement : class, Element, IEquatable<TElement>
         where TRelation : RelationFrom<TElement> =>
         _model.Relations
             .OfType<TRelation>()
             .Where(r => r.Source.Equals(element));
     
     public IEnumerable<TRelation> RelationsFrom<TElement, TRelation>(IReadOnlySet<TElement> elements)
-        where TElement : Element, IEquatable<TElement>
+        where TElement : class, Element, IEquatable<TElement>
         where TRelation : RelationFrom<TElement> =>
         _model.Relations
             .OfType<TRelation>()
             .Where(r => elements.Contains(r.Source));
 
     public IEnumerable<TRelation> RelationsTo<TElement, TRelation>(TElement element)
-        where TElement : Element, IEquatable<TElement>
+        where TElement : class, Element, IEquatable<TElement>
         where TRelation : RelationTo<TElement> =>
         _model.Relations
             .OfType<TRelation>()
             .Where(r => r.Destination.Equals(element));
     
     public IEnumerable<TRelation> RelationsTo<TElement, TRelation>(IReadOnlySet<TElement> elements)
-        where TElement : Element, IEquatable<TElement>
+        where TElement : class, Element, IEquatable<TElement>
         where TRelation : RelationTo<TElement> =>
         _model.Relations
             .OfType<TRelation>()
@@ -84,7 +84,7 @@ public class ModelGraph
     
     [PublicAPI]
     public Hierarchy<TElement> Execute<TElement>(Func<QueryBuilder, HierarchyQuery<TElement>> configure)
-        where TElement : HierarchyElement
+        where TElement : class, HierarchyElement
     {
         var queryBuilder = new QueryBuilder();
         var query = configure(queryBuilder);

@@ -27,27 +27,27 @@ public class QueryBuilder
 
     [PublicAPI]
     public GetHierarchy<TElement, TRelation> Hierarchy<TElement, TRelation>()
-        where TElement : HierarchyElement
+        where TElement : class, HierarchyElement
         where TRelation : HierarchyRelation<TElement> => new();
     
     [PublicAPI]
     public GetAncestors<TElement, TRelation> Ancestors<TElement, TRelation>(TElement element)
-        where TElement : HierarchyElement
+        where TElement : class, HierarchyElement
         where TRelation : HierarchyRelation<TElement> => new(element, false);
     
     [PublicAPI]
     public GetAncestors<TElement, TRelation> AncestorsAndSelf<TElement, TRelation>(TElement element)
-        where TElement : HierarchyElement
+        where TElement : class, HierarchyElement
         where TRelation : HierarchyRelation<TElement> => new(element, true);
     
     [PublicAPI]
     public GetDescendants<TElement, TRelation> Descendants<TElement, TRelation>(TElement element)
-        where TElement : HierarchyElement
+        where TElement : class, HierarchyElement
         where TRelation : HierarchyRelation<TElement> => new(element, false);
     
     [PublicAPI]
     public GetDescendants<TElement, TRelation> DescendantsAndSelf<TElement, TRelation>(TElement element)
-        where TElement : HierarchyElement
+        where TElement : class, HierarchyElement
         where TRelation : HierarchyRelation<TElement> => new(element, true);
 
     [PublicAPI]
@@ -63,18 +63,18 @@ public class QueryBuilder
     {
         [PublicAPI]
         public SelectRelation<TElement, TDestination> RelatedTo<TDestination>(TDestination destination)
-            where TDestination : Element, IEquatable<TDestination> => new(destination);
+            where TDestination : class, Element, IEquatable<TDestination> => new(destination);
 
         [PublicAPI]
         public SelectElementRelationToAny<TElement, TDestination> RelatedToAny<TDestination>(
             IReadOnlySet<TDestination> destinations)
-            where TDestination : Element, IEquatable<TDestination> => 
+            where TDestination : class, Element, IEquatable<TDestination> => 
             new(new GetStaticElements<TDestination>(destinations));
         
         [PublicAPI]
         public SelectElementRelationToAny<TElement, TDestination> RelatedToAny<TDestination>(
             Func<QueryBuilder, ElementsQuery<TDestination>> configure)
-            where TDestination : Element, IEquatable<TDestination>
+            where TDestination : class, Element, IEquatable<TDestination>
         {
             var subQueryBuilder = new QueryBuilder();
             var subQuery = configure(subQueryBuilder);
@@ -87,8 +87,8 @@ public class QueryBuilder
             where TRelation : RelationFrom<TElement> => new(predicate);
     }
 
-    public readonly struct SelectRelation<TSource, TDestination> where TSource : Element
-        where TDestination : Element, IEquatable<TDestination>
+    public readonly struct SelectRelation<TSource, TDestination> where TSource : class, Element
+        where TDestination : class, Element, IEquatable<TDestination>
     {
         private readonly TDestination _destination;
 
@@ -105,7 +105,7 @@ public class QueryBuilder
 
     public readonly struct SelectElementRelationToAny<TSource, TDestination>
         where TSource : class, Element
-        where TDestination : Element, IEquatable<TDestination>
+        where TDestination : class, Element, IEquatable<TDestination>
     {
         private readonly ElementsQuery<TDestination> _destinationQuery;
 

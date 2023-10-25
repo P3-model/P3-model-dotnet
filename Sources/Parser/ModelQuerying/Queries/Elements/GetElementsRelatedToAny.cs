@@ -8,8 +8,8 @@ namespace P3Model.Parser.ModelQuerying.Queries.Elements;
 
 [SuppressMessage("ReSharper", "UnusedTypeParameter", Justification = "Marker argument for ModelGraph methods")]
 public class GetElementsRelatedToAny<TSource, TDestination, TRelation> : ElementsQuery<TSource>
-    where TSource : Element
-    where TDestination : Element, IEquatable<TDestination>
+    where TSource : class, Element
+    where TDestination : class, Element, IEquatable<TDestination>
     where TRelation : Relation<TSource, TDestination>
 {
     private readonly ElementsQuery<TDestination> _destinationQuery;

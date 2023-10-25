@@ -1,19 +1,26 @@
 namespace P3Model.Parser.ModelSyntax;
 
-public interface Relation { }
+public interface Relation
+{
+    Element Source { get; }
+    Element Destination { get; }
+}
 
 public interface RelationFrom<out TSource> : Relation
-    where TSource : Element
+    where TSource : class, Element
 {
-    TSource Source { get; }
+    Element Relation.Source => Source;
+
+    new TSource Source { get; }
 }
 
 public interface RelationTo<out TDestination> : Relation
-    where TDestination : Element
+    where TDestination : class, Element
 {
-    TDestination Destination { get; }
+    Element Relation.Destination => Destination;
+    new TDestination Destination { get; }
 }
 
 public interface Relation<out TSource, out TDestination> : RelationFrom<TSource>, RelationTo<TDestination>
-    where TSource : Element
-    where TDestination : Element { }
+    where TSource : class, Element
+    where TDestination : class, Element { }

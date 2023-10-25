@@ -5,7 +5,7 @@ using P3Model.Parser.ModelSyntax;
 namespace P3Model.Parser.ModelQuerying.Queries.Hierarchies;
 
 public class GetAncestors<TElement, TRelation> : ElementsQuery<TElement>
-    where TElement : HierarchyElement 
+    where TElement : class, HierarchyElement 
     where TRelation : HierarchyRelation<TElement>
 {
     private readonly TElement _element;

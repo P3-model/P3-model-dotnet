@@ -20,10 +20,12 @@ public class ExampleElements : IEnumerable<Element>
     {
         new Actor("ExampleActor"),
         new BusinessOrganizationalUnit("ExampleBusinessOrganizationalUnit"),
-        new CodeStructure("ExampleCodeStructure", "ExampleDirectory/ExampleCodeStructure"),
         new CSharpProject("ExampleCSharpProject", "ExampleDirectory/ExampleCSharpProject"),
-        new CSharpNamespace("ExampleCSharpNamespace", "ExampleDirectory/ExampleCSharpNamespace"),
-        new CSharpType("ExampleCSharpType", "ExampleDirectory/ExampleCSharpType"),
+        new CSharpNamespace(HierarchyId.FromParts("ExampleParentCSharpNamespace", "ExampleCSharpNamespace"),
+                "ExampleDirectory/ExampleCSharpNamespace"),
+        new CSharpType(HierarchyId.FromParts("ExampleCSharpNamespace", "ExampleCSharpType"),
+            "ExampleCSharpType",
+            "ExampleDirectory/ExampleCSharpType"),
         new DddAggregate(DomainModule, "ExampleDddAggregate"),
         new DddDomainService(DomainModule, "ExampleDddDomainService"),
         new DddEntity(DomainModule, "ExampleDddEntity"),
@@ -40,11 +42,11 @@ public class ExampleElements : IEnumerable<Element>
         new ProcessStep(DomainModule, "StepA"),
         new Tier("ExampleTier")
     };
-    
+
     private void Add<TElement>(TElement element)
         where TElement : class, Element
         => _elements.Add(typeof(TElement), element);
-    
+
     public Element ForType(Type type)
     {
         if (!_elements.TryGetValue(type, out var element))
