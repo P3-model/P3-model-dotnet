@@ -13,7 +13,7 @@ internal class PolymorphicJsonConverter<T> : JsonConverter<T>
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
-        writer.WriteString("$type", value.GetType().Name);
+        writer.WriteString("Type", value.GetType().Name);
         using var document = JsonSerializer.SerializeToDocument(value, value.GetType(), options);
         foreach (var property in document.RootElement.EnumerateObject())
             property.WriteTo(writer);
