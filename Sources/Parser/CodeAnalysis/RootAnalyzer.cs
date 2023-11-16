@@ -13,8 +13,6 @@ using P3Model.Parser.OutputFormatting;
 
 namespace P3Model.Parser.CodeAnalysis;
 
-public record RepositoryToAnalyze(string Path, IReadOnlyCollection<string> SlnPaths);
-
 public class RootAnalyzer
 {
     private static readonly string[] SupportedFileTypes = { "json", "md" };
