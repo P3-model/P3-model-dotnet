@@ -7,7 +7,7 @@ internal class ElementJsonConverter : ModelJsonConverter<Element>
 {
     protected override void WriteRequiredAttributes(Utf8JsonWriter writer, Element value)
     {
-        writer.WriteString("Type", value.GetType().Name);
+        writer.WriteString("Type", value.GetType().GetFullTypeName());
         writer.WriteString(nameof(Element.Id), value.Id);
         writer.WriteString(nameof(Element.Name), value.Name);
     }
