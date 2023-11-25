@@ -25,7 +25,8 @@ public class RootAnalyzer
     internal RootAnalyzer(string productName,
         IReadOnlyCollection<RepositoryToAnalyze> repositories,
         IReadOnlyCollection<FileAnalyzer> fileAnalyzers,
-        IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers, IReadOnlyCollection<OutputFormatter> outputFormatters)
+        IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers, 
+        IReadOnlyCollection<OutputFormatter> outputFormatters)
     {
         _repositories = repositories;
         _fileAnalyzers = fileAnalyzers;
@@ -91,11 +92,7 @@ public class RootAnalyzer
     {
         var workspace = MSBuildWorkspace.Create();
         workspace.SkipUnrecognizedProjects = true;
-        workspace.WorkspaceFailed += (_, args) =>
-        {
-            if (args.Diagnostic.Kind == WorkspaceDiagnosticKind.Failure)
-                Console.Error.WriteLine(args.Diagnostic.Message);
-        };
+        workspace.WorkspaceFailed += (_, args) => Console.Out.WriteLine(args.Diagnostic.Message);
         return await workspace.OpenSolutionAsync(slnPath);
     }
 
