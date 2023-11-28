@@ -38,8 +38,10 @@ public class RootAnalyzer
     public async Task Analyze()
     {
         var sw = Stopwatch.StartNew();
+        await Console.Out.WriteLineAsync("Analysis started.");
         foreach (var outputFormatter in _outputFormatters)
             await outputFormatter.Clean();
+        await Console.Out.WriteLineAsync("Previous documentation cleaned.");
         MSBuildLocator.RegisterDefaults();
         var modelBuilder = new ModelBuilder(new DocumentedSystem(_productName));
         foreach (var repository in _repositories)
@@ -48,15 +50,17 @@ public class RootAnalyzer
         foreach (var outputFormatter in _outputFormatters)
             await outputFormatter.Write(model);
         sw.Stop();
-        Console.WriteLine($"Total: {sw.ElapsedMilliseconds / 1000}s.");
+        Console.WriteLine($"Analysis ended in {sw.ElapsedMilliseconds / 1000}s.");
     }
 
     private async Task Analyze(RepositoryToAnalyze repository, ModelBuilder modelBuilder)
     {
         await AnalyzeMarkdownFiles(repository, modelBuilder);
         await foreach (var solution in GetSolutionsFor(repository))
+        {
+            await Console.Out.WriteLineAsync($"Analysis started for: {solution.FilePath}");
             await Parallel.ForEachAsync(solution.Projects,
-                async (project, _) => await Analyze(project, modelBuilder));
+                async (project, _) => await Analyze(project, modelBuilder));}
     }
 
     private async Task AnalyzeMarkdownFiles(RepositoryToAnalyze repository, ModelBuilder modelBuilder)
@@ -96,6 +100,15 @@ public class RootAnalyzer
         return await workspace.OpenSolutionAsync(slnPath);
     }
 
+    private async Task Analyze(Project project, ModelBuilder builder)
+    {
+        var compilation = await Compile(project);
+        await Console.Out.WriteLineAsync($"Analysis started for: {project.Name}");
+        await Analyze(compilation, builder);
+        await Parallel.ForEachAsync(project.Documents,
+            async (document, _) => await Analyze(document, compilation, builder));
+    }
+    
     private static async Task<Compilation> Compile(Project project)
     {
         var compilation = await project.GetCompilationAsync();
@@ -106,17 +119,10 @@ public class RootAnalyzer
         return compilation;
     }
 
-    private async Task Analyze(Project project, ModelBuilder builder)
-    {
-        var compilation = await Compile(project);
-        Analyze(compilation, builder);
-        await Parallel.ForEachAsync(project.Documents,
-            async (document, _) => await Analyze(document, compilation, builder));
-    }
-
-    private void Analyze(Compilation compilation, ModelBuilder builder)
+    private async Task Analyze(Compilation compilation, ModelBuilder builder)
     {
         var assemblySymbol = compilation.Assembly;
+        await Console.Out.WriteLineAsync($"Analysis started for assembly: {assemblySymbol.Name}");
         foreach (var symbolAnalyzer in _symbolAnalyzers.OfType<SymbolAnalyzer<IAssemblySymbol>>())
             symbolAnalyzer.Analyze(assemblySymbol, builder);
     }
@@ -129,6 +135,7 @@ public class RootAnalyzer
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var rootNode = await syntaxTree.GetRootAsync();
         var syntaxWalker = new SyntaxWalker(_symbolAnalyzers, semanticModel, modelBuilder);
+        await Console.Out.WriteLineAsync($"Analysis started for document: {document.FilePath}");
         syntaxWalker.Visit(rootNode);
     }
 }
