@@ -114,9 +114,15 @@ public class RootAnalyzer
     {
         var compilation = await project.GetCompilationAsync();
         if (compilation is null)
-            throw new InvalidOperationException($"Can not compile project: {project.Name}");
-        compilation = compilation
-            .AddReferences(Net60.References.All);
+            throw new ParserError($"Can not compile project: {project.Name}");
+        var targetFramework = project.GetTargetFramework();
+        var references = targetFramework switch
+        {
+            TargetFramework.Net60 => Net60.References.All,
+            TargetFramework.Net70 => Net70.References.All,
+            _ => throw new ParserError($"Compilation to target framework: {targetFramework} is not supported")
+        };
+        compilation = compilation.AddReferences(references);
         return compilation;
     }
 
