@@ -8,6 +8,7 @@ using Basic.Reference.Assemblies;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
+using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.OutputFormatting;
 

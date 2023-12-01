@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Technology;
 using P3Model.Annotations.Technology.CleanArchitecture;
+using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Technology;
 

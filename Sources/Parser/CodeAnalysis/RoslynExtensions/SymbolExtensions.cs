@@ -6,14 +6,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
 
-namespace P3Model.Parser.CodeAnalysis;
-
-[Flags]
-public enum GetAttributeOptions
-{
-    Default = 0,
-    IncludeAttributeBaseTypes = 1
-}
+namespace P3Model.Parser.CodeAnalysis.RoslynExtensions;
 
 // TODO: missing vs. null argument value
 public static class SymbolExtensions

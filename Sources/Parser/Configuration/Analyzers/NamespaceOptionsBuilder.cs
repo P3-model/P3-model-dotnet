@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations;
 using P3Model.Annotations.Domain.StaticModel;
-using P3Model.Parser.CodeAnalysis;
+using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 
 namespace P3Model.Parser.Configuration.Analyzers;
 

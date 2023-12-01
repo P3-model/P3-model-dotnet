@@ -5,6 +5,7 @@ using System.Linq;
 using Humanizer;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Domain.StaticModel;
+using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 using P3Model.Parser.ModelSyntax.Technology;
