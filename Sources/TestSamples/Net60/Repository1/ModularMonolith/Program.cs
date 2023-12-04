@@ -1,6 +1,6 @@
 using P3Model.Annotations.Technology;
 
-[assembly: DeployableUnit("DeployableUnit1")]
+[assembly: DeployableUnit("MySystem-main-monolith")]
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
