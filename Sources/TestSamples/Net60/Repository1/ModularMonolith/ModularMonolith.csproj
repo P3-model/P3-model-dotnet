@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\..\Annotations\Annotations.csproj" />
-    </ItemGroup>    
+      <PackageReference Include="P3Model.Annotations" Version="0.3.0-preview03" />
+    </ItemGroup>
 
 </Project>
