@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>MyCompany.MySystem.Service2.PrivateLibrary</AssemblyName>
+        <RootNamespace>MyCompany.MySystem.Service2.PrivateLibrary</RootNamespace>
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
+
+</Project>
