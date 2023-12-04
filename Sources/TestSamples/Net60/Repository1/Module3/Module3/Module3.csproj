@@ -1,18 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>MyCompany.MySystem.Module3</RootNamespace>
-        <AssemblyName>MyCompany.MySystem.Module3</AssemblyName>
-        <LangVersion>default</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <ItemGroup>
       <Folder Include="Api\" />
       <Folder Include="BusinessLogic\" />
       <Folder Include="Infrastructure\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="P3Model.Annotations" Version="0.3.0-preview03" />
     </ItemGroup>
 
 </Project>
