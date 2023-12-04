@@ -61,6 +61,7 @@ public static class SymbolExtensions
 
     private static bool IsExactlyOf(this INamedTypeSymbol? attributeSymbol, Type type) =>
         attributeSymbol != null &&
+        attributeSymbol != null &&
         attributeSymbol.Name == type.Name &&
         attributeSymbol.ContainingNamespace.ToDisplayString() == type.Namespace;
 
