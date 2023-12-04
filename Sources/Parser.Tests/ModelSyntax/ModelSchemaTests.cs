@@ -1,14 +1,16 @@
 using System.Collections.Immutable;
 using System.Reflection;
+using NUnit.Framework;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.OutputFormatting.Json;
-using Parser.Tests.ModelSyntax.ExampleObjects;
+using P3Model.Parser.Tests.ModelSyntax.ExampleObjects;
 
-namespace Parser.Tests.ModelSyntax;
+namespace P3Model.Parser.Tests.ModelSyntax;
 
+[TestFixture]
 public class ModelSchemaTests
 {
-    [Fact]
+    [Test]
     public async Task SerializedModelShouldMatchJsonSchema()
     {
         var system = new DocumentedSystem("TestSystem");
