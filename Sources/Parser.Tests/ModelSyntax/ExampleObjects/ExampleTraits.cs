@@ -2,7 +2,7 @@ using System.Collections;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
 
-namespace Parser.Tests.ModelSyntax.ExampleObjects;
+namespace P3Model.Parser.Tests.ModelSyntax.ExampleObjects;
 
 public class ExampleTraits : IEnumerable<Trait>
 {

@@ -6,7 +6,7 @@ using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
 using P3Model.Parser.ModelSyntax.Technology.CSharp;
 
-namespace Parser.Tests.ModelSyntax.ExampleObjects;
+namespace P3Model.Parser.Tests.ModelSyntax.ExampleObjects;
 
 public class ExampleRelations : IEnumerable<Relation>
 {
@@ -43,15 +43,26 @@ public class ExampleRelations : IEnumerable<Relation>
             new CSharpType(HierarchyId.FromParts("ExampleCSharpType"),
                 "ExampleCSharpType",
                 "ExampleDirectory/ExampleCSharpType")),
+        new Database.BelongsToCluster(
+            new Database("ExampleDatabase"), 
+            new DatabaseCluster("ExampleDatabaseCluster")),
         new DeployableUnit.ContainsCSharpProject(
             new DeployableUnit("ExampleDeployableUnit"),
             new CSharpProject("ExampleCSharpProject", "ExampleDirectory/ExampleCSharpProject")),
+        new DeployableUnit.UsesDatabase(
+            new DeployableUnit("ExampleDeployableUnit"),
+            new Database("ExampleDatabase")),
         new DevelopmentTeam.OwnsDomainModule(
             new DevelopmentTeam("ExampleDevelopmentTeam"),
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
         new DomainBuildingBlock.DependsOnBuildingBlock(
             new DomainBuildingBlock(DomainModule, "ExampleDomainBuildingBlockA"),
             new DomainBuildingBlock(DomainModule, "ExampleDomainBuildingBlockB")),
+        new DomainBuildingBlock.IsImplementedBy(
+            new DomainBuildingBlock(DomainModule, "ExampleDomainBuildingBlockA"),
+            new CSharpType(HierarchyId.FromParts("ExampleCSharpNamespace", "ExampleCSharpType"),
+                "ExampleCSharpType",
+                "ExampleDirectory/ExampleCSharpType")),
         new DomainModule.ContainsDomainModule(
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
@@ -61,6 +72,10 @@ public class ExampleRelations : IEnumerable<Relation>
         new DomainModule.IsDeployedInDeployableUnit(
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
             new DeployableUnit("ExampleDeployableUnit")),
+        new DomainModule.IsImplementedBy(
+            new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
+            new CSharpNamespace(HierarchyId.FromParts("ExampleParentCSharpNamespace", "ExampleCSharpNamespace"),
+                "ExampleDirectory/ExampleCSharpNamespace")),
         new Process.ContainsProcessStep(
             new Process("ExampleProcess"),
             new ProcessStep(DomainModule, "StepA")),

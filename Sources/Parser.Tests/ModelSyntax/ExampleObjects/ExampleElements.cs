@@ -7,7 +7,7 @@ using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
 using P3Model.Parser.ModelSyntax.Technology.CSharp;
 
-namespace Parser.Tests.ModelSyntax.ExampleObjects;
+namespace P3Model.Parser.Tests.ModelSyntax.ExampleObjects;
 
 public class ExampleElements : IEnumerable<Element>
 {
@@ -26,6 +26,8 @@ public class ExampleElements : IEnumerable<Element>
         new CSharpType(HierarchyId.FromParts("ExampleCSharpNamespace", "ExampleCSharpType"),
             "ExampleCSharpType",
             "ExampleDirectory/ExampleCSharpType"),
+        new Database("ExampleDatabase"),
+        new DatabaseCluster("ExampleDatabaseCluster"),
         new DddAggregate(DomainModule, "ExampleDddAggregate"),
         new DddDomainService(DomainModule, "ExampleDddDomainService"),
         new DddEntity(DomainModule, "ExampleDddEntity"),
