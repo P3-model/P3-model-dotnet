@@ -4,8 +4,8 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <AssemblyName>MyCompany.MySystem.Module1</AssemblyName>
-        <RootNamespace>MyCompany.MySystem.Module1.Entities</RootNamespace>
+        <AssemblyName>MyCompany.MySystem.Module1.Entities</AssemblyName>
+        <RootNamespace>MyCompany.MySystem.Module1</RootNamespace>
         <LangVersion>default</LangVersion>
     </PropertyGroup>
 
