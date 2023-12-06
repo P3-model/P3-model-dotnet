@@ -16,7 +16,7 @@ public class NamespaceOptionsBuilder
     {
         symbol => !AnnotatedWith<NotDomainModuleAttribute>(symbol)
     };
-    private readonly List<Func<INamespaceSymbol, string, string>> _namespaceFilters = new();
+    private readonly List<Func<string, string>> _namespaceFilters = new();
 
     [PublicAPI]
     public NamespaceOptionsBuilder OnlyFromAssembliesAnnotatedWith<TAttribute>() => Matching(
@@ -63,7 +63,7 @@ public class NamespaceOptionsBuilder
     }
 
     [PublicAPI]
-    public NamespaceOptionsBuilder RemoveRootNamespace(string rootNamespace) => Filter((_, currentHierarchy) =>
+    public NamespaceOptionsBuilder RemoveRootNamespace(string rootNamespace) => Filter(currentHierarchy =>
         currentHierarchy.Equals(rootNamespace)
             ? string.Empty
             : currentHierarchy.StartsWith(rootNamespace)
@@ -71,7 +71,7 @@ public class NamespaceOptionsBuilder
                 : currentHierarchy);
 
     [PublicAPI]
-    public NamespaceOptionsBuilder RemoveLayerName(params string[] layerNames) => Filter((_, initialHierarchy) =>
+    public NamespaceOptionsBuilder RemoveNamespacePart(params string[] layerNames) => Filter(initialHierarchy =>
         layerNames.Aggregate(initialHierarchy,
             (currentHierarchy, layerName) =>
             {
@@ -80,12 +80,11 @@ public class NamespaceOptionsBuilder
                 {
                     -1 => currentHierarchy,
                     0 => currentHierarchy[(layerName.Length + 1)..],
-                    _ => currentHierarchy.Remove(index - 1, currentHierarchy.Length + 1)
+                    _ => currentHierarchy.Remove(index - 1, layerName.Length + 1)
                 };
             }));
 
-    [PublicAPI]
-    public NamespaceOptionsBuilder Filter(Func<INamespaceSymbol, string, string> filter)
+    private NamespaceOptionsBuilder Filter(Func<string, string> filter)
     {
         _namespaceFilters.Add(filter);
         return this;
@@ -95,5 +94,5 @@ public class NamespaceOptionsBuilder
         symbol => _namespacePredicates.All(predicate => predicate(symbol)),
         symbol => _namespaceFilters.Aggregate(
             symbol.ToDisplayString(),
-            (currentHierarchy, filter) => filter(symbol, currentHierarchy)));
+            (currentHierarchy, filter) => filter(currentHierarchy)));
 }
