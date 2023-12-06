@@ -19,7 +19,8 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
         var cSharpProject = new CSharpProject(symbol.Name, 
-            Path.GetDirectoryName(symbol.GetSourceCodePaths().First())!);
+            // TODO: finding assembly location in source code
+            string.Empty);
         modelBuilder.Add(cSharpProject, symbol);
         modelBuilder.Add(elements => symbol
             .GetReferencedAssembliesFromSameRepository()

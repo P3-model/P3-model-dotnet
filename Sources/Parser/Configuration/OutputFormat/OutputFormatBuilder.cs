@@ -32,7 +32,7 @@ public class OutputFormatBuilder
     }
 
     [PublicAPI]
-    public OutputFormatBuilder Custom(params OutputFormatter[] formatters)
+    public OutputFormatBuilder Use(params OutputFormatter[] formatters)
     {
         _formatters.AddRange(formatters);
         return this;

@@ -55,6 +55,7 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbo
         if (!_domainModuleFinder.TryFind(symbol, out var module))
             return;
         modelBuilder.Add(module, symbol);
+        // TODO: Adding ancestors because some namespaces can have no types
         // TODO: relation to teams and business units defined at namespace level
         //  Requires parsing types within the namespace annotated with DevelopmentOwnerAttribute and ApplyOnNamespace == true.
         modelBuilder.Add(elements => GetRelationToParent(symbol, module, elements));
@@ -67,6 +68,7 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbo
         // TODO: warning logging if more than one
         var parentModule = elements
             .OfType<ElementInfo<DomainModule>>()
+            // TODO: Checking up the hierarchy because some namespaces can be filtered out (e.g. layer name) 
             .Where(info => info.Symbols.Contains(symbol.ContainingNamespace))
             .Select(info => info.Element)
             .SingleOrDefault();
