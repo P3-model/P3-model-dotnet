@@ -10,13 +10,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Annotations\Annotations.csproj" />
       <ProjectReference Include="..\Service1.PrivateLibrary\Service1.PrivateLibrary.csproj" />
       <ProjectReference Include="..\SharedLibrary1\SharedLibrary1.csproj" />
       <ProjectReference Include="..\SharedLibrary2\SharedLibrary2.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="P3Model.Annotations" Version="0.3.0-preview03" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 using System.Collections;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
 namespace P3Model.Parser.Tests.ModelSyntax.ExampleObjects;
 

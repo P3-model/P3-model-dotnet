@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using P3Model.Annotations.Domain;
 using P3Model.Parser.Configuration;
+using Serilog.Events;
 
 namespace P3Model.Parser.Tests.CodeAnalysis;
 
@@ -15,20 +16,20 @@ public class ParserOutputTests
             .Product(product => product
                 .UseName("MyCompany MySystem"))
             .Repositories(repositories => repositories
-                .Use("../../../../TestSamples/Net60/Repository1")
-                .Use("../../../../TestSamples/Net60/Repository2"))
+                .Use("../../../../TestSamples/Net60/Repository1", repository => repository
+                    .ExcludeProjects("Annotations"))
+                .Use("../../../../TestSamples/Net60/Repository2", repository => repository
+                    .ExcludeProjects("Annotations")))
             .Analyzers(analyzers => analyzers
                 .UseDefaults(options => options
                     .TreatNamespacesAsDomainModules(namespaces => namespaces
-                        .OnlyFromAssembliesAnnotatedWith<DomainModelAttribute>()
-                        .RemoveRootNamespace("MyCompany.MySystem")
-                        .RemoveNamespacePart("Api", "BusinessLogic", "Infrastructure", "Repositories", "Entities",
-                            "Model", "Models", "Controllers"))))
+                            .OnlyFromAssembliesAnnotatedWith<DomainModelAttribute>()
+                            .RemoveRootNamespace("MyCompany.MySystem")
+                        /*.RemoveNamespacePart("Api", "BusinessLogic", "Infrastructure", "Repositories", "Entities",
+                            "Model", "Models", "Controllers")*/)))
             .OutputFormat(formatters => formatters
                 .Use(parserOutput))
+            .LogLevel(LogEventLevel.Verbose)
             .Analyze();
     }
-
-    [OneTimeTearDown]
-    public void AllGeneratedElementsAreChecked() => ParserOutput.AssertAllElementsAreChecked();
 }

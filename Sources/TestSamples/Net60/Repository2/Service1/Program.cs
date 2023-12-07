@@ -1,6 +1,6 @@
 using P3Model.Annotations.Technology;
 
-[assembly: DeployableUnit("Service1-microservice")]
+[assembly: DeployableUnit("Service1")]
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();

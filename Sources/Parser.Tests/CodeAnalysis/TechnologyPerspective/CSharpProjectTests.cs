@@ -7,7 +7,7 @@ namespace P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective;
 public class CSharpProjectTests
 {
     [Test]
-    public void AllProjectsArePresent() => ParserOutput.AssertExists(
+    public void AllProjectsArePresent() => ParserOutput.AssertExistOnly(
         new CSharpProject("MyCompany.MySystem.Module1.Adapters", string.Empty),
         new CSharpProject("MyCompany.MySystem.Module1.Entities", string.Empty),
         new CSharpProject("MyCompany.MySystem.Module1.UseCases", string.Empty),

@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="P3Model.Annotations" Version="0.3.0-preview03" />
+      <ProjectReference Include="..\..\..\..\..\Annotations\Annotations.csproj" />
     </ItemGroup>
 
 </Project>

@@ -7,42 +7,44 @@ namespace P3Model.Parser.Tests.CodeAnalysis;
 
 public class ParserOutput : OutputFormatter
 {
-    private static readonly HashSet<Element> CheckedElements = new();
     private static Model? _model;
     private static Model Model => _model ?? throw new InvalidOperationException("Parser has not finished yet");
 
-    public static void AssertExists(params Element[] elements)
+    public static void AssertExistOnly<TElement>(params TElement[] expectedElements)
+        where TElement : class, Element
     {
-        var missingElements = new List<Element>();
-        foreach (var element in elements)
-        {
-            if (Model.Elements.Contains(element))
-                CheckedElements.Add(element);
-            else
-                missingElements.Add(element);
-        }
-        if (!missingElements.Any()) 
+        var allElements = Model.Elements.OfType<TElement>().ToHashSet();
+        var missingElements = expectedElements
+            .Where(expectedElement => !allElements.Contains(expectedElement))
+            .ToList();
+        var unexpectedElements = allElements
+            .Except(expectedElements)
+            .ToList();
+        if (!missingElements.Any() && !unexpectedElements.Any())
             return;
-        var message = CreateFailMassage("Missing elements:", missingElements);
-        Assert.Fail(message);
-
-    }
-
-    public static void AssertAllElementsAreChecked()
-    {
-        var unexpectedElements = Model.Elements.Where(element => !CheckedElements.Contains(element)).ToList();
-        if (!unexpectedElements.Any())
-            return;
-        var message = CreateFailMassage("Unexpected elements:", unexpectedElements);
+        var message = CreateFailMassage(missingElements, unexpectedElements);
         Assert.Fail(message);
     }
 
-    private static string CreateFailMassage(string header, IEnumerable<Element> elements)
+    private static string CreateFailMassage(IReadOnlyCollection<Element> missingElements,
+        IReadOnlyCollection<Element> unexpectedElements)
     {
         var messageBuilder = new StringBuilder();
-        messageBuilder.AppendLine(header);
-        foreach (var element in elements)
-            messageBuilder.AppendLine(element.ToString());
+        messageBuilder.AppendLine("Model has incorrect elements.");
+        if (missingElements.Any())
+        {
+            messageBuilder.AppendLine();
+            messageBuilder.AppendLine("Missing elements:");
+            foreach (var element in missingElements)
+                messageBuilder.AppendLine(element.ToString());
+        }
+        if (unexpectedElements.Any())
+        {
+            messageBuilder.AppendLine();
+            messageBuilder.AppendLine("Unexpected elements:");
+            foreach (var element in unexpectedElements)
+                messageBuilder.AppendLine(element.ToString());
+        }
         return messageBuilder.ToString();
     }
 
