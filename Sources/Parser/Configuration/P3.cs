@@ -8,12 +8,13 @@ using Serilog.Events;
 
 namespace P3Model.Parser.Configuration;
 
-public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3.RootAnalyzerStep
+public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3.LoggingStep
 {
     private readonly ProductBuilder _productBuilder = new();
     private readonly RepositoriesBuilder _repositoriesBuilder = new();
     private readonly AnalyzersBuilder _analyzersBuilder = new();
     private readonly OutputFormatBuilder _outputFormatBuilder = new();
+    private LogEventLevel _logLevel;
 
     private P3() { }
 
@@ -36,9 +37,15 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
         return this;
     }
 
-    RootAnalyzerStep OutputFormatStep.OutputFormat(Func<OutputFormatBuilder, OutputFormatBuilder> configure)
+    LoggingStep OutputFormatStep.OutputFormat(Func<OutputFormatBuilder, OutputFormatBuilder> configure)
     {
         configure(_outputFormatBuilder);
+        return this;
+    }
+
+    RootAnalyzerStep LoggingStep.LogLevel(LogEventLevel logLevel)
+    {
+        _logLevel = logLevel;
         return this;
     }
 
@@ -54,7 +61,7 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
             allAnalyzers.FileAnalyzers,
             allAnalyzers.SymbolAnalyzers,
             _outputFormatBuilder.Build(),
-            LogEventLevel.Verbose);
+            _logLevel);
     }
     
     public interface RepositoriesStep
@@ -69,7 +76,12 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
 
     public interface OutputFormatStep
     {
-        RootAnalyzerStep OutputFormat(Func<OutputFormatBuilder, OutputFormatBuilder> builder);
+        LoggingStep OutputFormat(Func<OutputFormatBuilder, OutputFormatBuilder> builder);
+    }
+    
+    public interface LoggingStep : RootAnalyzerStep
+    {
+        RootAnalyzerStep LogLevel(LogEventLevel logLevel);
     }
 
     public interface RootAnalyzerStep
