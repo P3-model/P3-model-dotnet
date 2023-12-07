@@ -10,16 +10,13 @@ public class RepositoriesBuilder
     private readonly List<RepositoryToAnalyze> _repositories = new();
 
     [PublicAPI]
-    public RepositoriesBuilder Use(string directoryPath)
+    public RepositoriesBuilder Use(string directoryPath, Func<RepositoryBuilder, RepositoryBuilder>? configure = null)
     {
-        _repositories.Add(new RepositoryToAnalyze(directoryPath, Array.Empty<string>()));
-        return this;
-    }
-
-    [PublicAPI]
-    public RepositoriesBuilder Use(string directoryPath, params string[] slnPaths)
-    {
-        _repositories.Add(new RepositoryToAnalyze(directoryPath, slnPaths));
+        var repositoryBuilder = new RepositoryBuilder(directoryPath);
+        if (configure != null)
+            repositoryBuilder = configure(repositoryBuilder);
+        var repository = repositoryBuilder.Build();
+        _repositories.Add(repository);
         return this;
     }
 
