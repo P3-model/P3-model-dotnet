@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using Humanizer;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
 using P3Model.Parser.ModelSyntax.Technology.CSharp;

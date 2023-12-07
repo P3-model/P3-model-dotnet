@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 

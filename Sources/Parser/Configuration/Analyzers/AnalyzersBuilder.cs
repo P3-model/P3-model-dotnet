@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.CodeAnalysis;
-using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel;
-using P3Model.Parser.CodeAnalysis.DomainPerspective.StaticModel.Ddd;
+using P3Model.Parser.CodeAnalysis.Domain.StaticModel;
+using P3Model.Parser.CodeAnalysis.Domain.StaticModel.Ddd;
 
 namespace P3Model.Parser.Configuration.Analyzers;
 

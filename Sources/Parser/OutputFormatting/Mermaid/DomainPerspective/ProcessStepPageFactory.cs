@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.ModelQuerying;
-using P3Model.Parser.ModelSyntax.DomainPerspective.DynamicModel;
-using P3Model.Parser.ModelSyntax.DomainPerspective.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain.DynamicModel;
+using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
 
