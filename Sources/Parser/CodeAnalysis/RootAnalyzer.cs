@@ -75,7 +75,8 @@ public class RootAnalyzer
         await foreach (var solution in GetSolutionsFor(repository))
         {
             Log.Verbose($"Analysis started for solution: {solution.FilePath}");
-            await Parallel.ForEachAsync(solution.Projects,
+            var projects = solution.Projects.Where(p => !repository.ExcludedProjects.Contains(p.Name));
+            await Parallel.ForEachAsync(projects,
                 async (project, _) => await Analyze(project, modelBuilder));
         }
     }

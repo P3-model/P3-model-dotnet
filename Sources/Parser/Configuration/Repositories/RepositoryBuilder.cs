@@ -20,9 +20,9 @@ public class RepositoryBuilder
     }
     
     [PublicAPI]
-    public RepositoryBuilder ExcludeProject(string projectName)
+    public RepositoryBuilder ExcludeProjects(params string[] projects)
     {
-        _excludedProjects.Add(projectName);
+        _excludedProjects.AddRange(projects);
         return this;
     }
 
