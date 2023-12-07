@@ -46,20 +46,27 @@ public class RootAnalyzer
 
     public async Task Analyze()
     {
-        var sw = Stopwatch.StartNew();
-        Log.Logger.Information("Analysis started.");
-        foreach (var outputFormatter in _outputFormatters)
-            await outputFormatter.Clean();
-        Log.Logger.Information("Previous documentation cleaned.");
-        MSBuildLocator.RegisterDefaults();
-        var modelBuilder = new ModelBuilder(new DocumentedSystem(_productName));
-        foreach (var repository in _repositories)
-            await Analyze(repository, modelBuilder);
-        var model = modelBuilder.Build();
-        foreach (var outputFormatter in _outputFormatters)
-            await outputFormatter.Write(model);
-        sw.Stop();
-        Log.Logger.Information($"Analysis ended in {sw.ElapsedMilliseconds / 1000}s.");
+        try
+        {
+            var sw = Stopwatch.StartNew();
+            Log.Information("Analysis started.");
+            foreach (var outputFormatter in _outputFormatters)
+                await outputFormatter.Clean();
+            Log.Information("Previous documentation cleaned.");
+            MSBuildLocator.RegisterDefaults();
+            var modelBuilder = new ModelBuilder(new DocumentedSystem(_productName));
+            foreach (var repository in _repositories)
+                await Analyze(repository, modelBuilder);
+            var model = modelBuilder.Build();
+            foreach (var outputFormatter in _outputFormatters)
+                await outputFormatter.Write(model);
+            sw.Stop();
+            Log.Information($"Analysis ended in {sw.ElapsedMilliseconds / 1000}s.");
+        }
+        catch (Exception e)
+        {
+            Log.Fatal(e, "Analysis failed");
+        }
     }
 
     private async Task Analyze(RepositoryToAnalyze repository, ModelBuilder modelBuilder)
@@ -67,7 +74,7 @@ public class RootAnalyzer
         await AnalyzeMarkdownFiles(repository, modelBuilder);
         await foreach (var solution in GetSolutionsFor(repository))
         {
-            Log.Logger.Verbose($"Analysis started for: {solution.FilePath}");
+            Log.Verbose($"Analysis started for solution: {solution.FilePath}");
             await Parallel.ForEachAsync(solution.Projects,
                 async (project, _) => await Analyze(project, modelBuilder));
         }
@@ -106,7 +113,7 @@ public class RootAnalyzer
     {
         var workspace = MSBuildWorkspace.Create();
         workspace.SkipUnrecognizedProjects = true;
-        workspace.WorkspaceFailed += (_, args) => Log.Logger.Error(args.Diagnostic.Message);
+        workspace.WorkspaceFailed += (_, args) => Log.Error(args.Diagnostic.Message);
         return await workspace.OpenSolutionAsync(slnPath);
     }
 
@@ -115,10 +122,10 @@ public class RootAnalyzer
         var compilation = await Compile(project);
         if (compilation is null)
         {
-            Log.Logger.Error($"Analysis skipped for: {project.Name}");
+            Log.Error($"Analysis skipped for project: {project.Name}");
             return;
         }
-        Log.Logger.Verbose($"Analysis started for: {project.Name}");
+        Log.Verbose($"Analysis started for project: {project.Name}");
         Analyze(compilation, builder);
         await Parallel.ForEachAsync(project.Documents,
             async (document, _) => await Analyze(document, compilation, builder));
@@ -129,7 +136,7 @@ public class RootAnalyzer
         var compilation = await project.GetCompilationAsync();
         if (compilation is null)
         {
-            Log.Logger.Error($"Can not compile project: {project.Name}");
+            Log.Error($"Can not compile project: {project.Name}");
             return null;
         }
         var targetFramework = project.GetTargetFramework();
@@ -144,14 +151,13 @@ public class RootAnalyzer
         if (!errors.Any()) 
             return compilation;
         foreach (var error in errors) 
-            Log.Logger.Error(error.GetMessage());
+            Log.Error(error.GetMessage());
         return null;
     }
 
     private void Analyze(Compilation compilation, ModelBuilder builder)
     {
         var assemblySymbol = compilation.Assembly;
-        Log.Logger.Verbose($"Analysis started for assembly: {assemblySymbol.Name}");
         foreach (var symbolAnalyzer in _symbolAnalyzers.OfType<SymbolAnalyzer<IAssemblySymbol>>())
             symbolAnalyzer.Analyze(assemblySymbol, builder);
     }
@@ -164,7 +170,7 @@ public class RootAnalyzer
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var rootNode = await syntaxTree.GetRootAsync();
         var syntaxWalker = new SyntaxWalker(_symbolAnalyzers, semanticModel, modelBuilder);
-        Log.Logger.Verbose($"Analysis started for document: {document.FilePath}");
+        Log.Verbose($"Analysis started for document: {document.FilePath}");
         syntaxWalker.Visit(rootNode);
     }
 }

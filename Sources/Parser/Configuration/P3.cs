@@ -14,7 +14,7 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
     private readonly RepositoriesBuilder _repositoriesBuilder = new();
     private readonly AnalyzersBuilder _analyzersBuilder = new();
     private readonly OutputFormatBuilder _outputFormatBuilder = new();
-    private LogEventLevel _logLevel;
+    private LogEventLevel _logLevel = LogEventLevel.Information;
 
     private P3() { }
 
