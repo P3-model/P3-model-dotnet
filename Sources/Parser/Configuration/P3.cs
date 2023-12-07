@@ -4,6 +4,7 @@ using P3Model.Parser.CodeAnalysis;
 using P3Model.Parser.Configuration.Analyzers;
 using P3Model.Parser.Configuration.OutputFormat;
 using P3Model.Parser.Configuration.Repositories;
+using Serilog.Events;
 
 namespace P3Model.Parser.Configuration;
 
@@ -52,7 +53,8 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
             repositories,
             allAnalyzers.FileAnalyzers,
             allAnalyzers.SymbolAnalyzers,
-            _outputFormatBuilder.Build());
+            _outputFormatBuilder.Build(),
+            LogEventLevel.Verbose);
     }
     
     public interface RepositoriesStep
