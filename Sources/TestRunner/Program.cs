@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using P3Model.Annotations.Domain;
 using P3Model.Parser.Configuration;
+using Serilog.Events;
 
 // This runner in only for initial tests of Parser POC !!!
 // It's configured to work with "DDD starter for .net":  https://github.com/itlibrium/DDD-starter-dotnet.
@@ -26,4 +27,5 @@ await P3
             .UseDefaultPages())
         .UseJson(options => options
             .File(Path.Combine(configuration["OutputPath"]!, "JsonOutput", "model.json"))))
+    .LogLevel(LogEventLevel.Verbose)
     .Analyze();
