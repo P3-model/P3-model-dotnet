@@ -52,14 +52,25 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbo
 
     public void Analyze(INamespaceSymbol symbol, ModelBuilder modelBuilder)
     {
-        if (!_domainModuleFinder.TryFind(symbol, out var module))
-            return;
-        modelBuilder.Add(module, symbol);
-        // TODO: Adding ancestors because some namespaces can have no types
-        // TODO: relation to teams and business units defined at namespace level
-        //  Requires parsing types within the namespace annotated with DevelopmentOwnerAttribute and ApplyOnNamespace == true.
-        modelBuilder.Add(elements => GetRelationToParent(symbol, module, elements));
-        modelBuilder.Add(elements => GetRelationsToCodeStructures(symbol, module, elements));
+        foreach (var namespaceSymbol in GetFullHierarchy(symbol))
+        {
+            if (!_domainModuleFinder.TryFind(namespaceSymbol, out var module))
+                return;
+            modelBuilder.Add(module, namespaceSymbol);
+            // TODO: relation to teams and business units defined at namespace level
+            //  Requires parsing types within the namespace annotated with DevelopmentOwnerAttribute and ApplyOnNamespace == true.
+            modelBuilder.Add(elements => GetRelationToParent(namespaceSymbol, module, elements));
+            modelBuilder.Add(elements => GetRelationsToCodeStructures(namespaceSymbol, module, elements));
+        }
+    }
+
+    private static IEnumerable<INamespaceSymbol> GetFullHierarchy(INamespaceSymbol symbol)
+    {
+        while (symbol is { IsGlobalNamespace: false })
+        {
+            yield return symbol;
+            symbol = symbol.ContainingNamespace;
+        }
     }
 
     private static IEnumerable<Relation> GetRelationToParent(ISymbol symbol, DomainModule module,

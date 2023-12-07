@@ -25,8 +25,8 @@ public class ParserOutputTests
                     .TreatNamespacesAsDomainModules(namespaces => namespaces
                             .OnlyFromAssembliesAnnotatedWith<DomainModelAttribute>()
                             .RemoveRootNamespace("MyCompany.MySystem")
-                        /*.RemoveNamespacePart("Api", "BusinessLogic", "Infrastructure", "Repositories", "Entities",
-                            "Model", "Models", "Controllers")*/)))
+                        .RemoveNamespacePart("Api", "BusinessLogic", "Infrastructure", "Repositories", "Entities",
+                            "Controllers"))))
             .OutputFormat(formatters => formatters
                 .Use(parserOutput))
             .LogLevel(LogEventLevel.Verbose)
