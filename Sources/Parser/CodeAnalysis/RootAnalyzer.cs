@@ -26,7 +26,7 @@ public class RootAnalyzer
     internal RootAnalyzer(string productName,
         IReadOnlyCollection<RepositoryToAnalyze> repositories,
         IReadOnlyCollection<FileAnalyzer> fileAnalyzers,
-        IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers, 
+        IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers,
         IReadOnlyCollection<OutputFormatter> outputFormatters)
     {
         _repositories = repositories;
@@ -61,7 +61,8 @@ public class RootAnalyzer
         {
             await Console.Out.WriteLineAsync($"Analysis started for: {solution.FilePath}");
             await Parallel.ForEachAsync(solution.Projects,
-                async (project, _) => await Analyze(project, modelBuilder));}
+                async (project, _) => await Analyze(project, modelBuilder));
+        }
     }
 
     private async Task AnalyzeMarkdownFiles(RepositoryToAnalyze repository, ModelBuilder modelBuilder)
@@ -104,12 +105,21 @@ public class RootAnalyzer
     private async Task Analyze(Project project, ModelBuilder builder)
     {
         var compilation = await Compile(project);
+        await Console.Out.WriteLineAsync($"Diagnostics for project: {project.Name}");
+        var diagnostics = compilation.GetDiagnostics();
+        foreach (var diagnostic in diagnostics)
+            await Console.Out.WriteLineAsync(diagnostic.ToString());
+        if (diagnostics.Any(d => d.WarningLevel == 0))
+        {
+            await Console.Out.WriteLineAsync($"Analysis for project {project.Name} skipped due to compilation errors.");
+            return;
+        }
         await Console.Out.WriteLineAsync($"Analysis started for: {project.Name}");
         await Analyze(compilation, builder);
         await Parallel.ForEachAsync(project.Documents,
             async (document, _) => await Analyze(document, compilation, builder));
     }
-    
+
     private static async Task<Compilation> Compile(Project project)
     {
         var compilation = await project.GetCompilationAsync();
