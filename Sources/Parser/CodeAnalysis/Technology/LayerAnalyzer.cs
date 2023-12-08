@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Technology;
@@ -18,6 +19,7 @@ public class LayerAnalyzer : SymbolAnalyzer<IAssemblySymbol>, SymbolAnalyzer<INa
     {
         if (!IsLayer(symbol, out var name))
             return;
+        name = name.Humanize();
         var layer = new Layer(name);
         modelBuilder.Add(layer, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, layer, elements));
@@ -28,7 +30,7 @@ public class LayerAnalyzer : SymbolAnalyzer<IAssemblySymbol>, SymbolAnalyzer<INa
         if (!symbol.TryGetAttribute(typeof(LayerAttribute), GetAttributeOptions.IncludeAttributeBaseTypes,
                 out var layerAttribute))
             return;
-        var name = layerAttribute.GetConstructorArgumentValue<string>(nameof(LayerAttribute.Name));
+        var name = layerAttribute.GetConstructorArgumentValue<string>(nameof(LayerAttribute.Name)).Humanize();
         var layer = new Layer(name);
         ISymbol targetSymbol = layerAttribute.TryGetNamedArgumentValue<bool>(nameof(LayerAttribute.ApplyOnNamespace),
             out var applyOnNamespace) && applyOnNamespace

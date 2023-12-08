@@ -16,7 +16,7 @@ First level modules can be treated as separate sub-models or DDD Bounded Context
 All modules can be divided into sub-modules to reflect hierarchical structure of the domain.";
 
     public override string RelativeFilePath => Path.Combine("Domain", "Concepts", "DomainModules.md");
-    public override Element? MainElement => null;
+    public override ElementBase? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 
     public DomainModulesPage(string outputDirectory, Hierarchy<DomainModule> modulesHierarchy)

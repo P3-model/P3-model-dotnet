@@ -1,3 +1,4 @@
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Domain.DynamicModel;
@@ -14,7 +15,7 @@ public class ProcessAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
     {
         if (!symbol.TryGetAttribute(typeof(ProcessAttribute), out var processAttribute))
             return;
-        var name = processAttribute.GetConstructorArgumentValue<string>(nameof(ProcessAttribute.Name));
+        var name = processAttribute.GetConstructorArgumentValue<string>(nameof(ProcessAttribute.Name)).Humanize();
         var process = new Process(name);
         if (!processAttribute.TryGetNamedArgumentValue<bool>(nameof(ProcessAttribute.ApplyOnNamespace),
                 out var applyOnNamespace))

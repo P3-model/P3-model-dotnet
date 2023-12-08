@@ -28,7 +28,7 @@ public class BusinessOrganizationalUnitPage : MermaidPageBase
     public override string RelativeFilePath => Path.Combine(
         "People", "BusinessOrganizationalUnits", $"{_organizationalUnit.Name.Dehumanize()}.md");
 
-    public override Element MainElement => _organizationalUnit;
+    public override ElementBase MainElement => _organizationalUnit;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

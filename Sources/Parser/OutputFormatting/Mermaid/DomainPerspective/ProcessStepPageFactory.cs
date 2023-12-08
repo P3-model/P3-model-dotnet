@@ -66,7 +66,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                 .Elements<CodeStructure>()
                 .RelatedTo((DomainBuildingBlock)step)
                 .ByReverseRelation<DomainBuildingBlock.IsImplementedBy>());
-            return new ProcessStepPage(outputDirectory, step, process, buildingBlocks, deployableUnit, actors,
+            return new ProcessStepPage(outputDirectory, step, module, process, buildingBlocks, deployableUnit, actors,
                 developmentTeams, organizationalUnits, codeStructures);
         });
 }

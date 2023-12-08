@@ -16,7 +16,7 @@ public class ProcessesPage : MermaidPageBase
     public override string Header => "Business Processes";
     protected override string Description => "This view contains all business processes";
     public override string RelativeFilePath => Path.Combine("Domain", "Processes", "BusinessProcesses.md");
-    public override Element? MainElement => null;
+    public override ElementBase? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)

@@ -13,6 +13,5 @@ public class DddRepositoryAnalyzer : DomainBuildingBlockAnalyzerBase
 
     public DddRepositoryAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
 
-    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
-        new DddRepository(module, name);
+    protected override DomainBuildingBlock CreateBuildingBlock(string id, string name) => new DddRepository(id, name);
 }

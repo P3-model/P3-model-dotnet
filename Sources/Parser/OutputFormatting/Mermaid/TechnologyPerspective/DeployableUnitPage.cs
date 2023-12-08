@@ -44,7 +44,7 @@ public class DeployableUnitPage : MermaidPageBase
     public override string RelativeFilePath => Path.Combine("Technology", "DeployableUnits",
         $"{_unit.Name.Dehumanize()}.md");
 
-    public override Element MainElement => _unit;
+    public override ElementBase MainElement => _unit;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

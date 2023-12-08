@@ -17,7 +17,7 @@ public class ModelSchemaTests
         var assembly = typeof(Model).Assembly;
         var elements = assembly
             .GetTypes()
-            .Where(IsAssignableTo<Element>)
+            .Where(IsAssignableTo<ElementBase>)
             .Where(IsConstructableType)
             .Select(ExampleElements.All.ForType)
             .ToImmutableArray();

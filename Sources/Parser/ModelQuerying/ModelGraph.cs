@@ -21,7 +21,7 @@ public class ModelGraph
 
     public DocumentedSystem System => _model.System;
 
-    public IEnumerable<TElement> ElementsOfType<TElement>() where TElement : Element =>
+    public IEnumerable<TElement> ElementsOfType<TElement>() where TElement : class, Element =>
         _model.Elements.OfType<TElement>();
 
     public IEnumerable<TRelation> RelationsOfType<TRelation>()
@@ -33,28 +33,28 @@ public class ModelGraph
         where TRelation : HierarchyRelation<TElement> => Hierarchy<TElement>.Create(RelationsOfType<TRelation>());
 
     public IEnumerable<TRelation> RelationsFrom<TElement, TRelation>(TElement element)
-        where TElement : class, Element, IEquatable<TElement>
+        where TElement : class, Element
         where TRelation : RelationFrom<TElement> =>
         _model.Relations
             .OfType<TRelation>()
             .Where(r => r.Source.Equals(element));
     
     public IEnumerable<TRelation> RelationsFrom<TElement, TRelation>(IReadOnlySet<TElement> elements)
-        where TElement : class, Element, IEquatable<TElement>
+        where TElement : class, Element
         where TRelation : RelationFrom<TElement> =>
         _model.Relations
             .OfType<TRelation>()
             .Where(r => elements.Contains(r.Source));
 
     public IEnumerable<TRelation> RelationsTo<TElement, TRelation>(TElement element)
-        where TElement : class, Element, IEquatable<TElement>
+        where TElement : class, Element
         where TRelation : RelationTo<TElement> =>
         _model.Relations
             .OfType<TRelation>()
             .Where(r => r.Destination.Equals(element));
     
     public IEnumerable<TRelation> RelationsTo<TElement, TRelation>(IReadOnlySet<TElement> elements)
-        where TElement : class, Element, IEquatable<TElement>
+        where TElement : class, Element
         where TRelation : RelationTo<TElement> =>
         _model.Relations
             .OfType<TRelation>()
@@ -66,7 +66,7 @@ public class ModelGraph
 
     [PublicAPI]
     public TElement? Execute<TElement>(Func<QueryBuilder, ElementQuery<TElement>> configure)
-        where TElement : Element
+        where TElement : class, Element
     {
         var queryBuilder = new QueryBuilder();
         var query = configure(queryBuilder);
@@ -75,7 +75,7 @@ public class ModelGraph
     
     [PublicAPI]
     public IReadOnlySet<TElement> Execute<TElement>(Func<QueryBuilder, ElementsQuery<TElement>> configure)
-        where TElement : Element
+        where TElement : class, Element
     {
         var queryBuilder = new QueryBuilder();
         var query = configure(queryBuilder);

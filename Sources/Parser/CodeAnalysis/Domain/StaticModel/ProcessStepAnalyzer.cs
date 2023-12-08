@@ -19,8 +19,8 @@ public class ProcessStepAnalyzer : DomainBuildingBlockAnalyzerBase
 
     public ProcessStepAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
 
-    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) =>
-        new ProcessStep(module, name);
+    protected override DomainBuildingBlock CreateBuildingBlock(string id, string name) =>
+        new ProcessStep(id, name);
 
     protected override IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
         AttributeData buildingBlockAttribute, ElementsProvider elements) => base
@@ -44,17 +44,11 @@ public class ProcessStepAnalyzer : DomainBuildingBlockAnalyzerBase
     {
         if (!TryGetNextStepNames(stepAttribute, out var nextStepNames))
             yield break;
-        foreach (var nextStepFullName in nextStepNames)
+        foreach (var nextStepName in nextStepNames)
         {
-            var lastSeparatorIndex = nextStepFullName.LastIndexOf('.');
-            var nextStepModuleFullName = lastSeparatorIndex == -1 ? null : nextStepFullName[..lastSeparatorIndex];
-            var nextStepName = lastSeparatorIndex == -1 ? nextStepFullName : nextStepFullName[lastSeparatorIndex..];
             var nextSteps = elements
                 .OfType<ProcessStep>()
-                .Where(s => ((s.Module == null && string.IsNullOrEmpty(nextStepModuleFullName)) ||
-                             (s.Module != null && s.Module.FullName.Equals(nextStepModuleFullName,
-                                 StringComparison.InvariantCulture))) &&
-                            s.Name.Equals(nextStepName, StringComparison.InvariantCulture))
+                .Where(s => s.Name.Equals(nextStepName, StringComparison.InvariantCulture))
                 .ToList();
             // TODO: warning logging if step not found
             // TODO: warning logging if more than one element (non unique names o process steps)

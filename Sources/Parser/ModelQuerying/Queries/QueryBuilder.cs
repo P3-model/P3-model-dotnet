@@ -15,11 +15,11 @@ public class QueryBuilder
 {
     [PublicAPI]
     public GetElement<TElement> SingleElement<TElement>(Func<TElement, bool>? predicate = null)
-        where TElement : Element => new(predicate);
+        where TElement : class, Element => new(predicate);
 
     [PublicAPI]
     public GetElements<TElement> AllElements<TElement>(Func<TElement, bool>? predicate = null)
-        where TElement : Element => new(predicate);
+        where TElement : class, Element => new(predicate);
 
     [PublicAPI]
     public SelectRelatedElements<TElement> Elements<TElement>()
@@ -63,18 +63,18 @@ public class QueryBuilder
     {
         [PublicAPI]
         public SelectRelation<TElement, TDestination> RelatedTo<TDestination>(TDestination destination)
-            where TDestination : class, Element, IEquatable<TDestination> => new(destination);
+            where TDestination : class, Element => new(destination);
 
         [PublicAPI]
         public SelectElementRelationToAny<TElement, TDestination> RelatedToAny<TDestination>(
             IReadOnlySet<TDestination> destinations)
-            where TDestination : class, Element, IEquatable<TDestination> => 
+            where TDestination : class, Element => 
             new(new GetStaticElements<TDestination>(destinations));
         
         [PublicAPI]
         public SelectElementRelationToAny<TElement, TDestination> RelatedToAny<TDestination>(
             Func<QueryBuilder, ElementsQuery<TDestination>> configure)
-            where TDestination : class, Element, IEquatable<TDestination>
+            where TDestination : class, Element
         {
             var subQueryBuilder = new QueryBuilder();
             var subQuery = configure(subQueryBuilder);
@@ -87,8 +87,9 @@ public class QueryBuilder
             where TRelation : RelationFrom<TElement> => new(predicate);
     }
 
-    public readonly struct SelectRelation<TSource, TDestination> where TSource : class, Element
-        where TDestination : class, Element, IEquatable<TDestination>
+    public readonly struct SelectRelation<TSource, TDestination> 
+        where TSource : class, Element
+        where TDestination : class, Element
     {
         private readonly TDestination _destination;
 
@@ -105,7 +106,7 @@ public class QueryBuilder
 
     public readonly struct SelectElementRelationToAny<TSource, TDestination>
         where TSource : class, Element
-        where TDestination : class, Element, IEquatable<TDestination>
+        where TDestination : class, Element
     {
         private readonly ElementsQuery<TDestination> _destinationQuery;
 

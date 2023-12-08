@@ -14,7 +14,7 @@ public class ExampleTraits : IEnumerable<Trait>
     public static readonly ExampleTraits All = new()
     {
         new DomainBuildingBlockDescription(
-            new DomainBuildingBlock(DomainModule, "ExampleDomainBuildingBlock"),
+            new DomainBuildingBlock("ExampleModuleA|ExampleDomainBuildingBlock", "ExampleDomainBuildingBlock"),
             new FileInfo("ModelSyntax/ExampleObjects/ExampleDomainBuildingBlockDescription.md"))   
     };
     

@@ -9,7 +9,7 @@ public interface MermaidPage
     string Header { get; }
     string LinkText { get; }
     string RelativeFilePath { get; }
-    Element? MainElement { get; }
+    ElementBase? MainElement { get; }
     Perspective? Perspective { get; }
 
     void LinkWith(IReadOnlyCollection<MermaidPage> otherPages);

@@ -1,7 +1,9 @@
 namespace P3Model.Parser.ModelSyntax.Technology;
 
-public record ExternalSoftwareSystem(string Name) : Element
+public class ExternalSoftwareSystem : ElementBase
 {
-    public Perspective Perspective => Perspective.Technology;    
-    public string Id => Name;
+    public override Perspective Perspective => Perspective.Technology;
+
+    public ExternalSoftwareSystem(string name) : base(name) { }
+    public ExternalSoftwareSystem(string id, string name) : base(id, name) { }
 }

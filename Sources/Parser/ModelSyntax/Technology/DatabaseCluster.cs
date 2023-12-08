@@ -1,7 +1,9 @@
 namespace P3Model.Parser.ModelSyntax.Technology;
 
-public record DatabaseCluster(string Name) : Element
+public class DatabaseCluster : ElementBase
 {
-    public Perspective Perspective => Perspective.Technology;
-    public string Id => Name;
+    public override Perspective Perspective => Perspective.Technology;
+
+    public DatabaseCluster(string name) : base(name) { }
+    public DatabaseCluster(string id, string name) : base(id, name) { }
 }

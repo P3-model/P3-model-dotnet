@@ -13,6 +13,6 @@ public class DddDomainServiceAnalyzer : DomainBuildingBlockAnalyzerBase
 
     public DddDomainServiceAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
 
-    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
-        new DddDomainService(module, name);
+    protected override DomainBuildingBlock CreateBuildingBlock(string id, string name) =>
+        new DddDomainService(id, name);
 }

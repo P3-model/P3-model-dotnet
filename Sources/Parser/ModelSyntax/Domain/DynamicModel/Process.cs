@@ -2,10 +2,12 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
 namespace P3Model.Parser.ModelSyntax.Domain.DynamicModel;
 
-public record Process(string Name) : Element
+public class Process : ElementBase
 {
-    public Perspective Perspective => Perspective.Domain;
-    public string Id => Name;
+    public override Perspective Perspective => Perspective.Domain;
+
+    public Process(string name) : base(name) { }
+    public Process(string id, string name) : base(id, name) { }
 
     public record ContainsProcessStep(Process Source, ProcessStep Destination) : Relation<Process, ProcessStep>;
 }

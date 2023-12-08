@@ -45,7 +45,7 @@ public class ProcessPage : MermaidPageBase
 
     public override string RelativeFilePath => Path.Combine("Domain", "Processes", $"{_process.Name.Dehumanize()}.md");
 
-    public override Element MainElement => _process;
+    public override ElementBase MainElement => _process;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

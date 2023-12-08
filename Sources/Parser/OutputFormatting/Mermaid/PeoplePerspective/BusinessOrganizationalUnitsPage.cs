@@ -27,7 +27,7 @@ public class BusinessOrganizationalUnitsPage : MermaidPageBase
     public override string RelativeFilePath => Path.Combine(
         "People", "BusinessOrganizationalUnits", "BusinessOrganizationalUnits.md");
 
-    public override Element? MainElement => null;
+    public override ElementBase? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.People;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)

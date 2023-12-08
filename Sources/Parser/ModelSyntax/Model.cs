@@ -5,11 +5,11 @@ namespace P3Model.Parser.ModelSyntax;
 public class Model
 {
     public DocumentedSystem System { get; }
-    public ImmutableArray<Element> Elements { get; }
+    public ImmutableArray<ElementBase> Elements { get; }
     public ImmutableArray<Relation> Relations { get; }
     public ImmutableArray<Trait> Traits { get; }
     
-    public Model(DocumentedSystem system, ImmutableArray<Element> elements, ImmutableArray<Relation> relations, 
+    public Model(DocumentedSystem system, ImmutableArray<ElementBase> elements, ImmutableArray<Relation> relations, 
         ImmutableArray<Trait> traits)
     {
         System = system;

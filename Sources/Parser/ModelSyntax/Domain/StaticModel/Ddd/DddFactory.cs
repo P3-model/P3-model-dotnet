@@ -1,3 +1,7 @@
 namespace P3Model.Parser.ModelSyntax.Domain.StaticModel.Ddd;
 
-public record DddFactory(DomainModule? Module, string Name) : DomainBuildingBlock(Module, Name);
+public class DddFactory : DomainBuildingBlock
+{
+    public DddFactory(string name) : base(name) { }
+    public DddFactory(string id, string name) : base(id, name) { }
+}

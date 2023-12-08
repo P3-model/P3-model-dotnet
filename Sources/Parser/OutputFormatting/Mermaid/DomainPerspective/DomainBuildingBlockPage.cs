@@ -39,7 +39,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
         : Path.Combine("Domain", "Concepts", Path.Combine(_module.Id.Parts.ToArray()),
             $"{_buildingBlock.Name.Dehumanize()}.md");
 
-    public override Element MainElement => _buildingBlock;
+    public override ElementBase MainElement => _buildingBlock;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -90,7 +90,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
         var processSteps = _usingElements
             .Select(e => e.BuildingBlock)
             .OfType<ProcessStep>()
-            .OrderBy(step => step.Module is null ? string.Empty : step.Module.FullName)
+            .OrderBy(step => step.Id)
             .ThenBy(step => step.Name)
             .ToList();
         if (processSteps.Count == 0)

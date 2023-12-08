@@ -40,7 +40,7 @@ public class MainPage : MermaidPageBase
     public override string Header => $"P3 Model documentation for {_system.Name}";
     public override string LinkText => "Main page";
     public override string RelativeFilePath => "README.md";
-    public override Element? MainElement => null;
+    public override ElementBase? MainElement => null;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

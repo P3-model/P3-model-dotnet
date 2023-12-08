@@ -1,13 +1,19 @@
+using Humanizer;
+
 namespace P3Model.Parser.ModelSyntax.Technology.CSharp;
 
-public record CSharpNamespace(HierarchyId Id, string Path) : CodeStructure
+public class CSharpNamespace : ElementBase, HierarchyElement, CodeStructure
 {
-    public Perspective Perspective => Perspective.Technology;
-    string Element.Id => Id.Full;
-    public string Name => Id.LastPart;
+    public override Perspective Perspective => Perspective.Technology;
+    public new HierarchyId Id { get; }
+    public string Path { get; }
 
-    public bool Equals(CodeStructure? other) => other is CSharpNamespace otherNamespace && Id.Equals(otherNamespace.Id);
-    
+    public CSharpNamespace(HierarchyId id, string path) : base(id.Full, id.LastPart.Humanize())
+    {
+        Id = id;
+        Path = path;
+    }
+
     public record ContainsNamespace(CSharpNamespace Source, CSharpNamespace Destination)
         : HierarchyRelation<CSharpNamespace>;
 

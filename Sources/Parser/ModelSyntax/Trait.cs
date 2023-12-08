@@ -3,12 +3,12 @@ namespace P3Model.Parser.ModelSyntax;
 public interface Trait
 {
     string ElementId => Element.Id;
-    Element Element { get; }
+    ElementBase Element { get; }
 }
 
 public interface Trait<out TElement> : Trait 
-    where TElement : class, Element
+    where TElement : ElementBase
 {
-    Element Trait.Element => Element;
+    ElementBase Trait.Element => Element;
     new TElement Element { get; }
 }

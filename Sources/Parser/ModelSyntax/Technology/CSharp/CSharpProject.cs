@@ -1,11 +1,15 @@
 namespace P3Model.Parser.ModelSyntax.Technology.CSharp;
 
-public record CSharpProject(string Name, string Path) : CodeStructure
+public class CSharpProject : ElementBase, CodeStructure
 {
-    public Perspective Perspective => Perspective.Technology;
-    public string Id => Name;
+    public override Perspective Perspective => Perspective.Technology;
     
-    public bool Equals(CodeStructure? other) => other is CSharpProject otherProject && Name.Equals(otherProject.Name);
+    public string Path { get; }
+
+    public CSharpProject(string name, string path) : base(name) => Path = path;
+    public CSharpProject(string id, string name, string path) : base(id, name) => Path = path;
+
+    public bool Equals(CodeStructure? other) => other != null && Equals((ElementBase)other);
 
     public record ReferencesProject(CSharpProject Source, CSharpProject Destination) 
         : HierarchyRelation<CSharpProject>;

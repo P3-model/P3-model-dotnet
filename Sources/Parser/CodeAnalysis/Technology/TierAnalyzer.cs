@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Technology;
@@ -16,7 +17,7 @@ public class TierAnalyzer : SymbolAnalyzer<IAssemblySymbol>
     {
         if (!symbol.TryGetAttribute(typeof(TierAttribute), out var tierAttribute))
             return;
-        var name = tierAttribute.GetConstructorArgumentValue<string>(nameof(TierAttribute.Name));
+        var name = tierAttribute.GetConstructorArgumentValue<string>(nameof(TierAttribute.Name)).Humanize();
         var tier = new Tier(name);
         modelBuilder.Add(tier, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, tier, elements));

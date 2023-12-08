@@ -1,6 +1,8 @@
+using System;
+
 namespace P3Model.Parser.ModelSyntax;
 
-public interface Element
+public interface Element : IEquatable<Element>
 {
     Perspective Perspective { get; }
     string Id { get; }

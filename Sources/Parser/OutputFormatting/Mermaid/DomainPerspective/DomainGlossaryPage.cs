@@ -14,7 +14,7 @@ public class DomainGlossaryPage : MermaidPageBase
     public override string Header => "Domain Glossary";
     protected override string Description => "This view contains definitions of key domain terms.";
     public override string RelativeFilePath => Path.Combine("Domain", "Glossary", "Domain_Glossary.md");
-    public override Element? MainElement => null;
+    public override ElementBase? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 
     public DomainGlossaryPage(string outputDirectory, Hierarchy<DomainModule> modulesHierarchy,

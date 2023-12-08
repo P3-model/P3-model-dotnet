@@ -13,6 +13,5 @@ public class DddValueObjectAnalyzer : DomainBuildingBlockAnalyzerBase
 
     public DddValueObjectAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
 
-    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) =>
-        new DddValueObject(module, name);
+    protected override DomainBuildingBlock CreateBuildingBlock(string id, string name) => new DddValueObject(id, name);
 }

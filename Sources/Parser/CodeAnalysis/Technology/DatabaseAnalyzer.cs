@@ -1,3 +1,4 @@
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Technology;
@@ -14,12 +15,13 @@ public class DatabaseAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
     {
         if (!symbol.TryGetAttribute(typeof(DatabaseAttribute), out var databaseAttribute))
             return;
-        var name = databaseAttribute.GetConstructorArgumentValue<string>(nameof(DatabaseAttribute.Name));
+        var name = databaseAttribute.GetConstructorArgumentValue<string>(nameof(DatabaseAttribute.Name)).Humanize();
         var database = new Database(name);
         modelBuilder.Add(database, symbol);
         if (!databaseAttribute.TryGetNamedArgumentValue<string>(nameof(DatabaseAttribute.ClusterName),
                 out var clusterName)) 
             return;
+        clusterName = clusterName.Humanize();
         var cluster = new DatabaseCluster(clusterName);
         modelBuilder.Add(cluster);
         modelBuilder.Add(new Database.BelongsToCluster(database, cluster));

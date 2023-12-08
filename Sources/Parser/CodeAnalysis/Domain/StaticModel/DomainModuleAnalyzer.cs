@@ -38,13 +38,14 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbo
         modelBuilder.Add(module, fileInfo.Directory);
         if (moduleInfo.DevelopmentOwner != null)
         {
-            var team = new DevelopmentTeam(moduleInfo.DevelopmentOwner);
+            var team = new DevelopmentTeam(moduleInfo.DevelopmentOwner.Dehumanize(), moduleInfo.DevelopmentOwner);
             modelBuilder.Add(team);
             modelBuilder.Add(new DevelopmentTeam.OwnsDomainModule(team, module));
         }
         if (moduleInfo.BusinessOwner != null)
         {
-            var organizationalUnit = new BusinessOrganizationalUnit(moduleInfo.BusinessOwner);
+            var organizationalUnit = new BusinessOrganizationalUnit(moduleInfo.BusinessOwner.Dehumanize(), 
+                moduleInfo.BusinessOwner);
             modelBuilder.Add(organizationalUnit);
             modelBuilder.Add(new BusinessOrganizationalUnit.OwnsDomainModule(organizationalUnit, module));
         }

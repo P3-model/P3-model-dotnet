@@ -1,9 +1,12 @@
 namespace P3Model.Parser.ModelSyntax.Technology.CSharp;
 
-public record CSharpType(HierarchyId Id, string Name, string Path) : CodeStructure
+public class CSharpType : ElementBase, CodeStructure
 {
-    public Perspective Perspective => Perspective.Technology;
-    string Element.Id => Id.Full;
-    
-    public bool Equals(CodeStructure? other) => other is CSharpType otherType && Id.Equals(otherType.Id);
+    public override Perspective Perspective => Perspective.Technology;
+    public string Path { get; }
+
+    public CSharpType(string name, string path) : base(name) => Path = path;
+    public CSharpType(string id, string name, string path) : base(id, name) => Path = path;
+
+    public bool Equals(CodeStructure? other) => other != null && Equals(other);
 }

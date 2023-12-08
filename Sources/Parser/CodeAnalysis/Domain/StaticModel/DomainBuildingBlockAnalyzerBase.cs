@@ -32,7 +32,8 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
             return;
         var hasModule = _moduleFinder.TryFind(symbol, out var module);
         var name = GetName(symbol, buildingBlockAttribute);
-        var buildingBlock = CreateBuildingBlock(module, name);
+        var id = module is null ? name : $"{module.Id.Full}.{name}";
+        var buildingBlock = CreateBuildingBlock(id, name);
         modelBuilder.Add(buildingBlock, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements));
         if (hasModule)
@@ -53,7 +54,7 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
         return name.Humanize(LetterCasing.Title);
     }
 
-    protected abstract DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name);
+    protected abstract DomainBuildingBlock CreateBuildingBlock(string id, string name);
 
     protected virtual IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
         AttributeData buildingBlockAttribute, ElementsProvider elements) => elements

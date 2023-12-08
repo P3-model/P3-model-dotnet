@@ -1,7 +1,9 @@
 namespace P3Model.Parser.ModelSyntax.Technology;
 
-public record Layer(string Name) : Element
+public class Layer : ElementBase
 {
-    public Perspective Perspective => Perspective.Technology;    
-    public string Id => Name;
+    public override Perspective Perspective => Perspective.Technology;
+
+    public Layer(string name) : base(name) { }
+    public Layer(string id, string name) : base(id, name) { }
 }

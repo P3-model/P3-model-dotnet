@@ -12,6 +12,5 @@ public class DomainBuildingBlockAnalyzer : DomainBuildingBlockAnalyzerBase
 
     public DomainBuildingBlockAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
 
-    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
-        new(module, name);
+    protected override DomainBuildingBlock CreateBuildingBlock(string id, string name) => new(id, name);
 }

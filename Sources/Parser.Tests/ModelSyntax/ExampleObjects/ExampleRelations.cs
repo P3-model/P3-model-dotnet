@@ -12,14 +12,11 @@ public class ExampleRelations : IEnumerable<Relation>
 {
     private readonly Dictionary<Type, Relation> _relations = new();
 
-    private static readonly DomainModule DomainModule =
-        new(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleC"));
-    
     public static readonly ExampleRelations All = new()
     {
         new Actor.UsesProcessStep(
             new Actor("ExampleActor"),
-            new ProcessStep(DomainModule, "StepA")),
+            new ProcessStep("ExampleModuleA.StepA", "StepA")),
         new BusinessOrganizationalUnit.OwnsDomainModule(
             new BusinessOrganizationalUnit("ExampleBusinessOrganizationalUnit"),
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
@@ -40,7 +37,7 @@ public class ExampleRelations : IEnumerable<Relation>
                 "ExampleDirectory/ExampleCSharpNamespaceB")),
         new CSharpNamespace.ContainsType(
             new CSharpNamespace(HierarchyId.FromParts("ExampleCSharpNamespace"), "ExampleDirectory/"),
-            new CSharpType(HierarchyId.FromParts("ExampleCSharpType"),
+            new CSharpType("ExampleCSharpNamespace.ExampleCSharpType",
                 "ExampleCSharpType",
                 "ExampleDirectory/ExampleCSharpType")),
         new Database.BelongsToCluster(
@@ -56,11 +53,11 @@ public class ExampleRelations : IEnumerable<Relation>
             new DevelopmentTeam("ExampleDevelopmentTeam"),
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
         new DomainBuildingBlock.DependsOnBuildingBlock(
-            new DomainBuildingBlock(DomainModule, "ExampleDomainBuildingBlockA"),
-            new DomainBuildingBlock(DomainModule, "ExampleDomainBuildingBlockB")),
+            new DomainBuildingBlock("ExampleModuleA.ExampleDomainBuildingBlockA", "ExampleDomainBuildingBlockA"),
+            new DomainBuildingBlock("ExampleModuleA.ExampleDomainBuildingBlockB", "ExampleDomainBuildingBlockB")),
         new DomainBuildingBlock.IsImplementedBy(
-            new DomainBuildingBlock(DomainModule, "ExampleDomainBuildingBlockA"),
-            new CSharpType(HierarchyId.FromParts("ExampleCSharpNamespace", "ExampleCSharpType"),
+            new DomainBuildingBlock("ExampleModuleA.ExampleDomainBuildingBlockA", "ExampleDomainBuildingBlockA"),
+            new CSharpType("ExampleCSharpNamespace.ExampleCSharpType",
                 "ExampleCSharpType",
                 "ExampleDirectory/ExampleCSharpType")),
         new DomainModule.ContainsDomainModule(
@@ -68,7 +65,7 @@ public class ExampleRelations : IEnumerable<Relation>
             new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
         new DomainModule.ContainsBuildingBlock(
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
-            new DomainBuildingBlock(DomainModule, "ExampleDomainBuildingBlock")),
+            new DomainBuildingBlock("ExampleModuleA.ExampleDomainBuildingBlock", "ExampleDomainBuildingBlock")),
         new DomainModule.IsDeployedInDeployableUnit(
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
             new DeployableUnit("ExampleDeployableUnit")),
@@ -78,13 +75,13 @@ public class ExampleRelations : IEnumerable<Relation>
                 "ExampleDirectory/ExampleCSharpNamespace")),
         new Process.ContainsProcessStep(
             new Process("ExampleProcess"),
-            new ProcessStep(DomainModule, "StepA")),
+            new ProcessStep("ExampleModuleA.StepA", "StepA")),
         new ProcessStep.HasNextStep(
-            new ProcessStep(DomainModule, "StepA"),
-            new ProcessStep(DomainModule, "StepB")),
+            new ProcessStep("ExampleModuleA.StepA", "StepA"),
+            new ProcessStep("ExampleModuleA.StepB", "StepB")),
             new ProcessStep.DependsOnBuildingBlock(
-            new ProcessStep(DomainModule, "StepZ"),
-            new DomainBuildingBlock(DomainModule, "ExampleBuildingBlock")),
+            new ProcessStep("ExampleModuleA.StepZ", "StepZ"),
+            new DomainBuildingBlock("ExampleModuleA.ExampleBuildingBlock", "ExampleBuildingBlock")),
         new Tier.ContainsDeployableUnit(
             new Tier("ExampleTier"),
             new DeployableUnit("ExampleDeployableUnit")),

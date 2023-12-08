@@ -7,7 +7,7 @@ namespace P3Model.Parser.ModelSyntax;
 
 public interface ElementInfo
 {
-    public Element Element { get; }
+    public ElementBase Element { get; }
 
     public IReadOnlySet<ISymbol> Symbols { get; }
 
@@ -20,11 +20,11 @@ public interface ElementInfo
 
 [SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1024:Symbole powinny być porównywane pod kątem równości")]
 public class ElementInfo<TElement> : ElementInfo
-    where TElement : class, Element
+    where TElement : ElementBase
 {
     public TElement Element { get; }
 
-    Element ElementInfo.Element => Element;
+    ElementBase ElementInfo.Element => Element;
 
     private readonly ConcurrentSet<ISymbol> _symbols = new(CompilationIndependentSymbolEqualityComparer.Default);
     public IReadOnlySet<ISymbol> Symbols => _symbols;

@@ -1,3 +1,7 @@
 namespace P3Model.Parser.ModelSyntax.Domain.StaticModel.Ddd;
 
-public record DddRepository(DomainModule? Module, string Name) : DomainBuildingBlock(Module, Name);
+public class DddRepository : DomainBuildingBlock
+{
+    public DddRepository(string name) : base(name) { }
+    public DddRepository(string id, string name) : base(id, name) { }
+}

@@ -2,10 +2,12 @@ using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
-public record DomainBuildingBlock(DomainModule? Module, string Name) : Element
+public class DomainBuildingBlock : ElementBase
 {
-    public Perspective Perspective => Perspective.Domain;    
-    public string Id => Module == null ? Name : $"{Module.Id}.{Name}";
+    public override Perspective Perspective => Perspective.Domain;
+
+    public DomainBuildingBlock(string name) : base(name) { }
+    public DomainBuildingBlock(string id, string name) : base(id, name) { }
 
     public record DependsOnBuildingBlock(DomainBuildingBlock Source, DomainBuildingBlock Destination)
         : Relation<DomainBuildingBlock, DomainBuildingBlock>;

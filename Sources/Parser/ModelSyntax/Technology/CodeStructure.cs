@@ -1,9 +1,7 @@
-using System;
-
 namespace P3Model.Parser.ModelSyntax.Technology;
 
 // TODO: support for code structures placed in several files
-public interface CodeStructure : Element, IEquatable<CodeStructure>
+public interface CodeStructure : Element
 {
     string Path { get; }
     

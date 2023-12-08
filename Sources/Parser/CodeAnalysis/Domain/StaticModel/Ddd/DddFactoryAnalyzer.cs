@@ -13,6 +13,5 @@ public class DddFactoryAnalyzer : DomainBuildingBlockAnalyzerBase
 
     public DddFactoryAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
 
-    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
-        new DddFactory(module, name);
+    protected override DomainBuildingBlock CreateBuildingBlock(string id, string name) => new DddFactory(id, name);
 }

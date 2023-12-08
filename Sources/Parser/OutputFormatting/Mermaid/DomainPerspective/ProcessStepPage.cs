@@ -15,6 +15,7 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 public class ProcessStepPage : MermaidPageBase
 {
     private readonly ProcessStep _step;
+    private readonly DomainModule? _module;
     private readonly Process? _process;
     private readonly IReadOnlySet<DomainBuildingBlock> _buildingBlocks;
     private readonly DeployableUnit? _deployableUnit;
@@ -23,13 +24,14 @@ public class ProcessStepPage : MermaidPageBase
     private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
     private readonly IReadOnlySet<CodeStructure> _codeStructures;
 
-    public ProcessStepPage(string outputDirectory, ProcessStep step, Process? process,
+    public ProcessStepPage(string outputDirectory, ProcessStep step, DomainModule? module, Process? process,
         IReadOnlySet<DomainBuildingBlock> buildingBlocks, DeployableUnit? deployableUnit, IReadOnlySet<Actor> actors,
         IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits, 
         IReadOnlySet<CodeStructure> codeStructures)
         : base(outputDirectory)
     {
         _step = step;
+        _module = module;
         _process = process;
         _buildingBlocks = buildingBlocks;
         _deployableUnit = deployableUnit;
@@ -47,12 +49,12 @@ public class ProcessStepPage : MermaidPageBase
 - related deployable unit
 - engaged people: actors, development teams, business stakeholders";
 
-    public override string RelativeFilePath => _step.Module is null
+    public override string RelativeFilePath => _module is null
         ? Path.Combine("Domain", "Concepts", $"{_step.Name.Dehumanize()}.md")
-        : Path.Combine("Domain", "Concepts", Path.Combine(_step.Module.Id.Parts.ToArray()),
+        : Path.Combine("Domain", "Concepts", Path.Combine(_module.Id.Parts.ToArray()),
             $"{_step.Name.Dehumanize()}.md");
     
-    public override Element MainElement => _step;
+    public override ElementBase MainElement => _step;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -161,8 +163,8 @@ public class ProcessStepPage : MermaidPageBase
 
     protected override bool IncludeInZoomOutPages(MermaidPage page) => page switch
     {
-        DomainModulePage modulePage => modulePage.MainElement!.Equals(_step.Module),
-        ProcessPage processPage => processPage.MainElement!.Equals(_process),
+        DomainModulePage modulePage => modulePage.MainElement.Equals(_module),
+        ProcessPage processPage => processPage.MainElement.Equals(_process),
         _ => false
     };
 }

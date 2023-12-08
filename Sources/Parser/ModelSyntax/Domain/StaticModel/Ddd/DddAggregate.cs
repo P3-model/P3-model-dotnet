@@ -1,3 +1,7 @@
 namespace P3Model.Parser.ModelSyntax.Domain.StaticModel.Ddd;
 
-public record DddAggregate(DomainModule? Module, string Name) : DomainBuildingBlock(Module, Name);
+public class DddAggregate : DomainBuildingBlock
+{
+    public DddAggregate(string name) : base(name) { }
+    public DddAggregate(string id, string name) : base(id, name) { }
+}

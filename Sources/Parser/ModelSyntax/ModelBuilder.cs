@@ -17,8 +17,8 @@ public class ModelBuilder : ElementsProvider
 {
     private readonly DocumentedSystem _system;
 
-    private readonly ConcurrentDictionary<Element, ElementInfo> _elements = new();
-    private readonly ConcurrentDictionary<ISymbol, ConcurrentSet<Element>> _symbolToElements =
+    private readonly ConcurrentDictionary<ElementBase, ElementInfo> _elements = new();
+    private readonly ConcurrentDictionary<ISymbol, ConcurrentSet<ElementBase>> _symbolToElements =
         new(CompilationIndependentSymbolEqualityComparer.Default);
 
     private readonly ConcurrentSet<Relation> _relations = new();
@@ -31,12 +31,12 @@ public class ModelBuilder : ElementsProvider
     public ModelBuilder(DocumentedSystem system) => _system = system;
 
     [PublicAPI]
-    public void Add<TElement>(TElement element) where TElement : class, Element =>
+    public void Add<TElement>(TElement element) where TElement : ElementBase =>
         _elements.TryAdd(element, new ElementInfo<TElement>(element));
 
     [PublicAPI]
     public void Add<TElement>(TElement element, ISymbol symbol)
-        where TElement : class, Element
+        where TElement : ElementBase
     {
         _elements.AddOrUpdate(element,
             _ =>
@@ -53,7 +53,7 @@ public class ModelBuilder : ElementsProvider
         _symbolToElements.AddOrUpdate(symbol,
             _ =>
             {
-                var set = new ConcurrentSet<Element>();
+                var set = new ConcurrentSet<ElementBase>();
                 set.TryAdd(element);
                 return set;
             },
@@ -66,7 +66,7 @@ public class ModelBuilder : ElementsProvider
 
     [PublicAPI]
     public void Add<TElement>(TElement element, DirectoryInfo directory)
-        where TElement : class, Element
+        where TElement : ElementBase
     {
         _elements.AddOrUpdate(element,
             _ =>
@@ -96,9 +96,9 @@ public class ModelBuilder : ElementsProvider
     public void Add(Func<ElementsProvider, IEnumerable<Trait>> traitFactory) =>
         _traitFactories.TryAdd(traitFactory);
 
-    IEnumerable<Element> ElementsProvider.For(ISymbol symbol) => _symbolToElements.TryGetValue(symbol, out var elements)
+    IEnumerable<ElementBase> ElementsProvider.For(ISymbol symbol) => _symbolToElements.TryGetValue(symbol, out var elements)
         ? elements
-        : Enumerable.Empty<Element>();
+        : Enumerable.Empty<ElementBase>();
 
     IEnumerable<TElement> ElementsProvider.OfType<TElement>() => _elements.Keys.OfType<TElement>();
 

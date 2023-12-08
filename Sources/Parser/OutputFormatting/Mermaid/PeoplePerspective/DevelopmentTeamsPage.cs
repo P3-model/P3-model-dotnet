@@ -25,7 +25,7 @@ public class DevelopmentTeamsPage : MermaidPageBase
         $"This view contains all development teams that build and maintain {_system.Name} product.";
 
     public override string RelativeFilePath => Path.Combine("People", "DevelopmentTeams", "DevelopmentTeams.md");
-    public override Element? MainElement => null;
+    public override ElementBase? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.People;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)

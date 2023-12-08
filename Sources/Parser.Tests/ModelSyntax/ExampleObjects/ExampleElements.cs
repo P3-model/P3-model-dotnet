@@ -9,9 +9,9 @@ using P3Model.Parser.ModelSyntax.Technology.CSharp;
 
 namespace P3Model.Parser.Tests.ModelSyntax.ExampleObjects;
 
-public class ExampleElements : IEnumerable<Element>
+public class ExampleElements : IEnumerable<ElementBase>
 {
-    private readonly Dictionary<Type, Element> _elements = new();
+    private readonly Dictionary<Type, ElementBase> _elements = new();
 
     private static readonly DomainModule DomainModule =
         new(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleC"));
@@ -23,33 +23,33 @@ public class ExampleElements : IEnumerable<Element>
         new CSharpProject("ExampleCSharpProject", "ExampleDirectory/ExampleCSharpProject"),
         new CSharpNamespace(HierarchyId.FromParts("ExampleParentCSharpNamespace", "ExampleCSharpNamespace"),
                 "ExampleDirectory/ExampleCSharpNamespace"),
-        new CSharpType(HierarchyId.FromParts("ExampleCSharpNamespace", "ExampleCSharpType"),
+        new CSharpType("ExampleCSharpNamespace.ExampleCSharpType",
             "ExampleCSharpType",
             "ExampleDirectory/ExampleCSharpType"),
         new Database("ExampleDatabase"),
         new DatabaseCluster("ExampleDatabaseCluster"),
-        new DddAggregate(DomainModule, "ExampleDddAggregate"),
-        new DddDomainService(DomainModule, "ExampleDddDomainService"),
-        new DddEntity(DomainModule, "ExampleDddEntity"),
-        new DddFactory(DomainModule, "ExampleDddFactory"),
-        new DddRepository(DomainModule, "ExampleDddRepository"),
-        new DddValueObject(DomainModule, "ExampleDddValueObject"),
+        new DddAggregate("ExampleModuleA.ExampleDddAggregate", "ExampleDddAggregate"),
+        new DddDomainService("ExampleModuleA.ExampleDddDomainService", "ExampleDddDomainService"),
+        new DddEntity("ExampleModuleA.ExampleDddEntity", "ExampleDddEntity"),
+        new DddFactory("ExampleModuleA.ExampleDddFactory", "ExampleDddFactory"),
+        new DddRepository("ExampleModuleA.ExampleDddRepository", "ExampleDddRepository"),
+        new DddValueObject("ExampleModuleA.ExampleDddValueObject", "ExampleDddValueObject"),
         new DeployableUnit("ExampleDeployableUnit"),
         new DevelopmentTeam("ExampleDevelopmentTeam"),
-        new DomainBuildingBlock(DomainModule, "ExampleBuildingBlock"),
+        new DomainBuildingBlock("ExampleModuleA.ExampleBuildingBlock", "ExampleBuildingBlock"),
         DomainModule,
         new ExternalSoftwareSystem("ExampleExternalSystem"),
         new Layer("ExampleLayer"),
         new Process("ExampleProcessX"),
-        new ProcessStep(DomainModule, "StepA"),
+        new ProcessStep("ExampleModuleA.StepA", "StepA"),
         new Tier("ExampleTier")
     };
 
     private void Add<TElement>(TElement element)
-        where TElement : class, Element
+        where TElement : ElementBase
         => _elements.Add(typeof(TElement), element);
 
-    public Element ForType(Type type)
+    public ElementBase ForType(Type type)
     {
         if (!_elements.TryGetValue(type, out var element))
             throw new InvalidOperationException($"Missing example for {type.Name}");
@@ -58,5 +58,5 @@ public class ExampleElements : IEnumerable<Element>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public IEnumerator<Element> GetEnumerator() => _elements.Values.GetEnumerator();
+    public IEnumerator<ElementBase> GetEnumerator() => _elements.Values.GetEnumerator();
 }

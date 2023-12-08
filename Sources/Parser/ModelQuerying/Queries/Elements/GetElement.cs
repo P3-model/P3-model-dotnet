@@ -5,7 +5,7 @@ using P3Model.Parser.ModelSyntax;
 namespace P3Model.Parser.ModelQuerying.Queries.Elements;
 
 public class GetElement<TElement> : ElementQuery<TElement>
-    where TElement : Element
+    where TElement : class, Element
 {
     private readonly Func<TElement, bool>? _predicate;
     

@@ -22,7 +22,7 @@ public abstract class MermaidPageBase : MermaidPage
     protected virtual string? Description => null;
     public virtual string LinkText => MainElement is null ? Header : MainElement.Name;
     public abstract string RelativeFilePath { get; }
-    public abstract Element? MainElement { get; }
+    public abstract ElementBase? MainElement { get; }
     public virtual Perspective? Perspective => MainElement?.Perspective;
 
     protected MermaidPageBase(string outputDirectory) => _outputDirectory = outputDirectory;

@@ -26,7 +26,7 @@ public class DeployableUnitsPage : MermaidPageBase
     public override string Header => "Deployable Units";
     protected override string Description => $"This view contains all deployable units for {_system.Name} product.";
     public override string RelativeFilePath => Path.Combine("Technology", "DeployableUnits", "DeployableUnits.md");
-    public override Element? MainElement => null;
+    public override ElementBase? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.Technology;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)

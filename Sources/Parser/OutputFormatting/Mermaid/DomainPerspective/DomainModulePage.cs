@@ -55,7 +55,7 @@ public class DomainModulePage : MermaidPageBase
     public override string RelativeFilePath => Path.Combine(
         "Domain", "Concepts", Path.Combine(_module.Id.Parts.ToArray()), $"{_module.Name.Dehumanize()}.md");
 
-    public override Element MainElement => _module;
+    public override ElementBase MainElement => _module;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

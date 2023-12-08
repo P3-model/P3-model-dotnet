@@ -2,11 +2,13 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
 namespace P3Model.Parser.ModelSyntax.People;
 
-public record DevelopmentTeam(string Name) : Element
+public class DevelopmentTeam : ElementBase
 {
-    public Perspective Perspective => Perspective.People;
-    public string Id => Name;
-    
+    public override Perspective Perspective => Perspective.People;
+
+    public DevelopmentTeam(string name) : base(name) { }
+    public DevelopmentTeam(string id, string name) : base(id, name) { }
+
     public record OwnsDomainModule(DevelopmentTeam Source, DomainModule Destination) 
         : Relation<DevelopmentTeam, DomainModule>;
 }

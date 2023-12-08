@@ -1,10 +1,12 @@
 namespace P3Model.Parser.ModelSyntax.Technology;
 
-public record Tier(string Name) : Element
+public class Tier : ElementBase
 {
-    public Perspective Perspective => Perspective.Technology;
-    public string Id => Name;
-    
+    public override Perspective Perspective => Perspective.Technology;
+
+    public Tier(string name) : base(name) { }
+    public Tier(string id, string name) : base(id, name) { }
+
     public record ContainsDeployableUnit(Tier Source, DeployableUnit Destination) 
         : Relation<Tier, DeployableUnit>;
 }

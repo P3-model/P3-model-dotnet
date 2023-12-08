@@ -32,7 +32,7 @@ public class DevelopmentTeamPage : MermaidPageBase
     public override string RelativeFilePath => Path.Combine("People", "DevelopmentTeams", 
         $"{_team.Name.Dehumanize()}.md");
 
-    public override Element MainElement => _team;
+    public override ElementBase MainElement => _team;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {

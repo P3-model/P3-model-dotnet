@@ -7,7 +7,7 @@ namespace P3Model.Parser.ModelQuerying.Queries.Elements;
 
 public class GetElementsBackRelatedToAny<TSource, TDestination, TRelation> : ElementsQuery<TSource>
     where TSource : class, Element
-    where TDestination : class, Element, IEquatable<TDestination>
+    where TDestination : class, Element
     where TRelation : Relation<TDestination, TSource>
 {
     private readonly ElementsQuery<TDestination> _destinationQuery;

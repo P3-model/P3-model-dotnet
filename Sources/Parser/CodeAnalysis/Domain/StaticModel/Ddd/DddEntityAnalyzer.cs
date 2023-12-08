@@ -13,6 +13,5 @@ public class DddEntityAnalyzer : DomainBuildingBlockAnalyzerBase
 
     public DddEntityAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
 
-    protected override DomainBuildingBlock CreateBuildingBlock(DomainModule? module, string name) => 
-        new DddEntity(module, name);
+    protected override DomainBuildingBlock CreateBuildingBlock(string id, string name) => new DddEntity(id, name);
 }
