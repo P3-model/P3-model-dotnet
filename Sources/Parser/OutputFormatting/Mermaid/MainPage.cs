@@ -59,14 +59,28 @@ public class MainPage : MermaidPageBase
             var systemId = flowchartWriter.WriteRectangle(systemName);
             var actorsId = flowchartWriter.WriteSubgraph("Actors", subgraphWriter =>
             {
-                foreach (var actor in _actors.OrderBy(a => a.Name)) 
-                    subgraphWriter.WriteStadiumShape(actor.Name);
+                if (_actors.Count == 0)
+                {
+                    subgraphWriter.WriteStadiumShape("no actors found");
+                }
+                else
+                {
+                    foreach (var actor in _actors.OrderBy(a => a.Name)) 
+                        subgraphWriter.WriteStadiumShape(actor.Name);
+                }
             });
             flowchartWriter.WriteArrow(actorsId, systemId, "uses");
             var externalSystemsId = flowchartWriter.WriteSubgraph("External Systems", subgraphWriter =>
             {
-                foreach (var externalSystem in _externalSystems.OrderBy(s => s.Name)) 
-                    subgraphWriter.WriteStadiumShape(externalSystem.Name);
+                if (_externalSystems.Count == 0)
+                {
+                    subgraphWriter.WriteStadiumShape("no external systems found");
+                }
+                else
+                {
+                    foreach (var externalSystem in _externalSystems.OrderBy(s => s.Name)) 
+                        subgraphWriter.WriteStadiumShape(externalSystem.Name);
+                }
             });
             flowchartWriter.WriteBidirectionalArrow(externalSystemsId, systemId, "are integrated with");
             var teamsId = flowchartWriter.WriteSubgraph("Development Teams", subgraphWriter =>
