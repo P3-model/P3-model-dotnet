@@ -31,17 +31,14 @@ public class RootAnalyzer
         IReadOnlyCollection<FileAnalyzer> fileAnalyzers,
         IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers,
         IReadOnlyCollection<OutputFormatter> outputFormatters,
-        LogEventLevel logLevel)
+        LoggerConfiguration loggerConfiguration)
     {
         _repositories = repositories;
         _fileAnalyzers = fileAnalyzers;
         _symbolAnalyzers = symbolAnalyzers;
         _outputFormatters = outputFormatters;
         _productName = productName;
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(theme: AnsiConsoleTheme.Literate)
-            .MinimumLevel.Is(logLevel)
-            .CreateLogger();
+        Log.Logger = loggerConfiguration.CreateLogger();
     }
 
     public async Task Analyze()

@@ -4,7 +4,9 @@ using P3Model.Parser.CodeAnalysis;
 using P3Model.Parser.Configuration.Analyzers;
 using P3Model.Parser.Configuration.OutputFormat;
 using P3Model.Parser.Configuration.Repositories;
+using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace P3Model.Parser.Configuration;
 
@@ -14,7 +16,7 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
     private readonly RepositoriesBuilder _repositoriesBuilder = new();
     private readonly AnalyzersBuilder _analyzersBuilder = new();
     private readonly OutputFormatBuilder _outputFormatBuilder = new();
-    private LogEventLevel _logLevel = LogEventLevel.Information;
+    private readonly LoggerConfiguration _loggerConfiguration = new();
 
     private P3() { }
 
@@ -45,7 +47,15 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
 
     RootAnalyzerStep LoggingStep.LogLevel(LogEventLevel logLevel)
     {
-        _logLevel = logLevel;
+        _loggerConfiguration
+            .WriteTo.Console(theme: AnsiConsoleTheme.Literate)
+            .MinimumLevel.Is(logLevel);
+        return this;
+    }
+
+    RootAnalyzerStep LoggingStep.Logger(Func<LoggerConfiguration, LoggerConfiguration> configure)
+    {
+        configure(_loggerConfiguration);
         return this;
     }
 
@@ -61,14 +71,14 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
             allAnalyzers.FileAnalyzers,
             allAnalyzers.SymbolAnalyzers,
             _outputFormatBuilder.Build(),
-            _logLevel);
+            _loggerConfiguration);
     }
-    
+
     public interface RepositoriesStep
     {
         AnalyzersStep Repositories(Func<RepositoriesBuilder, RepositoriesBuilder> configure);
     }
-    
+
     public interface AnalyzersStep
     {
         OutputFormatStep Analyzers(Func<AnalyzersBuilder, AnalyzersBuilder> builder);
@@ -78,10 +88,11 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
     {
         LoggingStep OutputFormat(Func<OutputFormatBuilder, OutputFormatBuilder> builder);
     }
-    
+
     public interface LoggingStep : RootAnalyzerStep
     {
         RootAnalyzerStep LogLevel(LogEventLevel logLevel);
+        RootAnalyzerStep Logger(Func<LoggerConfiguration, LoggerConfiguration> configure);
     }
 
     public interface RootAnalyzerStep
