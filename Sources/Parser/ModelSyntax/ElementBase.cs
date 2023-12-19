@@ -23,4 +23,6 @@ public abstract class ElementBase : Element
     public override bool Equals(object? obj) => obj is Element other && Equals(other);
     public bool Equals(Element? other) => Id == other?.Id;
     public override int GetHashCode() => Id.GetHashCode();
+
+    public override string ToString() => $"Type: {GetType().Name} | Name: {Name} | Id: {Id}";
 }
