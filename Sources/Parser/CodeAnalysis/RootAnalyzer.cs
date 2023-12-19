@@ -147,6 +147,7 @@ public class RootAnalyzer
         {
             TargetFramework.Net60 => Net60.References.All,
             TargetFramework.Net70 => Net70.References.All,
+            TargetFramework.Net80 => Net80.References.All,
             _ => throw new ParserError($"Compilation to target framework: {targetFramework} is not supported")
         };
         compilation = compilation.AddReferences(references);
