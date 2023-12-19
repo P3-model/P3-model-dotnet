@@ -103,12 +103,12 @@ public class RootAnalyzer
         }
     }
 
-    private static async Task<Solution> Load(string slnPath)
+    private static Task<Solution> Load(string slnPath)
     {
         var workspace = MSBuildWorkspace.Create();
         workspace.SkipUnrecognizedProjects = true;
         workspace.WorkspaceFailed += (_, args) => Log.Error(args.Diagnostic.Message);
-        return await workspace.OpenSolutionAsync(slnPath);
+        return workspace.OpenSolutionAsync(slnPath);
     }
 
     private async Task Analyze(Project project, ModelBuilder builder)
@@ -142,15 +142,6 @@ public class RootAnalyzer
             Log.Error($"Can not compile project: {project.Name}");
             return null;
         }
-        var targetFramework = project.GetTargetFramework();
-        var references = targetFramework switch
-        {
-            TargetFramework.Net60 => Net60.References.All,
-            TargetFramework.Net70 => Net70.References.All,
-            TargetFramework.Net80 => Net80.References.All,
-            _ => throw new ParserError($"Compilation to target framework: {targetFramework} is not supported")
-        };
-        compilation = compilation.AddReferences(references);
         var errors = compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
         if (errors.Any())
         {
@@ -159,7 +150,21 @@ public class RootAnalyzer
                 Log.Error(error.GetMessage());
             return null;
         }
+        compilation = AddMetadataReferences(project, compilation);
         return compilation;
+    }
+
+    private static Compilation AddMetadataReferences(Project project, Compilation compilation)
+    {
+        var targetFramework = project.GetTargetFramework();
+        var references = targetFramework switch
+        {
+            TargetFramework.Net60 => Net60.References.All,
+            TargetFramework.Net70 => Net70.References.All,
+            TargetFramework.Net80 => Net80.References.All,
+            _ => throw new ParserError($"Compilation to target framework: {targetFramework} is not supported")
+        };
+        return compilation.AddReferences(references);
     }
 
     private void Analyze(Compilation compilation, ModelBuilder builder)
