@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using P3Model.Annotations.Domain;
 using P3Model.Parser.Configuration;
+using Serilog;
 using Serilog.Events;
 
 namespace P3Model.Parser.Tests.CodeAnalysis;
@@ -23,13 +24,15 @@ public class ParserOutputTests
             .Analyzers(analyzers => analyzers
                 .UseDefaults(options => options
                     .TreatNamespacesAsDomainModules(namespaces => namespaces
-                            .OnlyFromAssembliesAnnotatedWith<DomainModelAttribute>()
-                            .RemoveRootNamespace("MyCompany.MySystem")
+                        .OnlyFromAssembliesAnnotatedWith<DomainModelAttribute>()
+                        .RemoveRootNamespace("MyCompany.MySystem")
                         .RemoveNamespacePart("Api", "BusinessLogic", "Infrastructure", "Repositories", "Entities",
                             "Controllers"))))
             .OutputFormat(formatters => formatters
                 .Use(parserOutput))
-            .LogLevel(LogEventLevel.Verbose)
+            .Logger(logger => logger
+                .WriteTo.Debug()
+                .MinimumLevel.Is(LogEventLevel.Verbose))
             .Analyze();
     }
 }
