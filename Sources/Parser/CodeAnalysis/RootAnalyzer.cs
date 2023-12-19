@@ -12,8 +12,6 @@ using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.OutputFormatting;
 using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.SystemConsole.Themes;
 
 namespace P3Model.Parser.CodeAnalysis;
 
@@ -120,7 +118,7 @@ public class RootAnalyzer
         var compilation = await Compile(project);
         if (compilation is null)
         {
-            Log.Error($"Analysis skipped for project: {project.Name}");
+            Log.Warning($"Analysis skipped for project: {project.Name}");
             return;
         }
         Log.Verbose($"Analysis started for project: {project.Name}");
@@ -131,7 +129,16 @@ public class RootAnalyzer
 
     private static async Task<Compilation?> Compile(Project project)
     {
-        var compilation = await project.GetCompilationAsync();
+        Compilation? compilation;
+        try
+        {
+            compilation = await project.GetCompilationAsync();
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, $"Can not compile project: {project.Name}");
+            return null;
+        }
         if (compilation is null)
         {
             Log.Error($"Can not compile project: {project.Name}");
@@ -146,11 +153,14 @@ public class RootAnalyzer
         };
         compilation = compilation.AddReferences(references);
         var errors = compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
-        if (!errors.Any()) 
-            return compilation;
-        foreach (var error in errors) 
-            Log.Error(error.GetMessage());
-        return null;
+        if (errors.Any())
+        {
+            Log.Error($"Can not compile project: {project.Name}");
+            foreach (var error in errors)
+                Log.Error(error.GetMessage());
+            return null;
+        }
+        return compilation;
     }
 
     private void Analyze(Compilation compilation, ModelBuilder builder)
@@ -170,5 +180,6 @@ public class RootAnalyzer
         var syntaxWalker = new SyntaxWalker(_symbolAnalyzers, semanticModel, modelBuilder);
         Log.Verbose($"Analysis started for document: {document.FilePath}");
         syntaxWalker.Visit(rootNode);
+        Log.Verbose($"Analysis finished for document: {document.FilePath}");
     }
 }
