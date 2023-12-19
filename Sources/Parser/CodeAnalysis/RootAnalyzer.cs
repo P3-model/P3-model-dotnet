@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Basic.Reference.Assemblies;
-using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using P3Model.Parser.CodeAnalysis.RoslynExtensions;
@@ -48,7 +47,6 @@ public class RootAnalyzer
             foreach (var outputFormatter in _outputFormatters)
                 await outputFormatter.Clean();
             Log.Information("Previous documentation cleaned.");
-            MSBuildLocator.RegisterDefaults();
             var modelBuilder = new ModelBuilder(new DocumentedSystem(_productName));
             foreach (var repository in _repositories)
                 await Analyze(repository, modelBuilder);
