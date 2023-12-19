@@ -20,5 +20,6 @@ public class CSharpProjectTests
         new CSharpProject("MyCompany.MySystem.Service2", string.Empty),
         new CSharpProject("MyCompany.MySystem.Service2.PrivateLibrary", string.Empty),
         new CSharpProject("MyCompany.MySystem.SharedLibrary1", string.Empty),
-        new CSharpProject("MyCompany.MySystem.SharedLibrary2", string.Empty));
+        new CSharpProject("MyCompany.MySystem.SharedLibrary2", string.Empty),
+        new CSharpProject("Library", string.Empty));
 }

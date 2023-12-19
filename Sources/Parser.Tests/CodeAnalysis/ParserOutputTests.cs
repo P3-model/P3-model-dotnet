@@ -20,6 +20,8 @@ public class ParserOutputTests
                 .Use("../../../../TestSamples/Net60/Repository1", repository => repository
                     .ExcludeProjects("Annotations"))
                 .Use("../../../../TestSamples/Net60/Repository2", repository => repository
+                    .ExcludeProjects("Annotations"))
+                .Use("../../../../TestSamples/Net70", repository => repository
                     .ExcludeProjects("Annotations")))
             .Analyzers(analyzers => analyzers
                 .UseDefaults(options => options
