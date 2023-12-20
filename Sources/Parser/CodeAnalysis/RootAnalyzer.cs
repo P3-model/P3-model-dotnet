@@ -4,10 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Basic.Reference.Assemblies;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
-using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.OutputFormatting;
 using Serilog;
@@ -150,21 +148,7 @@ public class RootAnalyzer
                 Log.Error(error.GetMessage());
             return null;
         }
-        compilation = AddMetadataReferences(project, compilation);
         return compilation;
-    }
-
-    private static Compilation AddMetadataReferences(Project project, Compilation compilation)
-    {
-        var targetFramework = project.GetTargetFramework();
-        var references = targetFramework switch
-        {
-            TargetFramework.Net60 => Net60.References.All,
-            TargetFramework.Net70 => Net70.References.All,
-            TargetFramework.Net80 => Net80.References.All,
-            _ => throw new ParserError($"Compilation to target framework: {targetFramework} is not supported")
-        };
-        return compilation.AddReferences(references);
     }
 
     private void Analyze(Compilation compilation, ModelBuilder builder)
