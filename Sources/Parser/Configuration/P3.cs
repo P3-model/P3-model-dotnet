@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using P3Model.Parser.CodeAnalysis;
+using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.Configuration.Analyzers;
 using P3Model.Parser.Configuration.OutputFormat;
 using P3Model.Parser.Configuration.Repositories;
@@ -59,9 +60,9 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
         return this;
     }
 
-    RootAnalyzer RootAnalyzerStep.CreateRootAnalyzer()
+    async Task<RootAnalyzer> RootAnalyzerStep.CreateRootAnalyzer()
     {
-        var repositories = _repositoriesBuilder.Build();
+        var repositories = await _repositoriesBuilder.Build();
         if (repositories.Count == 0)
             throw new InvalidOperationException("No repository to analyze");
         var productName = _productBuilder.Build();
@@ -97,7 +98,12 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
 
     public interface RootAnalyzerStep
     {
-        async Task Analyze() => await CreateRootAnalyzer().Analyze();
-        RootAnalyzer CreateRootAnalyzer();
+        async Task Analyze(TargetFrameworks targetFrameworks = TargetFrameworks.All)
+        {
+            var rootAnalyzer = await CreateRootAnalyzer();
+            await rootAnalyzer.Analyze(targetFrameworks);
+        }
+
+        Task<RootAnalyzer> CreateRootAnalyzer();
     }
 }

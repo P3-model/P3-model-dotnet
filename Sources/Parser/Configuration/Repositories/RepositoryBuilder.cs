@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using P3Model.Parser.CodeAnalysis;
 
@@ -26,5 +27,7 @@ public class RepositoryBuilder
         return this;
     }
 
-    public RepositoryToAnalyze Build() => new(_path, _slnPaths, _excludedProjects.AsReadOnly());
+    public Task<RepositoryToAnalyze> Build() => RepositoryToAnalyze.Load(_path, 
+        _slnPaths.AsReadOnly(), 
+        _excludedProjects.AsReadOnly());
 }

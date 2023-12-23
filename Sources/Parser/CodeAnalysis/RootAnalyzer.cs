@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
+using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.OutputFormatting;
 using Serilog;
@@ -36,23 +36,23 @@ public class RootAnalyzer
         Log.Logger = loggerConfiguration.CreateLogger();
     }
 
-    public async Task Analyze()
+    public async Task Analyze(TargetFrameworks targetFrameworks = TargetFrameworks.All)
     {
         try
         {
-            var sw = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             Log.Information("Analysis started.");
             foreach (var outputFormatter in _outputFormatters)
                 await outputFormatter.Clean();
             Log.Information("Previous documentation cleaned.");
             var modelBuilder = new ModelBuilder(new DocumentedSystem(_productName));
             foreach (var repository in _repositories)
-                await Analyze(repository, modelBuilder);
+                await Analyze(repository, targetFrameworks, modelBuilder);
             var model = modelBuilder.Build();
             foreach (var outputFormatter in _outputFormatters)
                 await outputFormatter.Write(model);
-            sw.Stop();
-            Log.Information($"Analysis ended in {sw.ElapsedMilliseconds / 1000}s.");
+            stopwatch.Stop();
+            Log.Information($"Analysis finished in {stopwatch.ElapsedMilliseconds / 1000}s.");
         }
         catch (Exception e)
         {
@@ -60,54 +60,29 @@ public class RootAnalyzer
         }
     }
 
-    private async Task Analyze(RepositoryToAnalyze repository, ModelBuilder modelBuilder)
+    private async Task Analyze(RepositoryToAnalyze repository, TargetFrameworks targetFrameworks, 
+        ModelBuilder modelBuilder)
     {
+        Log.Verbose($"Analysis started for repository: {repository.Directory.FullName}");
         await AnalyzeMarkdownFiles(repository, modelBuilder);
-        await foreach (var solution in GetSolutionsFor(repository))
-        {
-            Log.Verbose($"Analysis started for solution: {solution.FilePath}");
-            var projects = solution.Projects.Where(p => !repository.ExcludedProjects.Contains(p.Name));
-            await Parallel.ForEachAsync(projects,
-                async (project, _) => await Analyze(project, modelBuilder));
-        }
+        var projects = repository.GetProjectsFor(targetFrameworks);
+        await Parallel.ForEachAsync(projects,
+            async (project, _) => await Analyze(project, modelBuilder));
+        Log.Verbose($"Analysis finished for repository: {repository.Directory.FullName}");
     }
 
-    private async Task AnalyzeMarkdownFiles(RepositoryToAnalyze repository, ModelBuilder modelBuilder)
-    {
-        var directoryInfo = new DirectoryInfo(repository.Path);
-        await Parallel.ForEachAsync(GetAllSupportedFiles(directoryInfo), async (fileInfo, _) =>
+    private Task AnalyzeMarkdownFiles(RepositoryToAnalyze repository, ModelBuilder modelBuilder) =>
+        Parallel.ForEachAsync(GetAllSupportedFiles(repository.Directory), async (fileInfo, _) =>
         {
+            Log.Verbose($"Analysis started for file: {fileInfo.FullName}");
             foreach (var fileAnalyzer in _fileAnalyzers)
                 await fileAnalyzer.Analyze(fileInfo, modelBuilder);
+            Log.Verbose($"Analysis finished for file: {fileInfo.FullName}");
         });
-    }
 
     private static IEnumerable<FileInfo> GetAllSupportedFiles(DirectoryInfo directoryInfo) => SupportedFileTypes
         .SelectMany(fileType => directoryInfo
             .EnumerateFiles($"*.{fileType}", SearchOption.AllDirectories));
-
-    private static async IAsyncEnumerable<Solution> GetSolutionsFor(RepositoryToAnalyze repository)
-    {
-        if (repository.SlnPaths.Count == 0)
-        {
-            var directoryInfo = new DirectoryInfo(repository.Path);
-            foreach (var fileInfo in directoryInfo.EnumerateFiles("*.sln", SearchOption.AllDirectories))
-                yield return await Load(fileInfo.FullName);
-        }
-        else
-        {
-            foreach (var slnPath in repository.SlnPaths)
-                yield return await Load(slnPath);
-        }
-    }
-
-    private static Task<Solution> Load(string slnPath)
-    {
-        var workspace = MSBuildWorkspace.Create();
-        workspace.SkipUnrecognizedProjects = true;
-        workspace.WorkspaceFailed += (_, args) => Log.Error(args.Diagnostic.Message);
-        return workspace.OpenSolutionAsync(slnPath);
-    }
 
     private async Task Analyze(Project project, ModelBuilder builder)
     {
@@ -121,6 +96,7 @@ public class RootAnalyzer
         Analyze(compilation, builder);
         await Parallel.ForEachAsync(project.Documents,
             async (document, _) => await Analyze(document, compilation, builder));
+        Log.Verbose($"Analysis finished for project: {project.Name}");
     }
 
     private static async Task<Compilation?> Compile(Project project)
