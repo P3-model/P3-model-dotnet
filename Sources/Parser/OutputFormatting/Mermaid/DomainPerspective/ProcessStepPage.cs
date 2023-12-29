@@ -114,7 +114,7 @@ public class ProcessStepPage : MermaidPageBase
         if (_codeStructures.Count == 1)
             mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
         else
-            mermaidWriter.WriteUnorderedList(_codeStructures, FormatSourceCodeLink);
+            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.Path), FormatSourceCodeLink);
 
         mermaidWriter.WriteHeading("People Perspective", 2);
         if (_actors.Count == 0 && _developmentTeams.Count == 0 && _organizationalUnits.Count == 0)

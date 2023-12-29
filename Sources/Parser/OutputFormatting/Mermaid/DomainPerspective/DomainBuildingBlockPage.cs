@@ -115,7 +115,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
         if (_codeStructures.Count == 1)
             mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
         else
-            mermaidWriter.WriteUnorderedList(_codeStructures, FormatSourceCodeLink);
+            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.Path), FormatSourceCodeLink);
     }
 
     private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
