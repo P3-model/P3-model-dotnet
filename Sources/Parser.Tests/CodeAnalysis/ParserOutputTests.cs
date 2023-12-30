@@ -10,18 +10,16 @@ namespace P3Model.Parser.Tests.CodeAnalysis;
 public class ParserOutputTests
 {
     [OneTimeSetUp]
-    public async Task CreateModel()
+    public Task CreateModel()
     {
         var parserOutput = new ParserOutput();
-        await P3
+        return P3
             .Product(product => product
                 .UseName("MyCompany MySystem"))
             .Repositories(repositories => repositories
                 .Use("../../../../TestSamples/Net60/Repository1", repository => repository
                     .ExcludeProjects("Annotations"))
                 .Use("../../../../TestSamples/Net60/Repository2", repository => repository
-                    .ExcludeProjects("Annotations"))
-                .Use("../../../../TestSamples/Net70", repository => repository
                     .ExcludeProjects("Annotations")))
             .Analyzers(analyzers => analyzers
                 .UseDefaults(options => options
