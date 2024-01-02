@@ -1,3 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using P3Model.Annotations.Technology;
+
+[assembly: DeployableUnit("console-app")]
 
 Console.WriteLine("Hello, World!");

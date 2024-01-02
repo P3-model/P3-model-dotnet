@@ -1,4 +1,4 @@
-namespace WorkerService;
+namespace TestSamples.WorkerService;
 
 public class Worker : BackgroundService
 {

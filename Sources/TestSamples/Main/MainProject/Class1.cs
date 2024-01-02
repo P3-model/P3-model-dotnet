@@ -1,3 +1,3 @@
-﻿namespace MainProject;
+﻿namespace TestSamples.MainProject;
 
 public class Class1 { }

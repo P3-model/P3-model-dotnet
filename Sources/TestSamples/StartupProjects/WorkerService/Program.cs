@@ -1,6 +1,9 @@
-using WorkerService;
+using P3Model.Annotations.Technology;
+using TestSamples.WorkerService;
 
-IHost host = Host.CreateDefaultBuilder(args)
+[assembly: DeployableUnit("worker-service")]
+
+var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services => { services.AddHostedService<Worker>(); })
     .Build();
 

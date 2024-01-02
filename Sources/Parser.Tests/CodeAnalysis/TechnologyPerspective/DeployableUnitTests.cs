@@ -8,8 +8,8 @@ public class DeployableUnitTests
 {
     [Test]
     public void AllDeployableUnitsArePresent() => ParserOutput.AssertExistOnly(
-        new DeployableUnit("MySystem-main-monolith"),
-        new DeployableUnit("Module3-microservice"),
-        new DeployableUnit("Service1"),
-        new DeployableUnit("Service2"));
+        new DeployableUnit("main"),
+        new DeployableUnit("console-app"),
+        new DeployableUnit("web-app"),
+        new DeployableUnit("worker-service"));
 }

@@ -10,4 +10,8 @@
         <RootNamespace>TestSamples.ConsoleApp</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Annotations\Annotations.csproj" />
+    </ItemGroup>
+
 </Project>
