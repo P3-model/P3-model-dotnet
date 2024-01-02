@@ -17,12 +17,12 @@ public class JsonFormatter : OutputFormatter
         return Task.CompletedTask;
     }
 
-    public async Task Write(Model model)
+    public Task Write(TargetFramework? defaultFramework, Model model)
     {
         var directory = Path.GetDirectoryName(_fileFullName);
         if (directory != null)
             Directory.CreateDirectory(directory);
         var fileStream = File.Create(_fileFullName);
-        await P3ModelSerializer.Serialize(fileStream, model);
+        return P3ModelSerializer.Serialize(fileStream, model);
     }
 }

@@ -2,7 +2,4 @@ using System;
 
 namespace P3Model.Parser;
 
-public class ParserError : Exception
-{
-    public ParserError(string message) : base(message) { }
-}
+public class ParserError(string message) : Exception(message);

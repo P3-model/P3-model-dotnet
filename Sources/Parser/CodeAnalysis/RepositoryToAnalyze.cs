@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
-using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using Serilog;
 
 namespace P3Model.Parser.CodeAnalysis;
@@ -14,12 +13,15 @@ namespace P3Model.Parser.CodeAnalysis;
 public class RepositoryToAnalyze
 {
     public DirectoryInfo Directory { get; }
-    private readonly IReadOnlyCollection<Project> _projects;
+    private readonly IReadOnlyCollection<ProjectVersions> _projects;
 
-    private RepositoryToAnalyze(DirectoryInfo directory, IReadOnlyCollection<Project> projects)
+    private RepositoryToAnalyze(DirectoryInfo directory, IEnumerable<Project> projects)
     {
         Directory = directory;
-        _projects = projects;
+        _projects = ProjectVersions
+            .CreateFor(projects)
+            .ToList()
+            .AsReadOnly();
     }
 
     public static async Task<RepositoryToAnalyze> Load(string path,
@@ -57,12 +59,9 @@ public class RepositoryToAnalyze
             .Select(fileInfo => fileInfo.FullName);
     }
 
-    public IEnumerable<Project> GetProjectsFor(TargetFrameworks targetFrameworks)
-    {
-        if (targetFrameworks == TargetFrameworks.All)
-            return _projects;
-        throw new NotImplementedException();
-    }
+    public IEnumerable<Project> GetProjects(TargetFramework? defaultFramework) => _projects
+        .Select(versions => versions.GetFor(defaultFramework))
+        .Where(project => project != null)!;
 
     private class ProjectComparer : IEqualityComparer<Project>
     {

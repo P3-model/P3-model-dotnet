@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.OutputFormatting;
 using Serilog;
@@ -36,7 +35,7 @@ public class RootAnalyzer
         Log.Logger = loggerConfiguration.CreateLogger();
     }
 
-    public async Task Analyze(TargetFrameworks targetFrameworks = TargetFrameworks.All)
+    public async Task Analyze(TargetFramework? defaultFramework = null)
     {
         try
         {
@@ -47,10 +46,10 @@ public class RootAnalyzer
             Log.Information("Previous documentation cleaned.");
             var modelBuilder = new ModelBuilder(new DocumentedSystem(_productName));
             foreach (var repository in _repositories)
-                await Analyze(repository, targetFrameworks, modelBuilder);
+                await Analyze(repository, defaultFramework, modelBuilder);
             var model = modelBuilder.Build();
             foreach (var outputFormatter in _outputFormatters)
-                await outputFormatter.Write(model);
+                await outputFormatter.Write(defaultFramework, model);
             stopwatch.Stop();
             Log.Information($"Analysis finished in {stopwatch.ElapsedMilliseconds / 1000}s.");
         }
@@ -60,12 +59,12 @@ public class RootAnalyzer
         }
     }
 
-    private async Task Analyze(RepositoryToAnalyze repository, TargetFrameworks targetFrameworks, 
+    private async Task Analyze(RepositoryToAnalyze repository, TargetFramework? defaultFramework, 
         ModelBuilder modelBuilder)
     {
         Log.Verbose($"Analysis started for repository: {repository.Directory.FullName}");
         await AnalyzeMarkdownFiles(repository, modelBuilder);
-        var projects = repository.GetProjectsFor(targetFrameworks);
+        var projects = repository.GetProjects(defaultFramework);
         await Parallel.ForEachAsync(projects,
             async (project, _) => await Analyze(project, modelBuilder));
         Log.Verbose($"Analysis finished for repository: {repository.Directory.FullName}");

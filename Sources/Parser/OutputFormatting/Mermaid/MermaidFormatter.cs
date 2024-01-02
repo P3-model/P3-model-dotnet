@@ -25,7 +25,7 @@ public class MermaidFormatter : OutputFormatter
         return Task.CompletedTask;
     }
 
-    async Task OutputFormatter.Write(Model model)
+    async Task OutputFormatter.Write(TargetFramework? defaultFramework, Model model)
     {
         Directory.CreateDirectory(_basePath);
         var modelGraph = ModelGraph.From(model);

@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using P3Model.Parser.CodeAnalysis;
-using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.Configuration.Analyzers;
 using P3Model.Parser.Configuration.OutputFormat;
 using P3Model.Parser.Configuration.Repositories;
@@ -98,10 +97,10 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
 
     public interface RootAnalyzerStep
     {
-        async Task Analyze(TargetFrameworks targetFrameworks = TargetFrameworks.All)
+        async Task Analyze(TargetFramework? defaultFramework = null)
         {
             var rootAnalyzer = await CreateRootAnalyzer();
-            await rootAnalyzer.Analyze(targetFrameworks);
+            await rootAnalyzer.Analyze(defaultFramework);
         }
 
         Task<RootAnalyzer> CreateRootAnalyzer();
