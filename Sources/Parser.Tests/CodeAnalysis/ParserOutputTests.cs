@@ -10,29 +10,30 @@ namespace P3Model.Parser.Tests.CodeAnalysis;
 public class ParserOutputTests
 {
     [OneTimeSetUp]
-    public Task CreateModel()
+    public async Task CreateModel()
     {
-        var parserOutput = new ParserOutput();
-        return P3
+        var analyzer = await P3
             .Product(product => product
                 .UseName("MyCompany MySystem"))
             .Repositories(repositories => repositories
-                .Use("../../../../TestSamples/Net60/Repository1", repository => repository
+                .Use("../../../../TestSamples/Main", repository => repository
                     .ExcludeProjects("Annotations"))
-                .Use("../../../../TestSamples/Net60/Repository2", repository => repository
+                .Use("../../../../TestSamples/StartupProjects", repository => repository
                     .ExcludeProjects("Annotations")))
             .Analyzers(analyzers => analyzers
                 .UseDefaults(options => options
                     .TreatNamespacesAsDomainModules(namespaces => namespaces
                         .OnlyFromAssembliesAnnotatedWith<DomainModelAttribute>()
-                        .RemoveRootNamespace("MyCompany.MySystem")
-                        .RemoveNamespacePart("Api", "BusinessLogic", "Infrastructure", "Repositories", "Entities",
-                            "Controllers"))))
+                        .RemoveRootNamespace("RootNamespace")
+                        .RemoveNamespacePart("NotDomainModule1", "NotDomainModule2"))))
             .OutputFormat(formatters => formatters
-                .Use(parserOutput))
+                .Use(ParserOutput.Instance))
             .Logger(logger => logger
                 .WriteTo.Debug()
                 .MinimumLevel.Is(LogEventLevel.Verbose))
-            .Analyze();
+            .CreateRootAnalyzer();
+        await analyzer.Analyze(TargetFramework.Net60);
+        await analyzer.Analyze(TargetFramework.Net70);
+        await analyzer.Analyze(TargetFramework.Net80);
     }
 }

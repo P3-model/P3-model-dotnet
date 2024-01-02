@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Text;
 using NUnit.Framework;
 using P3Model.Parser.ModelSyntax;
@@ -5,15 +6,35 @@ using P3Model.Parser.OutputFormatting;
 
 namespace P3Model.Parser.Tests.CodeAnalysis;
 
-public class ParserOutput : OutputFormatter
+public sealed class ParserOutput : OutputFormatter
 {
-    private static Model? _model;
-    private static Model Model => _model ?? throw new InvalidOperationException("Parser has not finished yet");
+    public static ParserOutput Instance { get; } = new();
+
+    private static readonly ConcurrentDictionary<TargetFramework, Model> Models = new();
+
+    public static Model GetModelFor(TargetFramework targetFramework)
+    {
+        if (Models.TryGetValue(targetFramework, out var model))
+            return model;
+        throw new InvalidOperationException($"Missing model for target framework {targetFramework}");
+    }
+
+    private ParserOutput() { }
 
     public static void AssertExistOnly<TElement>(params TElement[] expectedElements)
         where TElement : class, Element
     {
-        var allElements = Model.Elements.OfType<TElement>().ToHashSet();
+        foreach (var targetFramework in TargetFramework.All)
+            AssertExistOnly(targetFramework, expectedElements);
+    }
+
+    public static void AssertExistOnly<TElement>(TargetFramework targetFramework, params TElement[] expectedElements)
+        where TElement : class, Element
+    {
+        var allElements = GetModelFor(targetFramework)
+            .Elements
+            .OfType<TElement>()
+            .ToHashSet();
         var missingElements = expectedElements
             .Where(expectedElement => !allElements.Contains(expectedElement))
             .ToList();
@@ -50,9 +71,12 @@ public class ParserOutput : OutputFormatter
 
     public Task Clean() => Task.CompletedTask;
 
-    public Task Write(Model model)
+    public Task Write(TargetFramework? defaultFramework, Model model)
     {
-        _model = model;
+        if (!defaultFramework.HasValue)
+            throw new InvalidOperationException("Default framework was not specified");
+        if (!Models.TryAdd(defaultFramework.Value, model))
+            throw new InvalidOperationException($"Duplicated model for {defaultFramework}");
         return Task.CompletedTask;
     }
 }
