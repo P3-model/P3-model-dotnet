@@ -1,9 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>TestSamples.WebApplication</AssemblyName>
+        <RootNamespace>TestSamples.WebApplication</RootNamespace>
+        <LangVersion>default</LangVersion>
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     </PropertyGroup>
 
 </Project>

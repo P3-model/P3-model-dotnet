@@ -5,6 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <TargetFrameworks>net8.0;net6.0;net7.0</TargetFrameworks>
         <LangVersion>default</LangVersion>
+        <AssemblyName>TestSamples.StartupProject</AssemblyName>
+        <RootNamespace>TestSamples.StartupProject</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
