@@ -9,8 +9,8 @@ public class DomainModuleTests
 {
     [Test]
     public void AllModulesArePresent() => ParserOutput.AssertExistOnly(
-        new DomainModule(HierarchyId.FromValue("Module1")),
-        new DomainModule(HierarchyId.FromValue("Module1.Module1_1")),
-        new DomainModule(HierarchyId.FromValue("Module2")),
-        new DomainModule(HierarchyId.FromValue("Module3")));
+        new DomainModule(HierarchyId.FromValue("MainProject")),
+        new DomainModule(HierarchyId.FromValue("MainProject.ModuleWithoutDirectCode")),
+        new DomainModule(HierarchyId.FromValue("MainProject.ModuleWithoutDirectCode.ModuleWithDirectCode")),
+        new DomainModule(HierarchyId.FromValue("MainProject.ModuleWithoutDirectCode.NotDomainModule.ModuleWithDirectCode")));
 }

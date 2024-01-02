@@ -24,8 +24,8 @@ public class ParserOutputTests
                 .UseDefaults(options => options
                     .TreatNamespacesAsDomainModules(namespaces => namespaces
                         .OnlyFromAssembliesAnnotatedWith<DomainModelAttribute>()
-                        .RemoveRootNamespace("RootNamespace")
-                        .RemoveNamespacePart("NotDomainModule1", "NotDomainModule2"))))
+                        .RemoveRootNamespace("TestSamples")
+                        .RemoveNamespacePart("NotDomainModule"))))
             .OutputFormat(formatters => formatters
                 .Use(ParserOutput.Instance))
             .Logger(logger => logger
