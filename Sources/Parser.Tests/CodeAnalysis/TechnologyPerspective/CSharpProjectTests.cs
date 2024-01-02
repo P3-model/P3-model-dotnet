@@ -8,18 +8,9 @@ public class CSharpProjectTests
 {
     [Test]
     public void AllProjectsArePresent() => ParserOutput.AssertExistOnly(
-        new CSharpProject("MyCompany.MySystem.Module1.Adapters", string.Empty),
-        new CSharpProject("MyCompany.MySystem.Module1.Entities", string.Empty),
-        new CSharpProject("MyCompany.MySystem.Module1.UseCases", string.Empty),
-        new CSharpProject("MyCompany.MySystem.Module2.Api", string.Empty),
-        new CSharpProject("MyCompany.MySystem.Module2.Infrastructure", string.Empty),
-        new CSharpProject("MyCompany.MySystem.Module3", string.Empty),
-        new CSharpProject("MyCompany.MySystem.ModularMonolith", string.Empty),
-        new CSharpProject("MyCompany.MySystem.Service1", string.Empty),
-        new CSharpProject("MyCompany.MySystem.Service1.PrivateLibrary", string.Empty),
-        new CSharpProject("MyCompany.MySystem.Service2", string.Empty),
-        new CSharpProject("MyCompany.MySystem.Service2.PrivateLibrary", string.Empty),
-        new CSharpProject("MyCompany.MySystem.SharedLibrary1", string.Empty),
-        new CSharpProject("MyCompany.MySystem.SharedLibrary2", string.Empty),
-        new CSharpProject("Library", string.Empty));
+        new CSharpProject("TestSamples.MainProject", string.Empty),
+        new CSharpProject("TestSamples.StartupProject", string.Empty),
+        new CSharpProject("TestSamples.ConsoleApp", string.Empty),
+        new CSharpProject("TestSamples.WebApplication", string.Empty),
+        new CSharpProject("TestSamples.WorkerService", string.Empty));
 }
