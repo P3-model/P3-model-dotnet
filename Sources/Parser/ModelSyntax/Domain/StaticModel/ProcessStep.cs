@@ -1,10 +1,8 @@
 namespace P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
-public class ProcessStep : DomainBuildingBlock
+public class ProcessStep(string idPartUniqueForElementType, string name)
+    : DomainBuildingBlock(idPartUniqueForElementType, name)
 {
-    public ProcessStep(string name) : base(name) { }
-    public ProcessStep(string id, string name) : base(id, name) { }
-
     public new record DependsOnBuildingBlock(ProcessStep Source, DomainBuildingBlock Destination) : 
         DomainBuildingBlock.DependsOnBuildingBlock(Source, Destination), 
         Relation<ProcessStep, DomainBuildingBlock>

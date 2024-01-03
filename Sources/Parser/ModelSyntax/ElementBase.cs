@@ -8,15 +8,11 @@ public abstract class ElementBase : Element
     public string Id { get; }
     public string Name { get; }
 
-    protected ElementBase(string name)
+    protected ElementBase(string name) : this(name.Dehumanize(), name) { }
+
+    protected ElementBase(string idPartUniqueForElementType, string name)
     {
-        Id = $"{GetType().Name}|{name.Dehumanize()}".ToLowerInvariant();
-        Name = name;
-    }
-    
-    protected ElementBase(string id, string name)
-    {
-        Id = id;
+        Id = $"{GetType().Name}|{idPartUniqueForElementType}";
         Name = name;
     }
 

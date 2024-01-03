@@ -56,7 +56,7 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
         var cSharpType = new CSharpType(
-            $"{nameof(CSharpType)}|{symbol.ToDisplayString()}".ToLowerInvariant(),
+            symbol.ToDisplayString(),
             symbol.GetFullName(),
             symbol.GetSourceCodePaths().First());
         modelBuilder.Add(cSharpType, symbol);

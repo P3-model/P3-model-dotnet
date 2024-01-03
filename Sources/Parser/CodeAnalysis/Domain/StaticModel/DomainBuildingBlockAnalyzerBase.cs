@@ -32,7 +32,7 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
             return;
         var hasModule = _moduleFinder.TryFind(symbol, out var module);
         var name = GetName(symbol, buildingBlockAttribute);
-        var id = module is null ? name : $"{module.Id.Full}.{name}";
+        var id = module is null ? name.Dehumanize() : $"{module.Id.Full}.{name.Dehumanize()}";
         var buildingBlock = CreateBuildingBlock(id, name);
         modelBuilder.Add(buildingBlock, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements));
