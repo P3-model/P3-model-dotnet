@@ -75,6 +75,8 @@ public class NamespaceOptionsBuilder
         layerNames.Aggregate(initialHierarchy,
             (currentHierarchy, layerName) =>
             {
+                if (currentHierarchy.Equals(layerName))
+                    return string.Empty;
                 var index = currentHierarchy.IndexOf(layerName, StringComparison.InvariantCulture);
                 return index switch
                 {
