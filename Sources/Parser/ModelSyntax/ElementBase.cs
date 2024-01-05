@@ -12,7 +12,7 @@ public abstract class ElementBase : Element
 
     protected ElementBase(string idPartUniqueForElementType, string name)
     {
-        Id = $"{GetType().Name}|{idPartUniqueForElementType}";
+        Id = $"{GetType().Name}|{idPartUniqueForElementType}".ToLowerInvariant();
         Name = name;
     }
 
