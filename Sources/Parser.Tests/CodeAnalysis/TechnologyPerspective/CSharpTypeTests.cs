@@ -8,6 +8,12 @@ public class CSharpTypeTests
 {
     [Test]
     public void AllTypesArePresent() => ParserOutput.AssertExistOnly(
+        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddAggregate", "SampleDddAggregate", string.Empty),
+        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddDomainService", "SampleDddDomainService", string.Empty),
+        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddEntity", "SampleDddEntity", string.Empty),
+        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddFactory", "SampleDddFactory", string.Empty),
+        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddRepository", "SampleDddRepository", string.Empty),
+        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddValueObject", "SampleDddValueObject", string.Empty),
         new CSharpType("TestSamples.MainProject.DomainModules.NotModule.WithCode.Class1", "Class1", string.Empty),
         new CSharpType("TestSamples.MainProject.DomainModules.WithCode.Class1", "Class1", string.Empty),
         new CSharpType("TestSamples.MainProject.DomainModules.WithCode.WithCode.Class1", "Class1", string.Empty),
