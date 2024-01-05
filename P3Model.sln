@@ -26,6 +26,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication", "Sources\T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerService", "Sources\TestSamples\StartupProjects\WorkerService\WorkerService.csproj", "{458867C9-F776-43A7-9F75-85A0B50D7A3F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub", "GitHub", "{B44B6037-4B10-4E0D-B631-C28B6A6674BC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{56CDA737-12FB-469F-92BC-83B9B901D7A5}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\tests.yml = .github\workflows\tests.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,5 +89,6 @@ Global
 		{E10E4DB3-0232-4FDD-8A1E-A32F0233311D} = {922ACB7C-EA4D-4FE5-B6CC-B060B0ADF5B3}
 		{AD027857-F6B5-4D6D-8D67-126A36E1B85E} = {922ACB7C-EA4D-4FE5-B6CC-B060B0ADF5B3}
 		{458867C9-F776-43A7-9F75-85A0B50D7A3F} = {922ACB7C-EA4D-4FE5-B6CC-B060B0ADF5B3}
+		{56CDA737-12FB-469F-92BC-83B9B901D7A5} = {B44B6037-4B10-4E0D-B631-C28B6A6674BC}
 	EndGlobalSection
 EndGlobal
