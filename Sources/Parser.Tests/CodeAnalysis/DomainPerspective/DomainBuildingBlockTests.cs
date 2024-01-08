@@ -9,12 +9,12 @@ public class DomainBuildingBlockTests
 {
     [Test]
     public void AllBuildingBlocksArePresent() => ParserOutput.AssertExistOnly(
-        new DomainBuildingBlock("DomainBuildingBlocks.SampleModule.SampleBuildingBlock", "SampleBuildingBlock"),
-        new DddAggregate("DomainBuildingBlocks.SampleModule.SampleDddAggregate", "SampleDddAggregate"),
-        new DddDomainService("DomainBuildingBlocks.SampleModule.SampleDddDomainService", "SampleDddDomainService"),
-        new DddEntity("DomainBuildingBlocks.SampleModule.SampleDddEntity", "SampleDddEntity"),
-        new DddFactory("DomainBuildingBlocks.SampleModule.SampleDddFactory", "SampleDddFactory"),
-        new DddRepository("DomainBuildingBlocks.SampleModule.SampleDddRepository", "SampleDddRepository"),
-        new DddValueObject("DomainBuildingBlocks.SampleModule.SampleDddValueObject", "SampleDddValueObject"),
-        new ProcessStep("DomainBuildingBlocks.SampleModule.SampleProcessStep", "SampleProcessStep"));
+        new DomainBuildingBlock("Domain.DomainBuildingBlocks.SampleModule.SampleBuildingBlock", "SampleBuildingBlock"),
+        new DddAggregate("Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregate", "SampleDddAggregate"),
+        new DddDomainService("Domain.DomainBuildingBlocks.SampleModule.SampleDddDomainService", "SampleDddDomainService"),
+        new DddEntity("Domain.DomainBuildingBlocks.SampleModule.SampleDddEntity", "SampleDddEntity"),
+        new DddFactory("Domain.DomainBuildingBlocks.SampleModule.SampleDddFactory", "SampleDddFactory"),
+        new DddRepository("Domain.DomainBuildingBlocks.SampleModule.SampleDddRepository", "SampleDddRepository"),
+        new DddValueObject("Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObject", "SampleDddValueObject"),
+        new ProcessStep("Domain.DomainBuildingBlocks.SampleModule.SampleProcessStep", "SampleProcessStep"));
 }

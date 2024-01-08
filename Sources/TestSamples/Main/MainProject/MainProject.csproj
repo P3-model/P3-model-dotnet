@@ -13,4 +13,8 @@
       <ProjectReference Include="..\..\..\Annotations\Annotations.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Domain\" />
+    </ItemGroup>
+
 </Project>

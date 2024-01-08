@@ -8,18 +8,18 @@ public class CSharpTypeTests
 {
     [Test]
     public void AllTypesArePresent() => ParserOutput.AssertExistOnly(
-        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleBuildingBlock", "SampleBuildingBlock", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddAggregate", "SampleDddAggregate", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddDomainService", "SampleDddDomainService", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddEntity", "SampleDddEntity", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddFactory", "SampleDddFactory", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddRepository", "SampleDddRepository", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddValueObject", "SampleDddValueObject", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleProcessStep", "SampleProcessStep", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainModules.NotModule.WithCode.Class1", "Class1", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainModules.WithCode.Class1", "Class1", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainModules.WithCode.WithCode.Class1", "Class1", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainModules.WithoutCode.NotModule.Class1", "Class1", string.Empty),
-        new CSharpType("TestSamples.MainProject.DomainModules.WithoutCode.WithCode.Class1", "Class1", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleBuildingBlock", "SampleBuildingBlock", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregate", "SampleDddAggregate", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddDomainService", "SampleDddDomainService", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddEntity", "SampleDddEntity", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddFactory", "SampleDddFactory", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddRepository", "SampleDddRepository", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObject", "SampleDddValueObject", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleProcessStep", "SampleProcessStep", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainModules.NotModule.WithCode.Class1", "Class1", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainModules.WithCode.Class1", "Class1", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainModules.WithCode.WithCode.Class1", "Class1", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainModules.WithoutCode.NotModule.Class1", "Class1", string.Empty),
+        new CSharpType("TestSamples.MainProject.Domain.DomainModules.WithoutCode.WithCode.Class1", "Class1", string.Empty),
         new CSharpType("TestSamples.WorkerService.Worker", "Worker", string.Empty));
 }
