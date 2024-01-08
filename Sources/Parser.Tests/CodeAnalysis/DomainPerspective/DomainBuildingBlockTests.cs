@@ -15,5 +15,6 @@ public class DomainBuildingBlockTests
         new DddEntity("DomainBuildingBlocks.SampleModule.SampleDddEntity", "SampleDddEntity"),
         new DddFactory("DomainBuildingBlocks.SampleModule.SampleDddFactory", "SampleDddFactory"),
         new DddRepository("DomainBuildingBlocks.SampleModule.SampleDddRepository", "SampleDddRepository"),
-        new DddValueObject("DomainBuildingBlocks.SampleModule.SampleDddValueObject", "SampleDddValueObject"));
+        new DddValueObject("DomainBuildingBlocks.SampleModule.SampleDddValueObject", "SampleDddValueObject"),
+        new ProcessStep("DomainBuildingBlocks.SampleModule.SampleProcessStep", "SampleProcessStep"));
 }

@@ -15,6 +15,7 @@ public class CSharpTypeTests
         new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddFactory", "SampleDddFactory", string.Empty),
         new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddRepository", "SampleDddRepository", string.Empty),
         new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleDddValueObject", "SampleDddValueObject", string.Empty),
+        new CSharpType("TestSamples.MainProject.DomainBuildingBlocks.SampleModule.SampleProcessStep", "SampleProcessStep", string.Empty),
         new CSharpType("TestSamples.MainProject.DomainModules.NotModule.WithCode.Class1", "Class1", string.Empty),
         new CSharpType("TestSamples.MainProject.DomainModules.WithCode.Class1", "Class1", string.Empty),
         new CSharpType("TestSamples.MainProject.DomainModules.WithCode.WithCode.Class1", "Class1", string.Empty),
