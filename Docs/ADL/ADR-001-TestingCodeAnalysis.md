@@ -38,7 +38,8 @@ Pros:
 
 Cons:
 - It's more tedious to create json than objects.
-- Output json and expected json elements have to be normalized before assertions. 
+- Output json and expected json elements have to be normalized before assertions.
+- Asserting json is difficulty in finding reason of test failure. You would have to go through json diff and figure out what the difference means.
 
 ## Decision
 
