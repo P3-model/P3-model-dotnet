@@ -22,16 +22,19 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
 
     protected abstract Type AttributeType { get; }
 
-    public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder) => Analyze((ISymbol)symbol, modelBuilder);
+    public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder) => Analyze(symbol,
+        GetAttributeOptions.FromBaseClasses | GetAttributeOptions.FromAllInterfaces,
+        modelBuilder);
 
-    public void Analyze(IMethodSymbol symbol, ModelBuilder modelBuilder) => Analyze((ISymbol)symbol, modelBuilder);
+    public void Analyze(IMethodSymbol symbol, ModelBuilder modelBuilder) =>
+        Analyze(symbol, GetAttributeOptions.Direct, modelBuilder);
 
-    private void Analyze(ISymbol symbol, ModelBuilder modelBuilder)
+    private void Analyze(ISymbol symbol, GetAttributeOptions options, ModelBuilder modelBuilder)
     {
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
         // TODO: Support for duplicated symbols (partial classes)
-        if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
+        if (!symbol.TryGetAttribute(AttributeType, options, out var buildingBlockAttribute))
             return;
         var hasModule = _moduleFinder.TryFind(symbol, out var module);
         var name = GetName(symbol, buildingBlockAttribute);

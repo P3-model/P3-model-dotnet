@@ -14,38 +14,61 @@ public static class SymbolExtensions
     // TODO: support for attributes from different versions of annotation assembly
     public static bool TryGetAttribute(this ISymbol symbol, Type type,
         [NotNullWhen(true)] out AttributeData? attributeData) =>
-        TryGetAttribute(symbol, type, GetAttributeOptions.Default, out attributeData);
+        TryGetAttribute(symbol, type, GetAttributeOptions.Direct, out attributeData);
 
     public static bool TryGetAttribute(this ISymbol symbol, Type type, GetAttributeOptions options,
         [NotNullWhen(true)] out AttributeData? attributeData)
     {
-        if (options.HasFlag(GetAttributeOptions.IncludeAttributeBaseTypes))
-        {
-            attributeData = symbol
-                .GetAttributes()
-                .SingleOrDefault(a => a.AttributeClass.IsAssignableFrom(type));
-            return attributeData != null;
-        }
-        attributeData = symbol
-            .GetAttributes()
-            .SingleOrDefault(a => a.AttributeClass.IsExactlyOf(type));
+        if (TryGetDirectAttribute(symbol, type, options, out attributeData))
+            return true;
+        if (options.HasFlag(GetAttributeOptions.FromBaseClasses) &&
+            TryGetBaseClassAttribute(symbol, type, options, out attributeData))
+            return true;
+        if (options.HasFlag(GetAttributeOptions.FromAllInterfaces) &&
+            TryGetInterfaceAttribute(symbol, type, options, out attributeData))
+            return true;
+        return false;
+    }
+
+    private static bool TryGetDirectAttribute(ISymbol symbol, Type type, GetAttributeOptions options,
+        [NotNullWhen(true)] out AttributeData? attributeData)
+    {
+        Func<AttributeData, bool> predicate = options.HasFlag(GetAttributeOptions.IncludeAttributeBaseTypes)
+            ? a => a.AttributeClass.IsAssignableFrom(type)
+            : a => a.AttributeClass.IsExactlyOf(type);
+        attributeData = symbol.GetAttributes().SingleOrDefault(predicate);
         return attributeData != null;
     }
 
-    public static IEnumerable<AttributeData> GetAttributes(this ISymbol symbol, Type type) =>
-        GetAttributes(symbol, type, GetAttributeOptions.Default);
-
-    public static IEnumerable<AttributeData> GetAttributes(this ISymbol symbol, Type type, GetAttributeOptions options)
+    private static bool TryGetBaseClassAttribute(ISymbol symbol, Type type, GetAttributeOptions options,
+        [NotNullWhen(true)] out AttributeData? attributeData)
     {
-        if (options.HasFlag(GetAttributeOptions.IncludeAttributeBaseTypes))
+        if (symbol is not INamedTypeSymbol typeSymbol)
+            throw new ParserError(
+                $"Can't include attributes of base classes for symbol {symbol} because it's not {nameof(INamedTypeSymbol)}");
+        options = options.Without(GetAttributeOptions.FromAllInterfaces);
+        if (typeSymbol.BaseType != null && typeSymbol.BaseType.TryGetAttribute(type, options, out attributeData))
+            return true;
+        attributeData = null;
+        return false;
+    }
+
+    private static bool TryGetInterfaceAttribute(ISymbol symbol, Type type, GetAttributeOptions options,
+        [NotNullWhen(true)] out AttributeData? attributeData)
+    {
+        if (symbol is not INamedTypeSymbol typeSymbol)
+            throw new ParserError(
+                $"Can't include attributes of interfaces for symbol {symbol} because it's not {nameof(INamedTypeSymbol)}");
+        options = options
+            .Without(GetAttributeOptions.FromBaseClasses)
+            .Without(GetAttributeOptions.FromAllInterfaces);
+        foreach (var interfaceSymbol in typeSymbol.AllInterfaces)
         {
-            return symbol
-                .GetAttributes()
-                .Where(attribute => attribute.AttributeClass.IsAssignableFrom(type));
+            if (interfaceSymbol.TryGetAttribute(type, options, out attributeData))
+                return true;
         }
-        return symbol
-            .GetAttributes()
-            .Where(attribute => attribute.AttributeClass.IsExactlyOf(type));
+        attributeData = null;
+        return false;
     }
 
     private static bool IsAssignableFrom(this INamedTypeSymbol? attributeSymbol, Type type)
