@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Humanizer;
 using Microsoft.CodeAnalysis;
+using P3Model.Annotations;
 using P3Model.Annotations.Domain.StaticModel;
 using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
@@ -27,6 +28,8 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
 
     private void Analyze(ISymbol symbol, ModelBuilder modelBuilder)
     {
+        if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
+            return;
         // TODO: Support for duplicated symbols (partial classes)
         if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
             return;
