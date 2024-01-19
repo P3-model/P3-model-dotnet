@@ -20,15 +20,15 @@ public class DomainModule : ElementBase, HierarchyElement
     
     public DomainModule(HierarchyId id) : base(id.Full, id.LastPart.Humanize(LetterCasing.Title)) => Id = id;
 
-    public record ContainsDomainModule(DomainModule Source, DomainModule Destination) 
-        : HierarchyRelation<DomainModule>;
+    public class ContainsDomainModule(DomainModule source, DomainModule destination) 
+        : HierarchyRelation<DomainModule>(source, destination);
 
-    public record ContainsBuildingBlock(DomainModule Source, DomainBuildingBlock Destination) 
-        : Relation<DomainModule, DomainBuildingBlock>;
+    public class ContainsBuildingBlock(DomainModule source, DomainBuildingBlock destination) 
+        : RelationBase<DomainModule, DomainBuildingBlock>(source, destination);
 
-    public record IsDeployedInDeployableUnit(DomainModule Source, DeployableUnit Destination) 
-        : Relation<DomainModule, DeployableUnit>;
+    public class IsDeployedInDeployableUnit(DomainModule source, DeployableUnit destination) 
+        : RelationBase<DomainModule, DeployableUnit>(source, destination);
     
-    public record IsImplementedBy(DomainModule Source, CodeStructure Destination)
-        : Relation<DomainModule, CodeStructure>;
+    public class IsImplementedBy(DomainModule source, CodeStructure destination)
+        : RelationBase<DomainModule, CodeStructure>(source, destination);
 }

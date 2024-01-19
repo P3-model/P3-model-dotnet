@@ -9,8 +9,9 @@ public class CSharpNamespace(HierarchyId id, string path)
     public new HierarchyId Id { get; } = id;
     public string Path { get; } = path;
 
-    public record ContainsNamespace(CSharpNamespace Source, CSharpNamespace Destination)
-        : HierarchyRelation<CSharpNamespace>;
+    public class ContainsNamespace(CSharpNamespace source, CSharpNamespace destination)
+        : HierarchyRelation<CSharpNamespace>(source, destination);
 
-    public record ContainsType(CSharpNamespace Source, CSharpType Destination) : Relation<CSharpNamespace, CSharpType>;
+    public class ContainsType(CSharpNamespace source, CSharpType destination) 
+        : RelationBase<CSharpNamespace, CSharpType>(source, destination);
 }

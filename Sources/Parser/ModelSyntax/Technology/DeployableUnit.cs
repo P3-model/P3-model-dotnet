@@ -6,8 +6,9 @@ public class DeployableUnit(string name) : ElementBase(name)
 {
     public override Perspective Perspective => Perspective.Technology;
 
-    public record ContainsCSharpProject(DeployableUnit Source, CSharpProject Destination) 
-        : Relation<DeployableUnit, CSharpProject>;
+    public class ContainsCSharpProject(DeployableUnit source, CSharpProject destination) 
+        : RelationBase<DeployableUnit, CSharpProject>(source, destination);
 
-    public record UsesDatabase(DeployableUnit Source, Database Destination) : Relation<DeployableUnit, Database>;
+    public class UsesDatabase(DeployableUnit source, Database destination) 
+        : RelationBase<DeployableUnit, Database>(source, destination);
 }

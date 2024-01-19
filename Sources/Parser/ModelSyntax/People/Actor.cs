@@ -6,5 +6,6 @@ public class Actor(string name) : ElementBase(name)
 {
     public override Perspective Perspective => Perspective.People;
 
-    public record UsesProcessStep(Actor Source, ProcessStep Destination) : Relation<Actor, ProcessStep>;
+    public class UsesProcessStep(Actor source, ProcessStep destination) 
+        : RelationBase<Actor, ProcessStep>(source, destination);
 }

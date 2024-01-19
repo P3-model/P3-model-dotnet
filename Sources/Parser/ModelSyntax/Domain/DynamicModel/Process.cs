@@ -6,5 +6,6 @@ public class Process(string name) : ElementBase(name)
 {
     public override Perspective Perspective => Perspective.Domain;
 
-    public record ContainsProcessStep(Process Source, ProcessStep Destination) : Relation<Process, ProcessStep>;
+    public class ContainsProcessStep(Process source, ProcessStep destination) 
+        : RelationBase<Process, ProcessStep>(source, destination);
 }

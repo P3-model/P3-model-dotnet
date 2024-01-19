@@ -1,3 +1,5 @@
 namespace P3Model.Parser.ModelSyntax;
 
-public interface HierarchyRelation<out TElement> : Relation<TElement, TElement> where TElement : class, Element { }
+public abstract class HierarchyRelation<TElement>(TElement source, TElement destination) 
+    : RelationBase<TElement, TElement>(source, destination)
+    where TElement : class, Element;

@@ -4,6 +4,6 @@ public class Tier(string name) : ElementBase(name)
 {
     public override Perspective Perspective => Perspective.Technology;
 
-    public record ContainsDeployableUnit(Tier Source, DeployableUnit Destination) 
-        : Relation<Tier, DeployableUnit>;
+    public class ContainsDeployableUnit(Tier source, DeployableUnit destination) 
+        : RelationBase<Tier, DeployableUnit>(source, destination);
 }

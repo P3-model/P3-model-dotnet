@@ -7,9 +7,9 @@ public class DomainBuildingBlock(string idPartUniqueForElementType, string name)
 {
     public override Perspective Perspective => Perspective.Domain;
 
-    public record DependsOnBuildingBlock(DomainBuildingBlock Source, DomainBuildingBlock Destination)
-        : Relation<DomainBuildingBlock, DomainBuildingBlock>;
+    public class DependsOnBuildingBlock(DomainBuildingBlock source, DomainBuildingBlock destination)
+        : RelationBase<DomainBuildingBlock, DomainBuildingBlock>(source, destination);
     
-    public record IsImplementedBy(DomainBuildingBlock Source, CodeStructure Destination)
-        : Relation<DomainBuildingBlock, CodeStructure>;
+    public class IsImplementedBy(DomainBuildingBlock source, CodeStructure destination)
+        : RelationBase<DomainBuildingBlock, CodeStructure>(source, destination);
 }

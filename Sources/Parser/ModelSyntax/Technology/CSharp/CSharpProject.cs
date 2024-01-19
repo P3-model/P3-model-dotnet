@@ -8,9 +8,9 @@ public class CSharpProject(string name, string path) : ElementBase(name), CodeSt
 
     public bool Equals(CodeStructure? other) => other != null && Equals((ElementBase)other);
 
-    public record ReferencesProject(CSharpProject Source, CSharpProject Destination) 
-        : HierarchyRelation<CSharpProject>;
+    public class ReferencesProject(CSharpProject source, CSharpProject destination) 
+        : HierarchyRelation<CSharpProject>(source, destination);
     
-    public record ContainsNamespace(CSharpProject Source, CSharpNamespace Destination) 
-        : Relation<CSharpProject, CSharpNamespace>;
+    public class ContainsNamespace(CSharpProject source, CSharpNamespace destination) 
+        : RelationBase<CSharpProject, CSharpNamespace>(source, destination);
 }

@@ -6,6 +6,6 @@ public class BusinessOrganizationalUnit(string name) : ElementBase(name)
 {
     public override Perspective Perspective => Perspective.People;
 
-    public record OwnsDomainModule(BusinessOrganizationalUnit Source, DomainModule Destination) 
-        : Relation<BusinessOrganizationalUnit, DomainModule>;
+    public class OwnsDomainModule(BusinessOrganizationalUnit source, DomainModule destination) 
+        : RelationBase<BusinessOrganizationalUnit, DomainModule>(source, destination);
 }

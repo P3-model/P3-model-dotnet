@@ -5,5 +5,6 @@ public interface CodeStructure : Element
 {
     string Path { get; }
     
-    public record BelongsToLayer(CodeStructure Source, Layer Destination) : Relation<CodeStructure, Layer>;
+    public class BelongsToLayer(CodeStructure source, Layer destination) 
+        : RelationBase<CodeStructure, Layer>(source, destination);
 }
