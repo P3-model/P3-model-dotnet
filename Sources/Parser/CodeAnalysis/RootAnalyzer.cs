@@ -18,18 +18,21 @@ public class RootAnalyzer
     private readonly IReadOnlyCollection<RepositoryToAnalyze> _repositories;
     private readonly IReadOnlyCollection<FileAnalyzer> _fileAnalyzers;
     private readonly IReadOnlyCollection<SymbolAnalyzer> _symbolAnalyzers;
+    private readonly IReadOnlyCollection<OperationAnalyzer> _operationAnalyzers;
     private readonly IReadOnlyCollection<OutputFormatter> _outputFormatters;
 
     internal RootAnalyzer(string productName,
         IReadOnlyCollection<RepositoryToAnalyze> repositories,
         IReadOnlyCollection<FileAnalyzer> fileAnalyzers,
         IReadOnlyCollection<SymbolAnalyzer> symbolAnalyzers,
-        IReadOnlyCollection<OutputFormatter> outputFormatters,
+        IReadOnlyCollection<OperationAnalyzer> operationAnalyzers,
+        IReadOnlyCollection<OutputFormatter> outputFormatters, 
         LoggerConfiguration loggerConfiguration)
     {
         _repositories = repositories;
         _fileAnalyzers = fileAnalyzers;
         _symbolAnalyzers = symbolAnalyzers;
+        _operationAnalyzers = operationAnalyzers;
         _outputFormatters = outputFormatters;
         _productName = productName;
         Log.Logger = loggerConfiguration.CreateLogger();
@@ -140,7 +143,7 @@ public class RootAnalyzer
             throw new InvalidOperationException();
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var rootNode = await syntaxTree.GetRootAsync();
-        var syntaxWalker = new SyntaxWalker(_symbolAnalyzers, semanticModel, modelBuilder);
+        var syntaxWalker = new SyntaxWalker(_symbolAnalyzers, _operationAnalyzers, semanticModel, modelBuilder);
         Log.Verbose($"Analysis started for document: {document.FilePath}");
         syntaxWalker.Visit(rootNode);
         Log.Verbose($"Analysis finished for document: {document.FilePath}");

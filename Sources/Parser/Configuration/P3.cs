@@ -70,6 +70,7 @@ public class P3 : P3.RepositoriesStep, P3.AnalyzersStep, P3.OutputFormatStep, P3
             repositories,
             allAnalyzers.FileAnalyzers,
             allAnalyzers.SymbolAnalyzers,
+            allAnalyzers.OperationAnalyzers,
             _outputFormatBuilder.Build(),
             _loggerConfiguration);
     }

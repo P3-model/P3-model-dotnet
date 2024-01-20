@@ -12,6 +12,7 @@ public class AnalyzersBuilder
 {
     private readonly List<FileAnalyzer> _fileAnalyzers = new();
     private readonly List<SymbolAnalyzer> _symbolAnalyzers = new();
+    private readonly List<OperationAnalyzer> _operationAnalyzers = new();
 
     [PublicAPI]
     public AnalyzersBuilder UseDefaults(
@@ -43,9 +44,10 @@ public class AnalyzersBuilder
         _symbolAnalyzers.Add(processStepAnalyzer);
         _fileAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<FileAnalyzer>());
         _fileAnalyzers.Add(domainModuleAnalyzer);
+        _operationAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<OperationAnalyzer>());
         return this;
     }
-    
+
     private static IEnumerable<T> CreateAnalyzersWithParameterlessConstructor<T>() => typeof(T).Assembly
         .GetTypes()
         .Where(t => typeof(T).IsAssignableFrom(t))
@@ -87,5 +89,7 @@ public class AnalyzersBuilder
         return this;
     }
 
-    public AllAnalyzers Build() => new(_fileAnalyzers.AsReadOnly(), _symbolAnalyzers.AsReadOnly());
+    public AllAnalyzers Build() => new(_fileAnalyzers.AsReadOnly(), 
+        _symbolAnalyzers.AsReadOnly(),
+        _operationAnalyzers.AsReadOnly());
 }
