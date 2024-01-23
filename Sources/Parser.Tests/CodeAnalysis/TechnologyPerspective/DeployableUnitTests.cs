@@ -7,7 +7,7 @@ namespace P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective;
 public class DeployableUnitTests
 {
     [Test]
-    public void AllDeployableUnitsArePresent() => ParserOutput.AssertExistOnly(
+    public void AllDeployableUnitsArePresent() => ParserOutput.AssertModelContainsOnlyElements(
         new DeployableUnit("main"),
         new DeployableUnit("console-app"),
         new DeployableUnit("web-app"),

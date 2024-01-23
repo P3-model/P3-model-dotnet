@@ -8,7 +8,7 @@ namespace P3Model.Parser.Tests.CodeAnalysis.DomainPerspective;
 public class DomainModuleTests
 {
     [Test]
-    public void AllModulesArePresent() => ParserOutput.AssertExistOnly(
+    public void AllModulesArePresent() => ParserOutput.AssertModelContainsOnlyElements(
         new DomainModule(HierarchyId.FromValue("Domain")),
         new DomainModule(HierarchyId.FromValue("Domain.DomainBuildingBlocks")),
         new DomainModule(HierarchyId.FromValue("Domain.DomainBuildingBlocks.SampleModule")),

@@ -7,7 +7,7 @@ namespace P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective;
 public class CSharpProjectTests
 {
     [Test]
-    public void AllProjectsArePresent() => ParserOutput.AssertExistOnly(
+    public void AllProjectsArePresent() => ParserOutput.AssertModelContainsOnlyElements(
         new CSharpProject("TestSamples.MainProject", string.Empty),
         new CSharpProject("TestSamples.StartupProject", string.Empty),
         new CSharpProject("TestSamples.ConsoleApp", string.Empty),

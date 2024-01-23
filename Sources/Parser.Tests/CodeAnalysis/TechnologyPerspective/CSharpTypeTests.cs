@@ -7,7 +7,7 @@ namespace P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective;
 public class CSharpTypeTests
 {
     [Test]
-    public void AllTypesArePresent() => ParserOutput.AssertExistOnly(
+    public void AllTypesArePresent() => ParserOutput.AssertModelContainsOnlyElements(
         new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleBuildingBlock", "SampleBuildingBlock", string.Empty),
         new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregate", "SampleDddAggregate", string.Empty),
         new CSharpType("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregateFromBaseClass", "SampleDddAggregateFromBaseClass", string.Empty),

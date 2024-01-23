@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Text;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.OutputFormatting;
@@ -11,24 +12,20 @@ public sealed class ParserOutput : OutputFormatter
     public static ParserOutput Instance { get; } = new();
 
     private static readonly ConcurrentDictionary<TargetFramework, Model> Models = new();
-
-    public static Model GetModelFor(TargetFramework targetFramework)
-    {
-        if (Models.TryGetValue(targetFramework, out var model))
-            return model;
-        throw new InvalidOperationException($"Missing model for target framework {targetFramework}");
-    }
-
+    
     private ParserOutput() { }
 
-    public static void AssertExistOnly<TElement>(params TElement[] expectedElements)
+    [PublicAPI]
+    public static void AssertModelContainsOnlyElements<TElement>(params TElement[] expectedElements)
         where TElement : class, Element
     {
         foreach (var targetFramework in TargetFramework.All)
-            AssertExistOnly(targetFramework, expectedElements);
+            AssertModelContainsOnlyElements(targetFramework, expectedElements);
     }
 
-    public static void AssertExistOnly<TElement>(TargetFramework targetFramework, params TElement[] expectedElements)
+    [PublicAPI]
+    public static void AssertModelContainsOnlyElements<TElement>(TargetFramework targetFramework,
+        params TElement[] expectedElements)
         where TElement : class, Element
     {
         var allElements = GetModelFor(targetFramework)
@@ -67,6 +64,64 @@ public sealed class ParserOutput : OutputFormatter
                 messageBuilder.AppendLine(element.ToString());
         }
         return messageBuilder.ToString();
+    }
+
+    [PublicAPI]
+    public static void AssertModelContainsOnlyRelations<TRelation>(params TRelation[] expectedRelations)
+        where TRelation : class, Relation
+    {
+        foreach (var targetFramework in TargetFramework.All)
+            AssertModelContainsOnlyRelations(targetFramework, expectedRelations);
+    }
+
+    [PublicAPI]
+    public static void AssertModelContainsOnlyRelations<TRelation>(TargetFramework targetFramework,
+        params TRelation[] expectedRelations)
+        where TRelation : class, Relation
+    {
+        var allRelations = GetModelFor(targetFramework)
+            .Relations
+            .OfType<TRelation>()
+            .ToHashSet();
+        var missingRelations = expectedRelations
+            .Where(expectedRelation => !allRelations.Contains(expectedRelation))
+            .ToList();
+        var unexpectedRelations = allRelations
+            .Except(expectedRelations)
+            .ToList();
+        if (!missingRelations.Any() && !unexpectedRelations.Any())
+            return;
+        var message = CreateFailMassage(missingRelations, unexpectedRelations);
+        Assert.Fail(message);
+    }
+    
+    private static string CreateFailMassage(IReadOnlyCollection<Relation> missingRelations,
+        IReadOnlyCollection<Relation> unexpectedRelations)
+    {
+        var messageBuilder = new StringBuilder();
+        messageBuilder.AppendLine("Model has incorrect relations.");
+        if (missingRelations.Any())
+        {
+            messageBuilder.AppendLine();
+            messageBuilder.AppendLine("Missing relations:");
+            foreach (var relation in missingRelations)
+                messageBuilder.AppendLine(relation.ToString());
+        }
+        if (unexpectedRelations.Any())
+        {
+            messageBuilder.AppendLine();
+            messageBuilder.AppendLine("Unexpected relations:");
+            foreach (var relation in unexpectedRelations)
+                messageBuilder.AppendLine(relation.ToString());
+        }
+        return messageBuilder.ToString();
+    }
+
+    private static Model GetModelFor(TargetFramework targetFramework)
+    {
+        if (Models.TryGetValue(targetFramework, out var model))
+            return model;
+        throw new InvalidOperationException($"Missing model for target framework {targetFramework}");
     }
 
     public Task Clean() => Task.CompletedTask;
