@@ -6,18 +6,11 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
-public class NamespaceDomainModuleFinder : DomainModuleFinder
+public class NamespaceDomainModuleFinder(
+    Func<INamespaceSymbol, bool> isDomainModelNamespace,
+    Func<INamespaceSymbol, string> getModulesHierarchy)
+    : DomainModuleFinder
 {
-    private readonly Func<INamespaceSymbol, bool> _isDomainModelNamespace;
-    private readonly Func<INamespaceSymbol, string> _getModulesHierarchy;
-
-    public NamespaceDomainModuleFinder(Func<INamespaceSymbol, bool> isDomainModelNamespace,
-        Func<INamespaceSymbol, string> getModulesHierarchy)
-    {
-        _isDomainModelNamespace = isDomainModelNamespace;
-        _getModulesHierarchy = getModulesHierarchy;
-    }
-
     public bool TryFind(ISymbol symbol, [NotNullWhen(true)] out DomainModule? module)
     {
         module = null;
@@ -32,12 +25,12 @@ public class NamespaceDomainModuleFinder : DomainModuleFinder
 
     public bool TryFind(INamespaceSymbol symbol, [NotNullWhen(true)] out DomainModule? module)
     {
-        if (symbol.IsGlobalNamespace || !_isDomainModelNamespace(symbol))
+        if (symbol.IsGlobalNamespace || !isDomainModelNamespace(symbol))
         {
             module = null;
             return false;
         }
-        var modulesHierarchy = _getModulesHierarchy(symbol);
+        var modulesHierarchy = getModulesHierarchy(symbol);
         if (string.IsNullOrEmpty(modulesHierarchy))
         {
             module = null;

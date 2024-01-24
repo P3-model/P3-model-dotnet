@@ -31,7 +31,6 @@ public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSym
         modelBuilder.Add(elements => CreateRelations(sourceSymbol, destinationSymbol, elements));
     }
 
-
     public void Analyze(ILocalSymbol symbol, ModelBuilder modelBuilder)
     {
         var sourceSymbol = symbol.ContainingType;

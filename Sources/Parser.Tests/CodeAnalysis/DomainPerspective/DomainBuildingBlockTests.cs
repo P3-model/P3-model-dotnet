@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax.Domain.StaticModel.Ddd;
+using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.Tests.CodeAnalysis.DomainPerspective;
 
@@ -9,7 +10,8 @@ public class DomainBuildingBlockTests
 {
     [Test]
     public void AllBuildingBlocksArePresent() => ParserOutput.AssertModelContainsOnlyElements(
-        new DomainBuildingBlock("Domain.DomainBuildingBlocks.SampleModule.SampleBuildingBlock", "Sample Building Block"),
+        new DomainBuildingBlock("Domain.DomainBuildingBlocks.SampleModule.SampleBuildingBlock",
+            "Sample Building Block"),
         new DddAggregate("Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregate", "Sample Ddd Aggregate")
         {
             ShortDescription = "*lorem ipsum* **dolor** sit amet"
@@ -24,6 +26,9 @@ public class DomainBuildingBlockTests
         new DddValueObject("Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObject", "Sample Ddd Value Object"),
         new DddValueObject("Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObjectFromBaseInterface",
             "Sample Ddd Value Object From Base Interface"),
+        new ExternalSystemIntegration(
+            "Domain.DomainBuildingBlocks.SampleModule.SampleExternalSystemIntegration",
+            "Sample External System Integration"),
         new ProcessStep("Domain.DomainBuildingBlocks.SampleModule.SampleProcessStep", "Sample Process Step"));
 
     [Test]
@@ -51,4 +56,12 @@ public class DomainBuildingBlockTests
             new DomainBuildingBlock.DependsOnBuildingBlock(processStep, valueObject),
             new DomainBuildingBlock.DependsOnBuildingBlock(repository, aggregate));
     }
+
+    [Test]
+    public void AllIntegratesRelationsArePresent() => ParserOutput.AssertModelContainsOnlyRelations(
+        new ExternalSystemIntegration.Integrates(
+            new ExternalSystemIntegration(
+                "Domain.DomainBuildingBlocks.SampleModule.SampleExternalSystemIntegration",
+                "Sample External System Integration"),
+            new ExternalSystem("Sample External System")));
 }

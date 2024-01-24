@@ -14,12 +14,9 @@ using P3Model.Parser.ModelSyntax.Technology;
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
 // TODO: support for defining domain modules structure without namespaces
-public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbol>
+public class DomainModuleAnalyzer(DomainModuleFinder domainModuleFinder)
+    : FileAnalyzer, SymbolAnalyzer<INamespaceSymbol>
 {
-    private readonly DomainModuleFinder _domainModuleFinder;
-
-    public DomainModuleAnalyzer(DomainModuleFinder domainModuleFinder) => _domainModuleFinder = domainModuleFinder;
-
     public async Task Analyze(FileInfo fileInfo, ModelBuilder modelBuilder)
     {
         if (fileInfo.Directory is null)
@@ -54,7 +51,7 @@ public class DomainModuleAnalyzer : FileAnalyzer, SymbolAnalyzer<INamespaceSymbo
     {
         foreach (var namespaceSymbol in GetFullHierarchy(symbol))
         {
-            if (!_domainModuleFinder.TryFind(namespaceSymbol, out var module))
+            if (!domainModuleFinder.TryFind(namespaceSymbol, out var module))
                 return;
             modelBuilder.Add(module, namespaceSymbol);
             // TODO: relation to teams and business units defined at namespace level

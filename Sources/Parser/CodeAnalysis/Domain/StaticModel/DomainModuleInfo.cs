@@ -2,12 +2,9 @@ using System;
 
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
-public class DomainModuleInfo
+public class DomainModuleInfo(string domainModule)
 {
-    public string DomainModule { get; }
+    public string DomainModule { get; } = domainModule ?? throw new ArgumentNullException(nameof(domainModule));
     public string? BusinessOwner { get; init; }
     public string? DevelopmentOwner { get; init; }
-
-    public DomainModuleInfo(string domainModule) =>
-        DomainModule = domainModule ?? throw new ArgumentNullException(nameof(domainModule));
 }

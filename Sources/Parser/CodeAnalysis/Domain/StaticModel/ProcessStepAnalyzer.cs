@@ -13,20 +13,20 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
 [UsedImplicitly]
-public class ProcessStepAnalyzer : DomainBuildingBlockAnalyzerBase
+public class ProcessStepAnalyzer(DomainModuleFinder moduleFinder)
+    : DomainBuildingBlockAnalyzerBase<ProcessStep>(moduleFinder)
 {
     protected override Type AttributeType => typeof(ProcessStepAttribute);
 
-    public ProcessStepAnalyzer(DomainModuleFinder moduleFinder) : base(moduleFinder) { }
+    protected override ProcessStep CreateBuildingBlock(string id, string name) => new(id, name);
 
-    protected override DomainBuildingBlock CreateBuildingBlock(string id, string name) =>
-        new ProcessStep(id, name);
-
-    protected override IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
-        AttributeData buildingBlockAttribute, ElementsProvider elements) => base
-        .GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements)
-        .Union(GetRelationsToNextSteps((ProcessStep)buildingBlock, buildingBlockAttribute, elements))
-        .Union(GetRelationsToProcesses((ProcessStep)buildingBlock, buildingBlockAttribute, elements));
+    protected override void AddElementsAndRelations(ProcessStep processStep, DomainModule? module, ISymbol symbol,
+        AttributeData buildingBlockAttribute, ModelBuilder modelBuilder)
+    {
+        base.AddElementsAndRelations(processStep, module, symbol, buildingBlockAttribute, modelBuilder);
+        modelBuilder.Add(elements => GetRelationsToNextSteps(processStep, buildingBlockAttribute, elements));
+        modelBuilder.Add(elements => GetRelationsToProcesses(processStep, buildingBlockAttribute, elements));
+    }
 
     private static IEnumerable<Relation> GetRelationsToProcesses(ProcessStep step, AttributeData stepAttribute,
         ElementsProvider elements)

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Humanizer;
@@ -13,8 +12,9 @@ using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
-public abstract class DomainBuildingBlockAnalyzerBase(DomainModuleFinder moduleFinder)
+public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(DomainModuleFinder moduleFinder)
     : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnalyzer<IMethodSymbol>
+    where TBuildingBlock : DomainBuildingBlock
 {
     protected abstract Type AttributeType { get; }
 
@@ -32,19 +32,20 @@ public abstract class DomainBuildingBlockAnalyzerBase(DomainModuleFinder moduleF
         // TODO: Support for duplicated symbols (partial classes)
         if (!symbol.TryGetAttribute(AttributeType, options, out var buildingBlockAttribute))
             return;
-        var hasModule = moduleFinder.TryFind(symbol, out var module);
+        var (buildingBlock, module) = GetBuildingBlock(symbol, buildingBlockAttribute);
+        SetProperties(buildingBlock, symbol);
+        AddElementsAndRelations(buildingBlock, module, symbol, buildingBlockAttribute, modelBuilder);
+    }
+
+    private (TBuildingBlock, DomainModule?) GetBuildingBlock(ISymbol symbol,
+        AttributeData buildingBlockAttribute)
+    {
         var name = GetName(symbol, buildingBlockAttribute);
-        var id = module is null ? name.Dehumanize() : $"{module.Id.Full}.{name.Dehumanize()}";
+        var id = moduleFinder.TryFind(symbol, out var module)
+            ? $"{module.Id.Full}.{name.Dehumanize()}"
+            : name.Dehumanize();
         var buildingBlock = CreateBuildingBlock(id, name);
-        var shortDescription = GetShortDescription(symbol);
-        buildingBlock.ShortDescription = shortDescription;
-        modelBuilder.Add(buildingBlock, symbol);
-        modelBuilder.Add(elements => GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements));
-        if (hasModule)
-        {
-            modelBuilder.Add(module!, symbol);
-            modelBuilder.Add(new DomainModule.ContainsBuildingBlock(module!, buildingBlock));
-        }
+        return (buildingBlock, module);
     }
 
     private static string GetName(ISymbol symbol, AttributeData buildingBlockAttribute)
@@ -57,18 +58,31 @@ public abstract class DomainBuildingBlockAnalyzerBase(DomainModuleFinder moduleF
         return name.Humanize(LetterCasing.Title);
     }
 
+    protected abstract TBuildingBlock CreateBuildingBlock(string id, string name);
+
     private static string? GetShortDescription(ISymbol symbol) =>
         symbol.TryGetAttribute(typeof(ShortDescriptionAttribute), out var descriptionAttribute)
             ? descriptionAttribute.GetConstructorArgumentValue<string>()
             : null;
 
-    protected abstract DomainBuildingBlock CreateBuildingBlock(string id, string name);
+    private void SetProperties(DomainBuildingBlock buildingBlock, ISymbol symbol)
+    {
+        var shortDescription = GetShortDescription(symbol);
+        buildingBlock.ShortDescription = shortDescription;
+    }
 
-    protected virtual IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
-        AttributeData buildingBlockAttribute, ElementsProvider elements) => elements
-        .For(symbol)
-        .OfType<CodeStructure>()
-        .Select(codeStructure => new DomainBuildingBlock.IsImplementedBy(buildingBlock, codeStructure));
+    protected virtual void AddElementsAndRelations(TBuildingBlock externalSystemIntegration, DomainModule? module,
+        ISymbol symbol, AttributeData buildingBlockAttribute, ModelBuilder modelBuilder)
+    {
+        modelBuilder.Add(externalSystemIntegration, symbol);
+        if (module != null)
+            modelBuilder.Add(module, symbol);
+        modelBuilder.Add(elements => elements
+            .For(symbol)
+            .OfType<CodeStructure>()
+            .Select(codeStructure => new DomainBuildingBlock.IsImplementedBy(externalSystemIntegration, codeStructure)));
+        modelBuilder.Add(new DomainModule.ContainsBuildingBlock(module!, externalSystemIntegration));
+    }
 
     private static FileInfo? GetDescriptionFile(ISymbol symbol) => symbol.Locations
         .Where(location => location.SourceTree != null)

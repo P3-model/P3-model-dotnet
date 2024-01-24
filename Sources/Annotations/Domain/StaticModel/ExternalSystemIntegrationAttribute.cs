@@ -9,7 +9,9 @@ namespace P3Model.Annotations.Domain.StaticModel;
                 AttributeTargets.Enum |
                 AttributeTargets.Delegate |
                 AttributeTargets.Method)]
-public class DomainBuildingBlockAttribute(string? name = null) : Attribute
+public class ExternalSystemIntegrationAttribute(string externalSystemName, string? name = null)
+    : Attribute
 {
+    public string ExternalSystemName { get; } = externalSystemName;
     public string? Name { get; } = name;
 }

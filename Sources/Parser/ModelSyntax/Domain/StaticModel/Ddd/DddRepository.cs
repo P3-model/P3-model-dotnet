@@ -1,6 +1,4 @@
 namespace P3Model.Parser.ModelSyntax.Domain.StaticModel.Ddd;
 
-public class DddRepository : DomainBuildingBlock
-{
-    public DddRepository(string idPartUniqueForElementType, string name) : base(idPartUniqueForElementType, name) { }
-}
+public class DddRepository(string idPartUniqueForElementType, string name)
+    : DomainBuildingBlock(idPartUniqueForElementType, name);

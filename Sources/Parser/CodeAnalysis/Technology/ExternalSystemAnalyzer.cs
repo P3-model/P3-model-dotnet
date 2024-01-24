@@ -9,15 +9,15 @@ using P3Model.Parser.ModelSyntax.Technology;
 namespace P3Model.Parser.CodeAnalysis.Technology;
 
 [UsedImplicitly]
-public class ExternalSoftwareSystemAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
+public class ExternalSystemAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
 {
     public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder)
     {
-        if (!symbol.TryGetAttribute(typeof(ExternalSoftwareSystemAttribute), out var externalSystemAttribute))
+        if (!symbol.TryGetAttribute(typeof(ExternalSystemAttribute), out var externalSystemAttribute))
             return;
         var name = externalSystemAttribute.GetConstructorArgumentValue<string?>() 
                    ?? symbol.GetFullName().Humanize(LetterCasing.Title);
-        var externalSystem = new ExternalSoftwareSystem(name);
+        var externalSystem = new ExternalSystem(name);
         modelBuilder.Add(externalSystem, symbol);
     }
 }

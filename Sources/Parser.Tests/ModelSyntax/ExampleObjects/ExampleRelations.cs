@@ -73,6 +73,9 @@ public class ExampleRelations : IEnumerable<Relation>
             new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
             new CSharpNamespace(HierarchyId.FromParts("ExampleParentCSharpNamespace", "ExampleCSharpNamespace"),
                 "ExampleDirectory/ExampleCSharpNamespace")),
+        new ExternalSystemIntegration.Integrates(
+            new ExternalSystemIntegration("ExampleModuleA.ExternalSystemIntegration", "ExternalSystemIntegration"),
+            new ExternalSystem("ExampleExternalSystem")),
         new Process.ContainsProcessStep(
             new Process("ExampleProcess"),
             new ProcessStep("ExampleModuleA.StepA", "StepA")),

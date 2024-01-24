@@ -5,11 +5,9 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
-public class DomainModuleFinders : DomainModuleFinder
+public class DomainModuleFinders(params DomainModuleFinder[] finders) : DomainModuleFinder
 {
-    private readonly IReadOnlyList<DomainModuleFinder> _finders;
-    
-    public DomainModuleFinders(params DomainModuleFinder[] finders) => _finders = finders;
+    private readonly IReadOnlyList<DomainModuleFinder> _finders = finders;
 
     public bool TryFind(ISymbol symbol, [NotNullWhen(true)] out DomainModule? module)
     {

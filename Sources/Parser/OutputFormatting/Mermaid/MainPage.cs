@@ -15,7 +15,7 @@ public class MainPage : MermaidPageBase
 {
     private readonly DocumentedSystem _system;
     private readonly IReadOnlySet<Actor> _actors;
-    private readonly IReadOnlySet<ExternalSoftwareSystem> _externalSystems;
+    private readonly IReadOnlySet<ExternalSystem> _externalSystems;
     private readonly IReadOnlySet<DevelopmentTeam> _developmentTeams;
     private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
     private readonly DomainVisionStatement? _domainVisionStatement;
@@ -23,7 +23,7 @@ public class MainPage : MermaidPageBase
     public MainPage(string outputDirectory, 
         DocumentedSystem system, 
         IReadOnlySet<Actor> actors, 
-        IReadOnlySet<ExternalSoftwareSystem> externalSystems, 
+        IReadOnlySet<ExternalSystem> externalSystems, 
         IReadOnlySet<DevelopmentTeam> developmentTeams, 
         IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits, 
         DomainVisionStatement? domainVisionStatement) 
