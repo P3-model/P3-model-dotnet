@@ -11,12 +11,7 @@ public class ExampleTraits : IEnumerable<Trait>
     private static readonly DomainModule DomainModule =
         new(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleC"));
     
-    public static readonly ExampleTraits All = new()
-    {
-        new DomainBuildingBlockDescription(
-            new DomainBuildingBlock("ExampleModuleA|ExampleDomainBuildingBlock", "ExampleDomainBuildingBlock"),
-            new FileInfo("ModelSyntax/ExampleObjects/ExampleDomainBuildingBlockDescription.md"))   
-    };
+    public static readonly ExampleTraits All = new();
     
     private void Add<TTrait>(TTrait trait)
         where TTrait : class, Trait

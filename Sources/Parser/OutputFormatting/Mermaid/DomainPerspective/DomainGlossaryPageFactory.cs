@@ -16,10 +16,10 @@ public class DomainGlossaryPageFactory : MermaidPageFactory
                 .Hierarchy<DomainModule, DomainModule.ContainsDomainModule>()),
             modelGraph.Execute(query => query
                     .Relations<DomainModule.ContainsBuildingBlock>())
-                .Select(r => new DomainGlossaryPage.BuildingBlockInfo(r.Destination, r.Source, modelGraph
-                    .Execute(traitQuery => traitQuery
-                        .Traits<DomainBuildingBlockDescription>(trait => trait.Element.Equals(r.Destination)))
-                    .SingleOrDefault()))
-                .ToList());
+                .GroupBy(r => r.Source)
+                .ToDictionary(g => g.Key, g => (IReadOnlyCollection<DomainBuildingBlock>)g
+                    .Select(r => r.Destination)
+                    .ToList()
+                    .AsReadOnly()));
     }
 }

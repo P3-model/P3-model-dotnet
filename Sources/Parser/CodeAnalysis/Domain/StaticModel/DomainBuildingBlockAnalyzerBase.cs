@@ -13,13 +13,9 @@ using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
-public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnalyzer<IMethodSymbol>
+public abstract class DomainBuildingBlockAnalyzerBase(DomainModuleFinder moduleFinder)
+    : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnalyzer<IMethodSymbol>
 {
-    private readonly DomainModuleFinder _moduleFinder;
-
-    protected DomainBuildingBlockAnalyzerBase(DomainModuleFinder moduleFinder) =>
-        _moduleFinder = moduleFinder;
-
     protected abstract Type AttributeType { get; }
 
     public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder) => Analyze(symbol,
@@ -36,10 +32,12 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
         // TODO: Support for duplicated symbols (partial classes)
         if (!symbol.TryGetAttribute(AttributeType, options, out var buildingBlockAttribute))
             return;
-        var hasModule = _moduleFinder.TryFind(symbol, out var module);
+        var hasModule = moduleFinder.TryFind(symbol, out var module);
         var name = GetName(symbol, buildingBlockAttribute);
         var id = module is null ? name.Dehumanize() : $"{module.Id.Full}.{name.Dehumanize()}";
         var buildingBlock = CreateBuildingBlock(id, name);
+        var shortDescription = GetShortDescription(symbol);
+        buildingBlock.ShortDescription = shortDescription;
         modelBuilder.Add(buildingBlock, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, buildingBlock, buildingBlockAttribute, elements));
         if (hasModule)
@@ -47,7 +45,6 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
             modelBuilder.Add(module!, symbol);
             modelBuilder.Add(new DomainModule.ContainsBuildingBlock(module!, buildingBlock));
         }
-        AddDescriptionTrait(symbol, buildingBlock, modelBuilder);
     }
 
     private static string GetName(ISymbol symbol, AttributeData buildingBlockAttribute)
@@ -60,6 +57,11 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
         return name.Humanize(LetterCasing.Title);
     }
 
+    private static string? GetShortDescription(ISymbol symbol) =>
+        symbol.TryGetAttribute(typeof(ShortDescriptionAttribute), out var descriptionAttribute)
+            ? descriptionAttribute.GetConstructorArgumentValue<string>()
+            : null;
+
     protected abstract DomainBuildingBlock CreateBuildingBlock(string id, string name);
 
     protected virtual IEnumerable<Relation> GetRelations(ISymbol symbol, DomainBuildingBlock buildingBlock,
@@ -67,16 +69,6 @@ public abstract class DomainBuildingBlockAnalyzerBase : SymbolAnalyzer<INamedTyp
         .For(symbol)
         .OfType<CodeStructure>()
         .Select(codeStructure => new DomainBuildingBlock.IsImplementedBy(buildingBlock, codeStructure));
-
-    private static void AddDescriptionTrait(ISymbol symbol, DomainBuildingBlock buildingBlock,
-        ModelBuilder modelBuilder)
-    {
-        var descriptionFile = GetDescriptionFile(symbol);
-        if (descriptionFile == null)
-            return;
-        var descriptionTrait = new DomainBuildingBlockDescription(buildingBlock, descriptionFile);
-        modelBuilder.Add(descriptionTrait);
-    }
 
     private static FileInfo? GetDescriptionFile(ISymbol symbol) => symbol.Locations
         .Where(location => location.SourceTree != null)

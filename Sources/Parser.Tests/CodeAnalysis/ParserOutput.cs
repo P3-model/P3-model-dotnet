@@ -28,15 +28,16 @@ public sealed class ParserOutput : OutputFormatter
         params TElement[] expectedElements)
         where TElement : class, Element
     {
+        var equalityComparer = new ElementBase.DataEqualityComparer();
         var allElements = GetModelFor(targetFramework)
             .Elements
             .OfType<TElement>()
-            .ToHashSet();
+            .ToHashSet(equalityComparer);
         var missingElements = expectedElements
             .Where(expectedElement => !allElements.Contains(expectedElement))
             .ToList();
         var unexpectedElements = allElements
-            .Except(expectedElements)
+            .Except(expectedElements, equalityComparer)
             .ToList();
         if (!missingElements.Any() && !unexpectedElements.Any())
             return;

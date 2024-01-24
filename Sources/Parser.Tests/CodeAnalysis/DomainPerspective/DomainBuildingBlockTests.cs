@@ -9,35 +9,38 @@ public class DomainBuildingBlockTests
 {
     [Test]
     public void AllBuildingBlocksArePresent() => ParserOutput.AssertModelContainsOnlyElements(
-        new DomainBuildingBlock("Domain.DomainBuildingBlocks.SampleModule.SampleBuildingBlock", "SampleBuildingBlock"),
-        new DddAggregate("Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregate", "SampleDddAggregate"),
+        new DomainBuildingBlock("Domain.DomainBuildingBlocks.SampleModule.SampleBuildingBlock", "Sample Building Block"),
+        new DddAggregate("Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregate", "Sample Ddd Aggregate")
+        {
+            ShortDescription = "*lorem ipsum* **dolor** sit amet"
+        },
         new DddAggregate("Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregateFromBaseClass",
-            "SampleDddAggregateFromBaseClass"),
+            "Sample Ddd Aggregate From Base Class"),
         new DddDomainService("Domain.DomainBuildingBlocks.SampleModule.SampleDddDomainService",
-            "SampleDddDomainService"),
-        new DddEntity("Domain.DomainBuildingBlocks.SampleModule.SampleDddEntity", "SampleDddEntity"),
-        new DddFactory("Domain.DomainBuildingBlocks.SampleModule.SampleDddFactory", "SampleDddFactory"),
-        new DddRepository("Domain.DomainBuildingBlocks.SampleModule.SampleDddRepository", "SampleDddRepository"),
-        new DddValueObject("Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObject", "SampleDddValueObject"),
+            "Sample Ddd Domain Service"),
+        new DddEntity("Domain.DomainBuildingBlocks.SampleModule.SampleDddEntity", "Sample Ddd Entity"),
+        new DddFactory("Domain.DomainBuildingBlocks.SampleModule.SampleDddFactory", "Sample Ddd Factory"),
+        new DddRepository("Domain.DomainBuildingBlocks.SampleModule.SampleDddRepository", "Sample Ddd Repository"),
+        new DddValueObject("Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObject", "Sample Ddd Value Object"),
         new DddValueObject("Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObjectFromBaseInterface",
-            "SampleDddValueObjectFromBaseInterface"),
-        new ProcessStep("Domain.DomainBuildingBlocks.SampleModule.SampleProcessStep", "SampleProcessStep"));
+            "Sample Ddd Value Object From Base Interface"),
+        new ProcessStep("Domain.DomainBuildingBlocks.SampleModule.SampleProcessStep", "Sample Process Step"));
 
     [Test]
     public void AllDependsOnRelationsArePresent()
     {
         var aggregate = new DddAggregate("Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregate",
-            "SampleDddAggregate");
+            "Sample Ddd Aggregate");
         var domainService = new DddDomainService("Domain.DomainBuildingBlocks.SampleModule.SampleDddDomainService",
-            "SampleDddDomainService");
-        var entity = new DddEntity("Domain.DomainBuildingBlocks.SampleModule.SampleDddEntity", "SampleDddEntity");
-        var factory = new DddFactory("Domain.DomainBuildingBlocks.SampleModule.SampleDddFactory", "SampleDddFactory");
+            "Sample Ddd Domain Service");
+        var entity = new DddEntity("Domain.DomainBuildingBlocks.SampleModule.SampleDddEntity", "Sample Ddd Entity");
+        var factory = new DddFactory("Domain.DomainBuildingBlocks.SampleModule.SampleDddFactory", "Sample Ddd Factory");
         var processStep = new ProcessStep("Domain.DomainBuildingBlocks.SampleModule.SampleProcessStep",
-            "SampleProcessStep");
+            "Sample Process Step");
         var repository = new DddRepository("Domain.DomainBuildingBlocks.SampleModule.SampleDddRepository",
-            "SampleDddRepository");
+            "Sample Ddd Repository");
         var valueObject = new DddValueObject("Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObject",
-            "SampleDddValueObject");
+            "Sample Ddd Value Object");
         ParserOutput.AssertModelContainsOnlyRelations(
             new DomainBuildingBlock.DependsOnBuildingBlock(aggregate, domainService),
             new DomainBuildingBlock.DependsOnBuildingBlock(processStep, aggregate),
