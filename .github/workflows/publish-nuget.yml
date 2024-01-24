@@ -25,5 +25,5 @@ jobs:
           PACKAGE_NAME=$(echo ${{ steps.extract.outputs.tag }} | cut -d/ -f1)
           PACKAGE_VERSION=$(echo ${{ steps.extract.outputs.tag }} | cut -d/ -f2)
           if [ -n "$PACKAGE_NAME" ] && [ -n "$PACKAGE_VERSION" ]; then
-          dotnet nuget push ./artifacts/${PACKAGE_NAME}.${PACKAGE_VERSION}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+          dotnet nuget push ./artifacts/P3Model.${PACKAGE_NAME}.${PACKAGE_VERSION}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
           fi
