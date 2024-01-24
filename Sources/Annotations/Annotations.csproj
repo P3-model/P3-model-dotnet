@@ -21,6 +21,7 @@
         <PackageReleaseNotes>external system integrations</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <AssemblyName>P3Model.Annotations</AssemblyName>
+        <IsPackable>true</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
