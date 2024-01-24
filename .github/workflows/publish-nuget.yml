@@ -1,0 +1,29 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    tags:
+      - '*/*'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract package name and version
+        id: extract
+        run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/})"      
+
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --output ./artifacts
+
+      - name: Publish NuGet package
+        run: |
+          PACKAGE_NAME=$(echo ${{ steps.extract.outputs.tag }} | cut -d/ -f1)
+          PACKAGE_VERSION=$(echo ${{ steps.extract.outputs.tag }} | cut -d/ -f2)
+          if [ -n "$PACKAGE_NAME" ] && [ -n "$PACKAGE_VERSION" ]; then
+          dotnet nuget push ./artifacts/${PACKAGE_NAME}.${PACKAGE_VERSION}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+          fi
