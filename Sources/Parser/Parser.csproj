@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <AssemblyName>P3Model.Parser</AssemblyName>
         <RootNamespace>P3Model.Parser</RootNamespace>
-        <Version>0.3.0-preview02</Version>
+        <Version>0.3.0-preview03</Version>
         <Title>P3 Model Parser</Title>
         <Authors>Marcin Markowski</Authors>
         <PackageProjectUrl>https://github.com/P3-model/P3-model-dotnet</PackageProjectUrl>
@@ -14,7 +14,7 @@
         <RepositoryUrl>https://github.com/P3-model/P3-model-dotnet</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Description>P3 Model Parser is a tool that generate documentation from C# source code enriched with metadata like: annotations, markdown files and more.</Description>
-        <PackageReleaseNotes>visiting InvocationExpressionSyntax fix</PackageReleaseNotes>
+        <PackageReleaseNotes>Roslyn upgrade, small fixes</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <Company>P3 Model</Company>
         <AssemblyVersion>0.3.0</AssemblyVersion>
@@ -24,11 +24,11 @@
 
     <ItemGroup>      
       <PackageReference Include="Humanizer.Core" Version="2.14.1" />
-      <PackageReference Include="Microsoft.CodeAnalysis" Version="4.9.0-2.final" />
-      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.0-2.final" />
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.0-2.final" />
-      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.9.0-2.final" />
-      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.9.0-2.final" />
+      <PackageReference Include="Microsoft.CodeAnalysis" Version="4.9.0-3.final" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.0-3.final" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.0-3.final" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.9.0-3.final" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.9.0-3.final" />
       <PackageReference Include="Serilog" Version="3.1.1" />
       <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
     </ItemGroup>
