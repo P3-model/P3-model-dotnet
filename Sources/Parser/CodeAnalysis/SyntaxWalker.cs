@@ -134,9 +134,8 @@ internal class SyntaxWalker : CSharpSyntaxWalker
     public override void VisitInvocationExpression(InvocationExpressionSyntax node)
     {
         var operation = _semanticModel.GetOperation(node) ?? throw new InvalidOperationException();
-        if (operation is not IInvocationOperation invocationOperation)
-            throw new InvalidOperationException();
-        AnalyzeOperation(invocationOperation);
+        if (operation is IInvocationOperation invocationOperation)
+            AnalyzeOperation(invocationOperation);
         base.VisitInvocationExpression(node);
     }
 
