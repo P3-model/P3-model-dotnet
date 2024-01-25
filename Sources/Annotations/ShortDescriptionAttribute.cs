@@ -9,4 +9,7 @@ namespace P3Model.Annotations;
                 AttributeTargets.Enum |
                 AttributeTargets.Delegate |
                 AttributeTargets.Method)]
-public class ShortDescriptionAttribute(string MarkdownText) : Attribute;
+public class ShortDescriptionAttribute(string markdownText) : Attribute
+{
+    public string MarkdownText { get; } = markdownText;
+}
