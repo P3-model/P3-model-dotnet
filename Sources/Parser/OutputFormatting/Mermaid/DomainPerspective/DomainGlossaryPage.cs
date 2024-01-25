@@ -32,7 +32,9 @@ public class DomainGlossaryPage(
         foreach (var childModule in modulesHierarchy.GetChildrenFor(parentModule).OrderBy(r => r.Name))
             Write(childModule, mermaidWriter, level + 1);
 
-        foreach (var buildingBlock in buildingBlocks[parentModule].OrderBy(r => r.Name))
+        if (!buildingBlocks.TryGetValue(parentModule, out var moduleBuildingBlocks))
+            return;
+        foreach (var buildingBlock in moduleBuildingBlocks.OrderBy(r => r.Name))
         {
             mermaidWriter.WriteInline($"**{buildingBlock.Name}**");
             mermaidWriter.WriteLineBreak();
