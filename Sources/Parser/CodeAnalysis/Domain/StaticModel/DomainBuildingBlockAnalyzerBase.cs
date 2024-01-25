@@ -62,10 +62,10 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(DomainModu
 
     private static string? GetShortDescription(ISymbol symbol) =>
         symbol.TryGetAttribute(typeof(ShortDescriptionAttribute), out var descriptionAttribute)
-            ? descriptionAttribute.GetConstructorArgumentValue<string>()
+            ? descriptionAttribute.GetConstructorArgumentValue<string>(nameof(ShortDescriptionAttribute.MarkdownText))
             : null;
 
-    private void SetProperties(DomainBuildingBlock buildingBlock, ISymbol symbol)
+    private static void SetProperties(DomainBuildingBlock buildingBlock, ISymbol symbol)
     {
         var shortDescription = GetShortDescription(symbol);
         buildingBlock.ShortDescription = shortDescription;
@@ -76,12 +76,15 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(DomainModu
     {
         modelBuilder.Add(externalSystemIntegration, symbol);
         if (module != null)
+        {
             modelBuilder.Add(module, symbol);
+            modelBuilder.Add(new DomainModule.ContainsBuildingBlock(module, externalSystemIntegration));
+        }
         modelBuilder.Add(elements => elements
             .For(symbol)
             .OfType<CodeStructure>()
-            .Select(codeStructure => new DomainBuildingBlock.IsImplementedBy(externalSystemIntegration, codeStructure)));
-        modelBuilder.Add(new DomainModule.ContainsBuildingBlock(module!, externalSystemIntegration));
+            .Select(codeStructure =>
+                new DomainBuildingBlock.IsImplementedBy(externalSystemIntegration, codeStructure)));
     }
 
     private static FileInfo? GetDescriptionFile(ISymbol symbol) => symbol.Locations
