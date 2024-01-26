@@ -17,4 +17,29 @@ public class DomainModuleTests
         new DomainModule(HierarchyId.FromValue("Domain.DomainModules.WithCode.WithCode")),
         new DomainModule(HierarchyId.FromValue("Domain.DomainModules.WithoutCode")),
         new DomainModule(HierarchyId.FromValue("Domain.DomainModules.WithoutCode.WithCode")));
+
+    [Test]
+    public void AllContainsDomainModuleRelationsArePresent()
+    {
+        var domain = new DomainModule(HierarchyId.FromValue("Domain"));
+        var domainBuildingBlocks = new DomainModule(HierarchyId.FromValue("Domain.DomainBuildingBlocks"));
+        var domainBuildingBlocksSampleModule =
+            new DomainModule(HierarchyId.FromValue("Domain.DomainBuildingBlocks.SampleModule"));
+        var domainModules = new DomainModule(HierarchyId.FromValue("Domain.DomainModules"));
+        var domainModulesWithCode = new DomainModule(HierarchyId.FromValue("Domain.DomainModules.WithCode"));
+        var domainModulesWithCodeWithCode =
+            new DomainModule(HierarchyId.FromValue("Domain.DomainModules.WithCode.WithCode"));
+        var domainModulesWithoutCode = new DomainModule(HierarchyId.FromValue("Domain.DomainModules.WithoutCode"));
+        var domainModulesWithoutCodeWithCode =
+            new DomainModule(HierarchyId.FromValue("Domain.DomainModules.WithoutCode.WithCode"));
+        ParserOutput.AssertModelContainsOnlyRelations(
+            new DomainModule.ContainsDomainModule(domain, domainBuildingBlocks),
+            new DomainModule.ContainsDomainModule(domain, domainModules),
+            new DomainModule.ContainsDomainModule(domainBuildingBlocks, domainBuildingBlocksSampleModule),
+            new DomainModule.ContainsDomainModule(domainModules, domainModulesWithCode),
+            new DomainModule.ContainsDomainModule(domainModules, domainModulesWithoutCode),
+            new DomainModule.ContainsDomainModule(domainModulesWithCode, domainModulesWithCodeWithCode),
+            new DomainModule.ContainsDomainModule(domainModulesWithoutCode, domainModulesWithoutCodeWithCode)
+        );
+    }
 }
