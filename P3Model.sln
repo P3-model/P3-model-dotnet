@@ -33,6 +33,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{
 		.github\workflows\tests.yml = .github\workflows\tests.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{DE5D3D76-BE2D-424B-B4E6-FA288299D27F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ADL", "ADL", "{4B047E47-6EB1-4454-932C-9E80A29DCCBB}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\ADL\ADR-001-TestingCodeAnalysis.md = Docs\ADL\ADR-001-TestingCodeAnalysis.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,5 +97,6 @@ Global
 		{AD027857-F6B5-4D6D-8D67-126A36E1B85E} = {922ACB7C-EA4D-4FE5-B6CC-B060B0ADF5B3}
 		{458867C9-F776-43A7-9F75-85A0B50D7A3F} = {922ACB7C-EA4D-4FE5-B6CC-B060B0ADF5B3}
 		{56CDA737-12FB-469F-92BC-83B9B901D7A5} = {B44B6037-4B10-4E0D-B631-C28B6A6674BC}
+		{4B047E47-6EB1-4454-932C-9E80A29DCCBB} = {DE5D3D76-BE2D-424B-B4E6-FA288299D27F}
 	EndGlobalSection
 EndGlobal
