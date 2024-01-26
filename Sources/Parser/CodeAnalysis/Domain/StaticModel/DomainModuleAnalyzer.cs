@@ -10,6 +10,7 @@ using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
+using Serilog;
 
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
@@ -80,10 +81,12 @@ public class DomainModuleAnalyzer(DomainModuleFinder domainModuleFinder)
             .Where(info => info.Symbols.Contains(symbol.ContainingNamespace))
             .Select(info => info.Element)
             .SingleOrDefault();
-        if (parentModule != null)
+        if (module.Equals(parentModule))
+            Log.Warning($"Domain module: {module} has relation: {nameof(DomainModule.ContainsDomainModule)} to itself");
+        else if (parentModule != null)
             yield return new DomainModule.ContainsDomainModule(parentModule, module);
     }
-    
+
     private static IEnumerable<Relation> GetRelationsToCodeStructures(ISymbol symbol, DomainModule module,
         ElementsProvider elements) => elements
         .For(symbol)

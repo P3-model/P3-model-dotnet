@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Serilog;
 
 namespace P3Model.Parser.ModelSyntax;
 
@@ -26,7 +27,12 @@ public class Hierarchy<TElement>
             if (!parentToChildren.TryGetValue(relation.Source, out var children))
                 parentToChildren.Add(relation.Source, children = new List<TElement>());
             children.Add(relation.Destination);
-            childToParent.Add(relation.Destination, relation.Source);
+            if (relation.Source.Equals(relation.Destination))
+                Log.Warning($"Child {relation.Destination} is its own parent");
+            else if (!childToParent.TryGetValue(relation.Destination, out var parent))
+                childToParent.Add(relation.Destination, relation.Source);
+            else if (!parent.Equals(relation.Source))
+                Log.Warning($"Child {relation.Destination} has multiple parents: {parent} and {relation.Source}");
         }
         return new(parentToChildren, childToParent);
     }
