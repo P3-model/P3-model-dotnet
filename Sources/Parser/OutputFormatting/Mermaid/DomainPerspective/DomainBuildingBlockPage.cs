@@ -43,6 +43,12 @@ public class DomainBuildingBlockPage : MermaidPageBase
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
+        if (_buildingBlock.ShortDescription != null)
+        {
+            mermaidWriter.WriteHeading("User defined description", 2);
+            mermaidWriter.WriteLine(_buildingBlock.ShortDescription);
+        }
+        
         mermaidWriter.WriteHeading("Domain Perspective", 2);
         mermaidWriter.WriteHeading("Dependencies", 3);
 
