@@ -3,6 +3,7 @@
 ## Status
 
 1. Proposed: 2024-01-17
+2. Approved: 2024-01-26
 
 ## Context
 
