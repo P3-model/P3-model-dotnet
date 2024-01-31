@@ -1,0 +1,5 @@
+using TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule;
+
+namespace TestSamples.MainProject.NotDomain;
+
+public class SampleExternalSystemHttpIntegration : SampleExternalSystemIntegration;

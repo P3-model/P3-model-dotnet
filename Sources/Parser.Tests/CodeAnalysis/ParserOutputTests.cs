@@ -22,8 +22,7 @@ public class ParserOutputTests
                     .ExcludeProjects("Annotations")))
             .Analyzers(analyzers => analyzers
                 .UseDefaults(options => options
-                    .TreatNamespacesAsDomainModules(namespaces => namespaces
-                        .OnlyFromAssembliesAnnotatedWith<DomainModelAttribute>()
+                    .TreatNamespacesAsDomainModules(namespaces => namespaces                        
                         .RemoveRootNamespace("TestSamples")
                         .RemoveNamespacePart("MainProject", "NotModule"))))
             .OutputFormat(formatters => formatters

@@ -24,5 +24,7 @@ public class CSharpTypeTests
         new CSharpType("TestSamples.MainProject.Domain.DomainModules.WithCode.WithCode.Class1", "Class1", string.Empty),
         new CSharpType("TestSamples.MainProject.Domain.DomainModules.WithoutCode.NotModule.Class1", "Class1", string.Empty),
         new CSharpType("TestSamples.MainProject.Domain.DomainModules.WithoutCode.WithCode.Class1", "Class1", string.Empty),
+        new CSharpType("TestSamples.MainProject.NotDomain.NamespaceInfo", "NamespaceInfo", string.Empty),
+        new CSharpType("TestSamples.MainProject.NotDomain.SampleExternalSystemHttpIntegration", "SampleExternalSystemHttpIntegration", string.Empty),
         new CSharpType("TestSamples.WorkerService.Worker", "Worker", string.Empty));
 }
