@@ -18,7 +18,7 @@ public class DomainModuleOwnersPage : MermaidPageBase
 
     protected override string Description => @"This view shows how top level domain modules are assigned to development teams and business organizational units.";
 
-    public override string RelativeFilePath => Path.Combine("Domain", "Concepts", "DomainModuleOwners.md");
+    public override string RelativeFilePath => Path.Combine("Domain", "Modules", "ModuleOwners.md");
     public override ElementBase? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 

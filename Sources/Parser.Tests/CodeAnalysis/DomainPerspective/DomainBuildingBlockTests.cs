@@ -14,7 +14,12 @@ public class DomainBuildingBlockTests
             "Sample Building Block"),
         new DddAggregate("Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregate", "Sample Ddd Aggregate")
         {
-            ShortDescription = "*lorem ipsum* **dolor** sit amet"
+            ShortDescription = """
+                               *lorem ipsum* **dolor** sit amet ...
+                               - item 1
+                               - item 2
+                               ... consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                               """
         },
         new DddAggregate("Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregateFromBaseClass",
             "Sample Ddd Aggregate From Base Class"),

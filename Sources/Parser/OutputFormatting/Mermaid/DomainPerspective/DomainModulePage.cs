@@ -53,7 +53,7 @@ public class DomainModulePage : MermaidPageBase
 - engaged people: actors, development teams, business stakeholders";
 
     public override string RelativeFilePath => Path.Combine(
-        "Domain", "Concepts", Path.Combine(_module.Id.Parts.ToArray()), $"{_module.Name.Dehumanize()}.md");
+        "Domain", "Modules", Path.Combine(_module.Id.Parts.ToArray()), $"{_module.Name.Dehumanize()}-module.md");
 
     public override ElementBase MainElement => _module;
 

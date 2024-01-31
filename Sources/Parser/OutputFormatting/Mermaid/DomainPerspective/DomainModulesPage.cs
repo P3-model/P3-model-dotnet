@@ -15,7 +15,7 @@ public class DomainModulesPage : MermaidPageBase
 First level modules can be treated as separate sub-models or DDD Bounded Contexts.  
 All modules can be divided into sub-modules to reflect hierarchical structure of the domain.";
 
-    public override string RelativeFilePath => Path.Combine("Domain", "Concepts", "DomainModules.md");
+    public override string RelativeFilePath => Path.Combine("Domain", "Modules", "Modules.md");
     public override ElementBase? MainElement => null;
     public override Perspective? Perspective => ModelSyntax.Perspective.Domain;
 

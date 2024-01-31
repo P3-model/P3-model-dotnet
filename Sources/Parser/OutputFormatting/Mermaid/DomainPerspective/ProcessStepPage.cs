@@ -50,8 +50,8 @@ public class ProcessStepPage : MermaidPageBase
 - engaged people: actors, development teams, business stakeholders";
 
     public override string RelativeFilePath => _module is null
-        ? Path.Combine("Domain", "Concepts", $"{_step.Name.Dehumanize()}.md")
-        : Path.Combine("Domain", "Concepts", Path.Combine(_module.Id.Parts.ToArray()),
+        ? Path.Combine("Domain", "Modules", $"{_step.Name.Dehumanize()}.md")
+        : Path.Combine("Domain", "Modules", Path.Combine(_module.Id.Parts.ToArray()),
             $"{_step.Name.Dehumanize()}.md");
     
     public override ElementBase MainElement => _step;
