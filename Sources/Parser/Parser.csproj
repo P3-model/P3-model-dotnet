@@ -28,7 +28,7 @@
       <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.0-3.final" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.0-3.final" />
       <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.9.0-3.final" />
-      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.9.0-3.final" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.9.0-3.final" PrivateAssets="analyzers;build"/>
       <PackageReference Include="Serilog" Version="3.1.1" />
       <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
     </ItemGroup>
