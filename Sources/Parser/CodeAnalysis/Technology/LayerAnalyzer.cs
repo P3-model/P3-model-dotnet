@@ -17,7 +17,7 @@ public class LayerAnalyzer : SymbolAnalyzer<IAssemblySymbol>, SymbolAnalyzer<INa
 {
     public void Analyze(IAssemblySymbol symbol, ModelBuilder modelBuilder)
     {
-        if (!IsLayer(symbol, out var name))
+        if (!IsLayer(symbol, out var name, out _))
             return;
         name = name.Humanize();
         var layer = new Layer(name);
@@ -27,23 +27,24 @@ public class LayerAnalyzer : SymbolAnalyzer<IAssemblySymbol>, SymbolAnalyzer<INa
 
     public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder)
     {
-        if (!symbol.TryGetAttribute(typeof(LayerAttribute), GetAttributeOptions.IncludeAttributeBaseTypes,
-                out var layerAttribute))
+        if (!IsLayer(symbol, out var name, out var layerAttribute))
             return;
-        var name = layerAttribute.GetConstructorArgumentValue<string>(nameof(LayerAttribute.Name)).Humanize();
         var layer = new Layer(name);
         ISymbol targetSymbol = layerAttribute.TryGetNamedArgumentValue<bool>(nameof(LayerAttribute.ApplyOnNamespace),
-            out var applyOnNamespace) && applyOnNamespace
-            ? symbol.ContainingNamespace
-            : symbol;
+                out var applyOnNamespace) &&
+            applyOnNamespace
+                ? symbol.ContainingNamespace
+                : symbol;
         modelBuilder.Add(layer, targetSymbol);
         modelBuilder.Add(elements => GetRelations(targetSymbol, layer, elements));
     }
 
-    private static bool IsLayer(ISymbol symbol, [NotNullWhen(true)] out string? name)
+    private static bool IsLayer(ISymbol symbol, 
+        [NotNullWhen(true)] out string? name, 
+        [NotNullWhen(true)] out AttributeData? layerAttribute)
     {
         // TODO: better way to get value passed to base constructor
-        if (symbol.TryGetAttribute(typeof(LayerAttribute), out var layerAttribute))
+        if (symbol.TryGetAttribute(typeof(LayerAttribute), out layerAttribute))
         {
             name = layerAttribute.GetConstructorArgumentValue<string>(nameof(LayerAttribute.Name));
             return true;
