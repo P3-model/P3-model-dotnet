@@ -4,9 +4,7 @@ namespace P3Model.Annotations.Domain.StaticModel;
 
 [PublicAPI]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public class ProcessStepContractAttribute : Attribute
+public class ProcessStepContractAttribute(string? name = null) : Attribute, DomainPerspectiveAttribute
 {
-    public string? Name { get; }
-
-    public ProcessStepContractAttribute(string? name = null) => Name = name;
+    public string? Name { get; } = name;
 }

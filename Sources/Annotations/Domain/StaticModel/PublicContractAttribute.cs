@@ -9,4 +9,4 @@ namespace P3Model.Annotations.Domain.StaticModel;
                 AttributeTargets.Enum |
                 AttributeTargets.Delegate |
                 AttributeTargets.Method)]
-public class PublicContractAttribute : Attribute { }
+public class PublicContractAttribute : Attribute, DomainPerspectiveAttribute;

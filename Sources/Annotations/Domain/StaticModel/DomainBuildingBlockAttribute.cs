@@ -9,7 +9,7 @@ namespace P3Model.Annotations.Domain.StaticModel;
                 AttributeTargets.Enum |
                 AttributeTargets.Delegate |
                 AttributeTargets.Method)]
-public class DomainBuildingBlockAttribute(string? name = null) : Attribute
+public class DomainBuildingBlockAttribute(string? name = null) : Attribute, DomainPerspectiveAttribute
 {
     public string? Name { get; } = name;
 }

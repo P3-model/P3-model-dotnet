@@ -10,7 +10,7 @@ namespace P3Model.Annotations.Domain.StaticModel;
                 AttributeTargets.Delegate |
                 AttributeTargets.Enum |
                 AttributeTargets.Module)]
-public class NotDomainModuleAttribute : Attribute, NamespaceApplicable
+public class NotDomainModuleAttribute : Attribute, NamespaceApplicable, DomainPerspectiveAttribute
 {
     public bool ApplyOnNamespace { get; init; } = true;
 }

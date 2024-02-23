@@ -4,4 +4,4 @@ namespace P3Model.Annotations.Domain;
 
 [PublicAPI]
 [AttributeUsage(AttributeTargets.All)]
-public class ExcludeFromDomainGlossaryAttribute : Attribute { }
+public class ExcludeFromDomainGlossaryAttribute : Attribute, DomainPerspectiveAttribute;

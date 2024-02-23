@@ -10,7 +10,7 @@ namespace P3Model.Annotations.Domain.StaticModel;
                 AttributeTargets.Delegate |
                 AttributeTargets.Method)]
 public class ExternalSystemIntegrationAttribute(string externalSystemName, string? name = null)
-    : Attribute
+    : Attribute, DomainPerspectiveAttribute
 {
     public string ExternalSystemName { get; } = externalSystemName;
     public string? Name { get; } = name;

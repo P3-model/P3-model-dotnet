@@ -6,9 +6,7 @@ namespace P3Model.Annotations.Domain.StaticModel;
 [AttributeUsage(AttributeTargets.Method |
                 AttributeTargets.Delegate |
                 AttributeTargets.Interface)]
-public class BehaviorAttribute : Attribute
+public class BehaviorAttribute(string? name = null) : Attribute, DomainPerspectiveAttribute
 {
-    public string? Name { get; }
-
-    public BehaviorAttribute(string? name = null) => Name = name;
+    public string? Name { get; } = name;
 }

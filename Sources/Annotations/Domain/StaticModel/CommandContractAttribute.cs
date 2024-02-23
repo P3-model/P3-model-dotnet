@@ -3,7 +3,4 @@ using JetBrains.Annotations;
 namespace P3Model.Annotations.Domain.StaticModel;
 
 [PublicAPI]
-public class CommandContractAttribute : ProcessStepContractAttribute
-{
-    
-}
+public class CommandContractAttribute : ProcessStepContractAttribute;

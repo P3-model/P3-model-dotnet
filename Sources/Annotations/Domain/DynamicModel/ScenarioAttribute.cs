@@ -10,9 +10,7 @@ namespace P3Model.Annotations.Domain.DynamicModel;
                 AttributeTargets.Method |
                 AttributeTargets.Field |
                 AttributeTargets.Property)]
-public class ScenarioAttribute : Attribute
+public class ScenarioAttribute(string? name = null) : Attribute, DomainPerspectiveAttribute
 {
-    public string? Name { get; }
-
-    public ScenarioAttribute(string? name = null) => Name = name;
+    public string? Name { get; } = name;
 }

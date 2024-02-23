@@ -10,10 +10,8 @@ namespace P3Model.Annotations.Domain.StaticModel;
                 AttributeTargets.Delegate |
                 AttributeTargets.Enum |
                 AttributeTargets.Module)]
-public class DomainModuleAttribute : Attribute, NamespaceApplicable
+public class DomainModuleAttribute(string? name = null) : Attribute, NamespaceApplicable, DomainPerspectiveAttribute
 {
-    public string? Name { get; }
+    public string? Name { get; } = name;
     public bool ApplyOnNamespace { get; init;  }
-
-    public DomainModuleAttribute(string? name = null) => Name = name;
 }

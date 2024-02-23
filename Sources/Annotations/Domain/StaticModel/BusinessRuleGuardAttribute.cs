@@ -8,7 +8,7 @@ namespace P3Model.Annotations.Domain.StaticModel;
                 AttributeTargets.Interface |
                 AttributeTargets.Method |
                 AttributeTargets.Delegate)]
-public class BusinessRuleGuardAttribute : Attribute
+public class BusinessRuleGuardAttribute : Attribute, DomainPerspectiveAttribute
 {
     public string? Id { get; }
     public string Name { get; }
