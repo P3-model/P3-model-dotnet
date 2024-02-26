@@ -4,7 +4,6 @@ using System.Linq;
 using Humanizer;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations;
-using P3Model.Annotations.Domain;
 using P3Model.Annotations.Domain.StaticModel;
 using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
@@ -20,40 +19,22 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(DomainModu
     protected abstract Type AttributeType { get; }
 
     public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder) => Analyze(symbol,
-        GetAttributeOptions.FromBaseClasses | GetAttributeOptions.FromAllInterfaces,
+        TypeAttributeSources.Self | TypeAttributeSources.BaseClasses | TypeAttributeSources.AllInterfaces,
         modelBuilder);
 
     public void Analyze(IMethodSymbol symbol, ModelBuilder modelBuilder) =>
-        Analyze(symbol, GetAttributeOptions.Direct, modelBuilder);
+        Analyze(symbol, TypeAttributeSources.Self, modelBuilder);
 
-    private void Analyze(ISymbol symbol, GetAttributeOptions options, ModelBuilder modelBuilder)
+    private void Analyze(ISymbol symbol, TypeAttributeSources sources, ModelBuilder modelBuilder)
     {
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
-        if (!IsDomainModel(symbol))
+        if (!symbol.BelongsToDomainModel(AttributeType, sources, out var buildingBlockAttribute))
             return;
         // TODO: Support for duplicated symbols (partial classes)
-        if (!symbol.TryGetAttribute(AttributeType, options, out var buildingBlockAttribute))
-            return;
         var (buildingBlock, module) = GetBuildingBlock(symbol, buildingBlockAttribute);
         SetProperties(buildingBlock, symbol);
         AddElementsAndRelations(buildingBlock, module, symbol, buildingBlockAttribute, modelBuilder);
-    }
-
-    private static bool IsDomainModel(ISymbol symbol)
-    {
-        if (!symbol.ContainingAssembly.TryGetAttribute(typeof(DomainModelAttribute), out _))
-            return false;
-        if (symbol.TryGetAttribute(typeof(NotDomainModelAttribute), out _))
-            return false;
-        if (symbol.ContainingNamespace
-            .GetTypeMembers()
-            .Any(childSymbol => childSymbol.TryGetAttribute(typeof(NotDomainModelAttribute), out var attribute) &&
-                attribute.TryGetNamedArgumentValue<bool>(nameof(NotDomainModelAttribute.ApplyOnNamespace),
-                    out var applyOnNamespace) &&
-                applyOnNamespace))
-            return false;
-        return true;
     }
 
     private (TBuildingBlock, DomainModule?) GetBuildingBlock(ISymbol symbol,

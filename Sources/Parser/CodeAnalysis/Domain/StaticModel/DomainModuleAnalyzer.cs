@@ -6,8 +6,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Humanizer;
 using Microsoft.CodeAnalysis;
-using P3Model.Annotations.Domain;
-using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax.People;
@@ -52,7 +50,7 @@ public class DomainModuleAnalyzer(DomainModuleFinder domainModuleFinder)
 
     public void Analyze(INamespaceSymbol symbol, ModelBuilder modelBuilder)
     {
-        if (!IsDomainModel(symbol))
+        if (!symbol.BelongsToDomainModel())
             return;
         foreach (var namespaceSymbol in GetFullHierarchy(symbol))
         {
@@ -64,22 +62,6 @@ public class DomainModuleAnalyzer(DomainModuleFinder domainModuleFinder)
             modelBuilder.Add(elements => GetRelationToParent(namespaceSymbol, module, elements));
             modelBuilder.Add(elements => GetRelationsToCodeStructures(namespaceSymbol, module, elements));
         }
-    }
-
-    private static bool IsDomainModel(INamespaceSymbol symbol)
-    {
-        if (symbol.ConstituentNamespaces
-                .All(constituentSymbol => !constituentSymbol.ContainingAssembly
-                    .TryGetAttribute(typeof(DomainModelAttribute), out _)))
-            return false;
-        if (symbol
-            .GetTypeMembers()
-            .Any(childSymbol => childSymbol.TryGetAttribute(typeof(NotDomainModelAttribute), out var attribute) &&
-                attribute.TryGetNamedArgumentValue<bool>(nameof(NotDomainModelAttribute.ApplyOnNamespace),
-                    out var applyOnNamespace) &&
-                applyOnNamespace))
-            return false;
-        return true;
     }
 
     private static IEnumerable<INamespaceSymbol> GetFullHierarchy(INamespaceSymbol symbol)

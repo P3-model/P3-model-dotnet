@@ -4,7 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using P3Model.Annotations;
 using P3Model.Parser.ModelSyntax;
+using Serilog;
 
 namespace P3Model.Parser.CodeAnalysis.RoslynExtensions;
 
@@ -12,62 +14,139 @@ namespace P3Model.Parser.CodeAnalysis.RoslynExtensions;
 public static class SymbolExtensions
 {
     // TODO: support for attributes from different versions of annotation assembly
-    public static bool TryGetAttribute(this ISymbol symbol, Type type,
-        [NotNullWhen(true)] out AttributeData? attributeData) =>
-        TryGetAttribute(symbol, type, GetAttributeOptions.Direct, out attributeData);
-
-    public static bool TryGetAttribute(this ISymbol symbol, Type type, GetAttributeOptions options,
-        [NotNullWhen(true)] out AttributeData? attributeData)
+    public static bool TryGetAttribute(this ISymbol symbol,
+        AttributeSelector selector,
+        [NotNullWhen(true)] out AttributeData? attributeData) => symbol switch
     {
-        if (TryGetDirectAttribute(symbol, type, options, out attributeData))
+        ITypeSymbol typeSymbol => TryGetAttribute(typeSymbol, selector, out attributeData),
+        INamespaceSymbol namespaceSymbol => TryGetAttribute(namespaceSymbol, selector, out attributeData),
+        IAssemblySymbol assemblySymbol => TryGetAttribute(assemblySymbol, selector, out attributeData),
+        IMethodSymbol methodSymbol => TryGetAttribute(methodSymbol, selector, out attributeData),
+        _ => throw new ParserError($"Getting attribute for symbol {symbol.GetType().Name} is not supported")
+    };
+
+    public static bool TryGetAttribute(this ITypeSymbol symbol,
+        AttributeSelector selector,
+        [NotNullWhen(true)] out AttributeData? attributeData) =>
+        TryGetAttribute(symbol, selector, TypeAttributeSources.Self, out attributeData, out _);
+
+    public static bool TryGetAttribute(this ITypeSymbol symbol,
+        AttributeSelector selector,
+        TypeAttributeSources sources,
+        [NotNullWhen(true)] out AttributeData? attributeData,
+        [NotNullWhen(true)] out ITypeSymbol? annotatedSymbol)
+    {
+        if (TryGetDirectAttribute(symbol, selector, out attributeData))
+        {
+            annotatedSymbol = symbol;
             return true;
-        if (options.HasFlag(GetAttributeOptions.FromBaseClasses) &&
-            TryGetBaseClassAttribute(symbol, type, options, out attributeData))
+        }
+        if (sources.HasFlag(TypeAttributeSources.BaseClasses) &&
+            TryGetBaseClassAttribute(symbol, selector, sources, out attributeData, out annotatedSymbol))
             return true;
-        if (options.HasFlag(GetAttributeOptions.FromAllInterfaces) &&
-            TryGetInterfaceAttribute(symbol, type, options, out attributeData))
+        if (sources.HasFlag(TypeAttributeSources.AllInterfaces) &&
+            TryGetInterfaceAttribute(symbol, selector, sources, out attributeData, out annotatedSymbol))
             return true;
+        annotatedSymbol = null;
         return false;
     }
 
-    private static bool TryGetDirectAttribute(ISymbol symbol, Type type, GetAttributeOptions options,
+    public static bool TryGetAttribute(this INamespaceSymbol symbol,
+        AttributeSelector selector,
         [NotNullWhen(true)] out AttributeData? attributeData)
     {
-        Func<AttributeData, bool> predicate = options.HasFlag(GetAttributeOptions.IncludeAttributeBaseTypes)
-            ? a => a.AttributeClass.IsAssignableFrom(type)
-            : a => a.AttributeClass.IsExactlyOf(type);
+        if (!typeof(NamespaceApplicable).IsAssignableFrom(selector.Type))
+        {
+            Log.Warning(
+                "Not namespace applicable attribute {attributeType} used to get attribute from namespace symbol",
+                selector.Type.FullName);
+            attributeData = null;
+            return false;
+        }
+        foreach (var typeSymbol in symbol.GetTypeMembers())
+        {
+            if (typeSymbol.TryGetAttribute(selector, out attributeData) &&
+                attributeData.TryGetNamedArgumentValue<bool>(nameof(NamespaceApplicable.ApplyOnNamespace),
+                    out var applyOnNamespace) &&
+                applyOnNamespace)
+                return true;
+        }
+        attributeData = null;
+        return false;
+    }
+
+    public static bool TryGetAttribute(this IAssemblySymbol symbol,
+        AttributeSelector selector,
+        [NotNullWhen(true)] out AttributeData? attributeData) =>
+        TryGetDirectAttribute(symbol, selector, out attributeData);
+
+    public static bool TryGetAttribute(this IMethodSymbol symbol, AttributeSelector selector,
+        [NotNullWhen(true)] out AttributeData? attributeData) =>
+        TryGetDirectAttribute(symbol, selector, out attributeData);
+
+    public static bool TryGetAssemblyAttribute(this ISymbol symbol, AttributeSelector selector,
+        [NotNullWhen(true)] out AttributeData? attributeData)
+    {
+        if (symbol is INamespaceSymbol namespaceSymbol)
+            return namespaceSymbol.TryGetAssemblyAttribute(selector, out attributeData);
+        return symbol.ContainingAssembly.TryGetAttribute(selector, out attributeData);
+    }
+
+    public static bool TryGetAssemblyAttribute(this INamespaceSymbol namespaceSymbol,
+        AttributeSelector selector,
+        [NotNullWhen(true)] out AttributeData? attributeData)
+    {
+        foreach (var constituentSymbol in namespaceSymbol.ConstituentNamespaces)
+        {
+            if (constituentSymbol.ContainingAssembly.TryGetAttribute(selector, out attributeData))
+                return true;
+        }
+        attributeData = null;
+        return false;
+    }
+
+    private static bool TryGetDirectAttribute(ISymbol symbol,
+        AttributeSelector selector,
+        [NotNullWhen(true)] out AttributeData? attributeData)
+    {
+        Func<AttributeData, bool> predicate = selector.IncludeBaseTypes
+            ? a => a.AttributeClass.IsAssignableFrom(selector.Type)
+            : a => a.AttributeClass.IsExactlyOf(selector.Type);
         attributeData = symbol.GetAttributes().SingleOrDefault(predicate);
         return attributeData != null;
     }
 
-    private static bool TryGetBaseClassAttribute(ISymbol symbol, Type type, GetAttributeOptions options,
-        [NotNullWhen(true)] out AttributeData? attributeData)
+    private static bool TryGetBaseClassAttribute(ITypeSymbol typeSymbol,
+        AttributeSelector selector,
+        TypeAttributeSources sources,
+        [NotNullWhen(true)] out AttributeData? attributeData,
+        [NotNullWhen(true)] out ITypeSymbol? annotatedSymbol)
     {
-        if (symbol is not INamedTypeSymbol typeSymbol)
-            throw new ParserError(
-                $"Can't include attributes of base classes for symbol {symbol} because it's not {nameof(INamedTypeSymbol)}");
-        options = options.Without(GetAttributeOptions.FromAllInterfaces);
-        if (typeSymbol.BaseType != null && typeSymbol.BaseType.TryGetAttribute(type, options, out attributeData))
+        sources = sources.Without(TypeAttributeSources.AllInterfaces);
+        if (typeSymbol.BaseType != null &&
+            typeSymbol.BaseType.TryGetAttribute(selector, sources, out attributeData, out annotatedSymbol))
             return true;
         attributeData = null;
+        annotatedSymbol = null;
         return false;
     }
 
-    private static bool TryGetInterfaceAttribute(ISymbol symbol, Type type, GetAttributeOptions options,
-        [NotNullWhen(true)] out AttributeData? attributeData)
+    private static bool TryGetInterfaceAttribute(ITypeSymbol typeSymbol,
+        AttributeSelector selector,
+        TypeAttributeSources sources,
+        [NotNullWhen(true)] out AttributeData? attributeData, 
+        [NotNullWhen(true)] out ITypeSymbol? annotatedSymbol)
     {
-        if (symbol is not INamedTypeSymbol typeSymbol)
-            throw new ParserError(
-                $"Can't include attributes of interfaces for symbol {symbol} because it's not {nameof(INamedTypeSymbol)}");
-        options = options
-            .Without(GetAttributeOptions.FromBaseClasses)
-            .Without(GetAttributeOptions.FromAllInterfaces);
+        sources = sources
+            .Without(TypeAttributeSources.BaseClasses)
+            .Without(TypeAttributeSources.AllInterfaces);
         foreach (var interfaceSymbol in typeSymbol.AllInterfaces)
         {
-            if (interfaceSymbol.TryGetAttribute(type, options, out attributeData))
+            if (interfaceSymbol.TryGetAttribute(selector, sources, out attributeData, out annotatedSymbol))
                 return true;
         }
         attributeData = null;
+        annotatedSymbol = null;
         return false;
     }
 
