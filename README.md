@@ -4,43 +4,94 @@
 
 In this repository you can find all tools and libraries that facilitate use of P3 Model in .net.
 
-P3 Model is a tool to navigate throughout complex systems from all important perspectives.
+P3 Model is a tool to automatically generate documentation from your source code.  
+Generated documentation is based on information already present in the code and additional metadata added with annotations and JSON or Markdown files.   
 
-If you haven't check out main [**P3 Model**](https://github.com/P3-model/P3-model) repository then we strongly encourage you to do it.
+If you haven't check out main [**P3 Model**](https://github.com/P3-model/P3-model) repository then we strongly encourage you to do so.
 
-## Annotations
+## The goal
 
-**P3 Model Annotations is a set of metadata attributes** that you can use in you .net code to enrich it with information about domain model, people aspects, used patterns and more.
+Our goal is to provide visualization of the developed system including all important aspects:
+- **domain** model (processes, modules, building blocks, etc.)
+- **technology** solutions (deployable units, layers, api, types, etc.)
+- **people** working on it (teams responsibilities, business ownership, etc.)
 
-### Introduction
+The visualization is based on parsed source code augmented with metadata (from `P3Model.Annotations` library).  
+You can see the idea in this video:
 
-Working code is enough for machine that execute it but not enough for people to understand it.
+Now it's only very simple, fixed set of Markdown pages with Mermaid diagrams. It's MVP.  
+In the future we plan to provide dynamic visualization tool (with zooming, filtering elements and relations, _ad hoc_ diagrams, etc.). 
 
-A lot of information is already in the code base but many information are missing because they are not needed for the compiler. Thus **we need to add metadata** about:
+## Getting started
 
-- business concepts not represented directly in the code (e.g. domain model boundaries, processes, etc.)
-- intent to use architecture or design patterns
-- rationale of design decisions
-- people responsible for maintenance and development of certain parts of the system
-- etc.
+### Add metadata to your source code
+1. Add [P3Model.Annotations package](https://www.nuget.org/packages/P3Model.Annotations/) to each project you want to add metadata to.
+2. Add appropriate attributed to your code. Full list of annotations with usage examples you can find [here](Sources/Annotations/UsageExamples.md).
 
-We believe that enriching code with this additional aspects can help us in:
+### Implement parser
 
-- better understanding of the design when working with code directly in IDE
-- **automatically generating always up-to-date documentation** - Living Documentation
-- automation architecture testing
+1. Create console application.
+2. Add [P3Model.Parser package](https://www.nuget.org/packages/P3Model.Parser/).
+3. Configure Parser in `Program.cs` like that:
+    ```csharp
+    await P3
+        .Product(product => product
+            .UseName("YOUR_SYSTEM_NAME"))
+        .Repositories(repositories => repositories
+            .Use("REPOSITORY_PATH"))
+        .Analyzers(analyzers => analyzers
+            .UseDefaults(options => options
+                .TreatNamespacesAsDomainModules(namespaces => namespaces
+                    .RemoveNamespacePart("PART_TO_REMOVE"))))
+        .OutputFormat(formatters => formatters
+            .UseMermaid(options => options
+                .Directory("MERMAID_OUTPUT_PATH")
+                .UseDefaultPages())
+            .UseJson(options => options
+                .File("JSON_OUTPUT_PATH")))
+        .LogLevel(LogEventLevel.Verbose)
+        .Analyze();
+    ```
 
-### Usage
+### Run
 
-To use P3 Model Annotations simply add [NuGet package](https://www.nuget.org/packages/P3Model.Annotations/) to your C# project and start annotating your code.
+- Run parser from command line or your IDE.
+- Integrate Parser with your CI pipeline to update documentation on every commit.  
+  Here is example with GitHub Action: 
+  ```yaml
+   name: Generate P3 documentation
+   
+   on:
+     push:
+       branches:
+         - main
+   
+   jobs:
+     generate-p3-docs:
+       runs-on: ubuntu-latest
+       
+       permissions:      
+         contents: write
+   
+       steps:
+         - name: Checkout repository
+           uses: actions/checkout@v4
+   
+         - name: Restore packages
+           run: dotnet restore
+   
+         - name: Run P3 Parser
+           run: dotnet run --project Docs/P3/DocsGenerator/DocsGenerator.csproj
+   
+         - name: Add, Commit & Push changes
+           uses: stefanzweifel/git-auto-commit-action@v5
+           with:
+             commit_message: "P3 docs updated"
+   ```
 
-Project with examples is coming soon so stay tuned.
+### Living example
 
-## Parser
-
-P3 Model Parser is a tool that generate documentation from C# source code enriched with metadata like: annotations, markdown files and more.
-
-Examples of use and integration manual is coming soon so stay tuned.
+If you'd like to see P3 Model in bigger code base check [DDD Starter for .net](https://github.com/itlibrium/DDD-starter-dotnet).
 
 ## Contribution
 
