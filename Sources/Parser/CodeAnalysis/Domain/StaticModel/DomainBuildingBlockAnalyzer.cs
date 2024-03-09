@@ -6,8 +6,8 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
 [UsedImplicitly]
-public class DomainBuildingBlockAnalyzer(DomainModuleFinder moduleFinder)
-    : DomainBuildingBlockAnalyzerBase<DomainBuildingBlock>(moduleFinder)
+public class DomainBuildingBlockAnalyzer(DomainModulesHierarchyResolver modulesHierarchyResolver)
+    : DomainBuildingBlockAnalyzerBase<DomainBuildingBlock>(modulesHierarchyResolver)
 {
     protected override Type AttributeType => typeof(DomainBuildingBlockAttribute);
 

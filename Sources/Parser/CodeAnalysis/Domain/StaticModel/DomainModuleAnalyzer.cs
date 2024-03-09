@@ -15,7 +15,7 @@ using Serilog;
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
 // TODO: support for defining domain modules structure without namespaces
-public class DomainModuleAnalyzer(DomainModuleFinder domainModuleFinder)
+public class DomainModuleAnalyzer(DomainModulesHierarchyResolver modulesHierarchyResolver)
     : FileAnalyzer, SymbolAnalyzer<INamespaceSymbol>
 {
     public async Task Analyze(FileInfo fileInfo, ModelBuilder modelBuilder)
@@ -50,12 +50,19 @@ public class DomainModuleAnalyzer(DomainModuleFinder domainModuleFinder)
 
     public void Analyze(INamespaceSymbol symbol, ModelBuilder modelBuilder)
     {
-        if (!symbol.BelongsToDomainModel())
+        if (!symbol.IsExplicitlyIncludedInDomainModel())
             return;
         foreach (var namespaceSymbol in GetFullHierarchy(symbol))
         {
-            if (!domainModuleFinder.TryFind(namespaceSymbol, out var module))
-                return;
+            if (!namespaceSymbol.IsExplicitlyIncludedInDomainModel())
+            {
+                Log.Warning("Namespace {namespace} implementing a part of domain modules hierarchy doesn't belong to domain model.",
+                    namespaceSymbol.ToDisplayString());
+                continue;
+            }
+            if (!modulesHierarchyResolver.TryFind(namespaceSymbol, out var hierarchyId))
+                continue;
+            var module = new DomainModule(hierarchyId.Value);
             modelBuilder.Add(module, namespaceSymbol);
             // TODO: relation to teams and business units defined at namespace level
             //  Requires parsing types within the namespace annotated with DevelopmentOwnerAttribute and ApplyOnNamespace == true.

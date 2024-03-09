@@ -6,8 +6,8 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel.Ddd;
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel.Ddd;
 
 [UsedImplicitly]
-public class DddRepositoryAnalyzer(DomainModuleFinder moduleFinder)
-    : DomainBuildingBlockAnalyzerBase<DddRepository>(moduleFinder)
+public class DddRepositoryAnalyzer(DomainModulesHierarchyResolver modulesHierarchyResolver)
+    : DomainBuildingBlockAnalyzerBase<DddRepository>(modulesHierarchyResolver)
 {
     protected override Type AttributeType => typeof(DddRepositoryAttribute);
 

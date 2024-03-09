@@ -10,8 +10,8 @@ using P3Model.Parser.ModelSyntax.Technology;
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
 [UsedImplicitly]
-public class ExternalSystemIntegrationAnalyzer(DomainModuleFinder moduleFinder)
-    : DomainBuildingBlockAnalyzerBase<ExternalSystemIntegration>(moduleFinder)
+public class ExternalSystemIntegrationAnalyzer(DomainModulesHierarchyResolver modulesHierarchyResolver)
+    : DomainBuildingBlockAnalyzerBase<ExternalSystemIntegration>(modulesHierarchyResolver)
 {
     protected override Type AttributeType => typeof(ExternalSystemIntegrationAttribute);
 

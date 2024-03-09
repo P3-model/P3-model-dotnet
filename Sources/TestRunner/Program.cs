@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using P3Model.Annotations.Domain;
 using P3Model.Parser.Configuration;
 using Serilog.Events;
 
@@ -19,7 +18,6 @@ await P3
     .Analyzers(analyzers => analyzers
         .UseDefaults(options => options
             .TreatNamespacesAsDomainModules(namespaces => namespaces
-                .OnlyFromAssembliesAnnotatedWith<DomainModelAttribute>()
                 .RemoveRootNamespace("MyCompany.ECommerce"))))
     .OutputFormat(formatters => formatters
         .UseMermaid(options => options

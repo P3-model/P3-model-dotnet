@@ -9,28 +9,52 @@ using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax.Technology;
+using Serilog;
 
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
-public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(DomainModuleFinder moduleFinder)
+public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(
+    DomainModulesHierarchyResolver modulesHierarchyResolver)
     : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnalyzer<IMethodSymbol>
     where TBuildingBlock : DomainBuildingBlock
 {
     protected abstract Type AttributeType { get; }
 
-    public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder) => Analyze(symbol,
-        TypeAttributeSources.Self | TypeAttributeSources.BaseClasses | TypeAttributeSources.AllInterfaces,
-        modelBuilder);
-
-    public void Analyze(IMethodSymbol symbol, ModelBuilder modelBuilder) =>
-        Analyze(symbol, TypeAttributeSources.Self, modelBuilder);
-
-    private void Analyze(ISymbol symbol, TypeAttributeSources sources, ModelBuilder modelBuilder)
+    public void Analyze(INamedTypeSymbol symbol, ModelBuilder modelBuilder)
     {
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
-        if (!symbol.BelongsToDomainModel(AttributeType, sources, out var buildingBlockAttribute))
+        const TypeAttributeSources sources = TypeAttributeSources.Self |
+            TypeAttributeSources.BaseClasses |
+            TypeAttributeSources.AllInterfaces;
+        if (!symbol.TryGetAttribute(AttributeType, sources, out var buildingBlockAttribute, out var annotatedSymbol))
             return;
+        if (IsAnnotatedDirectly(symbol, annotatedSymbol))
+        {
+            if (symbol.IsExplicitlyExcludedFromDomainModel())
+                LogSymbolExcludedFromDomainModel(symbol);
+        }
+        else if (!symbol.IsExplicitlyIncludedInDomainModel())
+        {
+            return;
+        }
+        // TODO: Support for duplicated symbols (partial classes)
+        var (buildingBlock, module) = GetBuildingBlock(symbol, buildingBlockAttribute);
+        SetProperties(buildingBlock, symbol);
+        AddElementsAndRelations(buildingBlock, module, symbol, buildingBlockAttribute, modelBuilder);
+    }
+
+    private static bool IsAnnotatedDirectly(ISymbol analyzedSymbol, ISymbol annotatedSymbol) =>
+        CompilationIndependentSymbolEqualityComparer.Default.Equals(analyzedSymbol, annotatedSymbol);
+
+    public void Analyze(IMethodSymbol symbol, ModelBuilder modelBuilder)
+    {
+        if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
+            return;
+        if (!symbol.TryGetAttribute(AttributeType, out var buildingBlockAttribute))
+            return;
+        if (symbol.IsExplicitlyExcludedFromDomainModel())
+            LogSymbolExcludedFromDomainModel(symbol);
         // TODO: Support for duplicated symbols (partial classes)
         var (buildingBlock, module) = GetBuildingBlock(symbol, buildingBlockAttribute);
         SetProperties(buildingBlock, symbol);
@@ -41,11 +65,17 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(DomainModu
         AttributeData buildingBlockAttribute)
     {
         var name = GetName(symbol, buildingBlockAttribute);
-        var id = moduleFinder.TryFind(symbol, out var module)
-            ? $"{module.Id.Full}.{name.Dehumanize()}"
-            : name.Dehumanize();
-        var buildingBlock = CreateBuildingBlock(id, name);
-        return (buildingBlock, module);
+        if (modulesHierarchyResolver.TryFind(symbol, out var hierarchyId))
+        {
+            var buildingBlock = CreateBuildingBlock($"{hierarchyId.Value.Full}.{name.Dehumanize()}", name);
+            var module = new DomainModule(hierarchyId.Value);
+            return (buildingBlock, module);
+        }
+        else
+        {
+            var buildingBlock = CreateBuildingBlock(name.Dehumanize(), name);
+            return (buildingBlock, null);
+        }
     }
 
     private static string GetName(ISymbol symbol, AttributeData buildingBlockAttribute)
@@ -99,4 +129,10 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(DomainModu
             return new FileInfo(path);
         })
         .SingleOrDefault(file => file.Exists);
+
+    private void LogSymbolExcludedFromDomainModel(ISymbol symbol) =>
+        Log.Warning(
+            "Symbol: {symbol} associated with Building Block: {buildingBlock} is explicitly excluded from domain model",
+            symbol.ToDisplayString(),
+            AttributeType.Name.Replace("Attribute", string.Empty));
 }

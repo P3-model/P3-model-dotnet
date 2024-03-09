@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using P3Model.Annotations.Domain;
 using P3Model.Parser.Configuration;
 using Serilog;
 using Serilog.Events;

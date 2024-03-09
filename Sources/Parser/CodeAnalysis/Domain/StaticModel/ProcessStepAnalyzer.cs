@@ -13,8 +13,8 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
 [UsedImplicitly]
-public class ProcessStepAnalyzer(DomainModuleFinder moduleFinder)
-    : DomainBuildingBlockAnalyzerBase<ProcessStep>(moduleFinder)
+public class ProcessStepAnalyzer(DomainModulesHierarchyResolver modulesHierarchyResolver)
+    : DomainBuildingBlockAnalyzerBase<ProcessStep>(modulesHierarchyResolver)
 {
     protected override Type AttributeType => typeof(ProcessStepAttribute);
 

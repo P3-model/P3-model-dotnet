@@ -134,7 +134,7 @@ public static class SymbolExtensions
     private static bool TryGetInterfaceAttribute(ITypeSymbol typeSymbol,
         AttributeSelector selector,
         TypeAttributeSources sources,
-        [NotNullWhen(true)] out AttributeData? attributeData, 
+        [NotNullWhen(true)] out AttributeData? attributeData,
         [NotNullWhen(true)] out ITypeSymbol? annotatedSymbol)
     {
         sources = sources

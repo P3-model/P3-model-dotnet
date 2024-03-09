@@ -22,8 +22,8 @@ public class AnalyzersBuilder
         configure?.Invoke(builder);
         _symbolAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<SymbolAnalyzer>());
         var options = builder.Build();
-        var domainModuleFinder = new DomainModuleFinders(
-            new NamespaceDomainModuleFinder(options.NamespaceOptions.Predicate, options.NamespaceOptions.Filter));
+        var domainModuleFinder = new DomainModulesHierarchyResolvers(
+            new NamespaceBasedDomainModulesHierarchyResolver(options.NamespaceOptions.Filter));
         var domainModuleAnalyzer = new DomainModuleAnalyzer(domainModuleFinder);
         var domainBuildingBlockAnalyzer = new DomainBuildingBlockAnalyzer(domainModuleFinder);
         var dddAggregateAnalyzer = new DddAggregateAnalyzer(domainModuleFinder);
@@ -91,7 +91,7 @@ public class AnalyzersBuilder
         return this;
     }
 
-    public AllAnalyzers Build() => new(_fileAnalyzers.AsReadOnly(), 
+    public AllAnalyzers Build() => new(_fileAnalyzers.AsReadOnly(),
         _symbolAnalyzers.AsReadOnly(),
         _operationAnalyzers.AsReadOnly());
 }

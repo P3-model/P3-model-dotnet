@@ -4,7 +4,7 @@ namespace P3Model.Parser.Configuration.Analyzers;
 
 public class DefaultAnalyzersOptionsBuilder
 {
-    private NamespaceOptions _namespaceOptions = new(_ => false, _ => string.Empty);
+    private NamespaceOptions _namespaceOptions = new(_ => string.Empty);
 
     public DefaultAnalyzersOptionsBuilder TreatNamespacesAsDomainModules(
         Func<NamespaceOptionsBuilder, NamespaceOptionsBuilder>? configure = null)
