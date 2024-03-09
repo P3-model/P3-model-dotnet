@@ -30,9 +30,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub", "GitHub", "{B44B60
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{56CDA737-12FB-469F-92BC-83B9B901D7A5}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\tests.yml = .github\workflows\tests.yml
 		.github\workflows\publish-annotations.yml = .github\workflows\publish-annotations.yml
 		.github\workflows\publish-parser.yml = .github\workflows\publish-parser.yml
+		.github\workflows\run-tests.yml = .github\workflows\run-tests.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{DE5D3D76-BE2D-424B-B4E6-FA288299D27F}"
