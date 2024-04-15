@@ -17,14 +17,14 @@ public class ExternalSystemIntegrationAnalyzer(DomainModulesHierarchyResolver mo
 
     protected override ExternalSystemIntegration CreateBuildingBlock(string id, string name) => new(id, name);
 
-    protected override void AddElementsAndRelations(ExternalSystemIntegration externalSystemIntegration,
+    protected override void AddElementsAndRelations(ExternalSystemIntegration buildingBlock,
         DomainModule? module, ISymbol symbol, AttributeData buildingBlockAttribute, ModelBuilder modelBuilder)
     {
-        base.AddElementsAndRelations(externalSystemIntegration, module, symbol, buildingBlockAttribute, modelBuilder);
+        base.AddElementsAndRelations(buildingBlock, module, symbol, buildingBlockAttribute, modelBuilder);
         var externalSystemName = buildingBlockAttribute.GetConstructorArgumentValue<string>(
             nameof(ExternalSystemIntegrationAttribute.ExternalSystemName));
         var externalSystem = new ExternalSystem(externalSystemName);
         modelBuilder.Add(externalSystem);
-        modelBuilder.Add(new ExternalSystemIntegration.Integrates(externalSystemIntegration, externalSystem));
+        modelBuilder.Add(new ExternalSystemIntegration.Integrates(buildingBlock, externalSystem));
     }
 }

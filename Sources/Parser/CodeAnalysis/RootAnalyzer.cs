@@ -66,14 +66,14 @@ public class RootAnalyzer
         ModelBuilder modelBuilder)
     {
         Log.Verbose($"Analysis started for repository: {repository.Directory.FullName}");
-        await AnalyzeMarkdownFiles(repository, modelBuilder);
+        await AnalyzeFiles(repository, modelBuilder);
         var projects = repository.GetProjects(defaultFramework);
         await Parallel.ForEachAsync(projects,
             async (project, _) => await Analyze(project, modelBuilder));
         Log.Verbose($"Analysis finished for repository: {repository.Directory.FullName}");
     }
 
-    private Task AnalyzeMarkdownFiles(RepositoryToAnalyze repository, ModelBuilder modelBuilder) =>
+    private Task AnalyzeFiles(RepositoryToAnalyze repository, ModelBuilder modelBuilder) =>
         Parallel.ForEachAsync(GetAllSupportedFiles(repository.Directory), async (fileInfo, _) =>
         {
             Log.Verbose($"Analysis started for file: {fileInfo.FullName}");

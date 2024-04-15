@@ -101,20 +101,20 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(
         buildingBlock.ShortDescription = shortDescription;
     }
 
-    protected virtual void AddElementsAndRelations(TBuildingBlock externalSystemIntegration, DomainModule? module,
+    protected virtual void AddElementsAndRelations(TBuildingBlock buildingBlock, DomainModule? module,
         ISymbol symbol, AttributeData buildingBlockAttribute, ModelBuilder modelBuilder)
     {
-        modelBuilder.Add(externalSystemIntegration, symbol);
+        modelBuilder.Add(buildingBlock, symbol);
         if (module != null)
         {
             modelBuilder.Add(module, symbol);
-            modelBuilder.Add(new DomainModule.ContainsBuildingBlock(module, externalSystemIntegration));
+            modelBuilder.Add(new DomainModule.ContainsBuildingBlock(module, buildingBlock));
         }
         modelBuilder.Add(elements => elements
             .For(symbol)
             .OfType<CodeStructure>()
             .Select(codeStructure =>
-                new DomainBuildingBlock.IsImplementedBy(externalSystemIntegration, codeStructure)));
+                new DomainBuildingBlock.IsImplementedBy(buildingBlock, codeStructure)));
     }
 
     private static FileInfo? GetDescriptionFile(ISymbol symbol) => symbol.Locations
