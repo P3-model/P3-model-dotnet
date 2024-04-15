@@ -8,10 +8,11 @@ namespace P3Model.Parser.CodeAnalysis.Domain;
 
 public static class DomainModelResolver
 {
-    private static readonly ConcurrentDictionary<INamespaceSymbol, Result> Cache = new();
+    private static readonly ConcurrentDictionary<INamespaceSymbol, Result> Cache =
+        new(SymbolEqualityComparer.Default);
 
     [PublicAPI]
-    public static bool IsExplicitlyIncludedInDomainModel(this ISymbol symbol) => 
+    public static bool IsExplicitlyIncludedInDomainModel(this ISymbol symbol) =>
         GetResult(symbol) == Result.IsIncluded;
 
     [PublicAPI]
