@@ -36,8 +36,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Annotations\Annotations.csproj" />
       <ProjectReference Include="..\DotNetExtensions\DotNetExtensions.csproj" />
-      <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />
-      <ProjectReference Include="..\Parser.OutputFormatting.Mermaid\Parser.OutputFormatting.Mermaid.csproj" />
+      <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />      
       <ProjectReference Include="..\Parser.OutputFormatting\Parser.OutputFormatting.csproj" />
     </ItemGroup>
 

@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace P3Model.Parser.ModelSyntax;
+namespace P3Model.Parser.CodeAnalysis;
 
 public class ConcurrentSet<T> : IReadOnlySet<T>
     where T : notnull

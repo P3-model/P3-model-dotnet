@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Parser.OutputFormatting.Mermaid\Parser.OutputFormatting.Mermaid.csproj" />
       <ProjectReference Include="..\Parser\Parser.csproj" />
     </ItemGroup>
 

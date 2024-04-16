@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 
-namespace P3Model.Parser.ModelSyntax;
+namespace P3Model.Parser.CodeAnalysis;
 
 // TODO: Analyze how to compare symbols.
 // SymbolEqualityComparer.Default return false for same symbol from different compilations.

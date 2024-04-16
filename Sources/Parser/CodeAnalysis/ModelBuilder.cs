@@ -8,8 +8,9 @@ using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
+using P3Model.Parser.ModelSyntax;
 
-namespace P3Model.Parser.ModelSyntax;
+namespace P3Model.Parser.CodeAnalysis;
 
 [SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1024",
     Justification = "See CompilationIndependentSymbolEqualityComparer")]

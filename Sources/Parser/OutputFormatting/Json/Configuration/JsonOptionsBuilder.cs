@@ -1,8 +1,7 @@
 using System;
 using JetBrains.Annotations;
-using P3Model.Parser.OutputFormatting.Json;
 
-namespace P3Model.Parser.Configuration.OutputFormat.Json;
+namespace P3Model.Parser.OutputFormatting.Json.Configuration;
 
 public class JsonOptionsBuilder : JsonOptionsBuilder.FileStep {
     private string? _fileFullName;

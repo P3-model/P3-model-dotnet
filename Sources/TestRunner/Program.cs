@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using P3Model.Parser.Configuration;
+using P3Model.Parser.OutputFormatting.Json.Configuration;
+using P3Model.Parser.OutputFormatting.Mermaid.Configuration;
 using Serilog.Events;
 
 // This runner in only for initial tests of Parser POC !!!
@@ -26,4 +28,5 @@ await P3
         .UseJson(options => options
             .File(Path.Combine(configuration["OutputPath"]!, "JsonOutput", "model.json"))))
     .LogLevel(LogEventLevel.Verbose)
-    .Analyze();
+    .Analyze(); 
+    

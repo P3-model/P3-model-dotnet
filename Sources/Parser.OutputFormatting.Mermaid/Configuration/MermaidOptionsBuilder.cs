@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
-using P3Model.Parser.OutputFormatting.Mermaid;
 
-namespace P3Model.Parser.Configuration.OutputFormat.Mermaid;
+namespace P3Model.Parser.OutputFormatting.Mermaid.Configuration;
 
 public class MermaidOptionsBuilder : MermaidOptionsBuilder.DirectoryStep, MermaidOptionsBuilder.PagesStep
 {
