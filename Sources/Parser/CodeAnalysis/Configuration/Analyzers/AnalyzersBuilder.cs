@@ -49,7 +49,7 @@ public class AnalyzersBuilder
         return this;
     }
 
-    private static IEnumerable<T> CreateAnalyzersWithParameterlessConstructor<T>() => typeof(T).Assembly
+    private static IEnumerable<T> CreateAnalyzersWithParameterlessConstructor<T>() => typeof(AnalyzersBuilder).Assembly
         .GetTypes()
         .Where(t => typeof(T).IsAssignableFrom(t))
         .Where(t =>
