@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DotNetExtensions;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Technology;

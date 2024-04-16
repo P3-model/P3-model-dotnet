@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Text;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -9,11 +8,8 @@ namespace P3Model.Parser.Tests.CodeAnalysis;
 
 public sealed class ParserOutput : OutputFormatter
 {
-    public static ParserOutput Instance { get; } = new();
-
-    private static readonly ConcurrentDictionary<TargetFramework, Model> Models = new();
-    
-    private ParserOutput() { }
+    private static readonly Dictionary<TargetFramework, Model> Models = new();
+    private TargetFramework _currentTargetFramework;
 
     [PublicAPI]
     public static void AssertModelContainsOnlyElements<TElement>(params TElement[] expectedElements)
@@ -127,12 +123,12 @@ public sealed class ParserOutput : OutputFormatter
 
     public Task Clean() => Task.CompletedTask;
 
-    public Task Write(TargetFramework? defaultFramework, Model model)
+    public void SetTargetFramework(TargetFramework targetFramework) => _currentTargetFramework = targetFramework;
+    
+    public Task Write(Model model)
     {
-        if (!defaultFramework.HasValue)
-            throw new InvalidOperationException("Default framework was not specified");
-        if (!Models.TryAdd(defaultFramework.Value, model))
-            throw new InvalidOperationException($"Duplicated model for {defaultFramework}");
+        if (!Models.TryAdd(_currentTargetFramework, model))
+            throw new InvalidOperationException($"Duplicated model for {_currentTargetFramework}");
         return Task.CompletedTask;
     }
 }

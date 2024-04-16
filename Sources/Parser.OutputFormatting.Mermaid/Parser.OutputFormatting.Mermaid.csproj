@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>P3Model.Parser.OutputFormatting.Mermaid</AssemblyName>
+        <RootNamespace>P3Model.Parser.OutputFormatting.Mermaid</RootNamespace>
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Parser.ModelQuerying\Parser.ModelQuerying.csproj" />
+      <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />
+      <ProjectReference Include="..\Parser.OutputFormatting\Parser.OutputFormatting.csproj" />
+    </ItemGroup>
+
+</Project>

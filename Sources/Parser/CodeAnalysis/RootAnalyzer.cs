@@ -52,7 +52,7 @@ public class RootAnalyzer
                 await Analyze(repository, defaultFramework, modelBuilder);
             var model = modelBuilder.Build();
             foreach (var outputFormatter in _outputFormatters)
-                await outputFormatter.Write(defaultFramework, model);
+                await outputFormatter.Write(model);
             stopwatch.Stop();
             Log.Information($"Analysis finished in {stopwatch.ElapsedMilliseconds / 1000}s.");
         }

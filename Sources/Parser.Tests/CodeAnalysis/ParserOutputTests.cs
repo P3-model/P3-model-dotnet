@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using P3Model.Parser.CodeAnalysis;
 using P3Model.Parser.Configuration;
 using Serilog;
 using Serilog.Events;
@@ -11,6 +12,7 @@ public class ParserOutputTests
     [OneTimeSetUp]
     public async Task CreateModel()
     {
+        var output = new ParserOutput();
         var analyzer = await P3
             .Product(product => product
                 .UseName("MyCompany MySystem"))
@@ -25,13 +27,19 @@ public class ParserOutputTests
                         .RemoveRootNamespace("TestSamples")
                         .RemoveNamespacePart("MainProject", "NotModule"))))
             .OutputFormat(formatters => formatters
-                .Use(ParserOutput.Instance))
+                .Use(output))
             .Logger(logger => logger
                 .WriteTo.Debug()
                 .MinimumLevel.Is(LogEventLevel.Verbose))
             .CreateRootAnalyzer();
-        await analyzer.Analyze(TargetFramework.Net60);
-        await analyzer.Analyze(TargetFramework.Net70);
-        await analyzer.Analyze(TargetFramework.Net80);
+        await Analyze(output, analyzer, TargetFramework.Net60);
+        await Analyze(output, analyzer, TargetFramework.Net70);
+        await Analyze(output, analyzer, TargetFramework.Net80);
+    }
+
+    private static async Task Analyze(ParserOutput output, RootAnalyzer analyzer, TargetFramework targetFramework)
+    {
+        output.SetTargetFramework(targetFramework);
+        await analyzer.Analyze(targetFramework);
     }
 }
