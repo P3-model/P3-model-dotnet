@@ -1,4 +1,3 @@
-using System;
 using JetBrains.Annotations;
 using P3Model.Parser.OutputFormatting.Configuration;
 

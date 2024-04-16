@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>default</LangVersion>
+        <AssemblyName>P3Model.Parser.OutputFormatting.Json</AssemblyName>
+        <RootNamespace>P3Model.Parser.OutputFormatting.Json</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Parser.OutputFormatting\Parser.OutputFormatting.csproj" />
+    </ItemGroup>
+
+</Project>

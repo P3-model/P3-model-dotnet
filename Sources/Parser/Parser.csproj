@@ -38,6 +38,7 @@
       <ProjectReference Include="..\DotNetExtensions\DotNetExtensions.csproj" />
       <ProjectReference Include="..\Parser.CodeAnalysis.Abstractions\Parser.CodeAnalysis.Abstractions.csproj" />
       <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />      
+      <ProjectReference Include="..\Parser.OutputFormatting.Json\Parser.OutputFormatting.Json.csproj" />      
       <ProjectReference Include="..\Parser.OutputFormatting\Parser.OutputFormatting.csproj" />
     </ItemGroup>
 

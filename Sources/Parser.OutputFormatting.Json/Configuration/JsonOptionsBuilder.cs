@@ -1,4 +1,3 @@
-using System;
 using JetBrains.Annotations;
 
 namespace P3Model.Parser.OutputFormatting.Json.Configuration;
