@@ -1,6 +1,6 @@
 using System;
 
-namespace P3Model.Parser.Configuration.Repositories;
+namespace P3Model.Parser.CodeAnalysis.Configuration.Repositories;
 
 public class ProductBuilder
 {

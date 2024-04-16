@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using P3Model.Parser.CodeAnalysis;
 using P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 using P3Model.Parser.CodeAnalysis.Domain.StaticModel.Ddd;
 
-namespace P3Model.Parser.Configuration.Analyzers;
+namespace P3Model.Parser.CodeAnalysis.Configuration.Analyzers;
 
 public class AnalyzersBuilder
 {

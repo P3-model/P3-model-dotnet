@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using P3Model.Parser.CodeAnalysis;
 
-namespace P3Model.Parser.Configuration.Analyzers;
+namespace P3Model.Parser.CodeAnalysis.Configuration.Analyzers;
 
 public record AllAnalyzers(IReadOnlyCollection<FileAnalyzer> FileAnalyzers,
     IReadOnlyCollection<SymbolAnalyzer> SymbolAnalyzers,

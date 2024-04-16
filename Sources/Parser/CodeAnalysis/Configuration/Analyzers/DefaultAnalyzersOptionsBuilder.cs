@@ -1,6 +1,6 @@
 using System;
 
-namespace P3Model.Parser.Configuration.Analyzers;
+namespace P3Model.Parser.CodeAnalysis.Configuration.Analyzers;
 
 public class DefaultAnalyzersOptionsBuilder
 {

@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using P3Model.Parser.CodeAnalysis;
-using P3Model.Parser.Configuration.Analyzers;
-using P3Model.Parser.Configuration.Repositories;
+using P3Model.Parser.CodeAnalysis.Configuration.Analyzers;
+using P3Model.Parser.CodeAnalysis.Configuration.Repositories;
 using P3Model.Parser.OutputFormatting.Configuration;
 using Serilog;
 using Serilog.Events;

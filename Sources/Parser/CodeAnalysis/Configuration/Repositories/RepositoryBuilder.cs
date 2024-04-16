@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using P3Model.Parser.CodeAnalysis;
 
-namespace P3Model.Parser.Configuration.Repositories;
+namespace P3Model.Parser.CodeAnalysis.Configuration.Repositories;
 
 public class RepositoryBuilder
 {
