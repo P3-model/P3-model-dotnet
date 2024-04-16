@@ -14,12 +14,10 @@ namespace P3Model.Parser.CodeAnalysis;
 
 [SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1024",
     Justification = "See CompilationIndependentSymbolEqualityComparer")]
-public class ModelBuilder : ElementsProvider
+internal class DefaultModelBuilder(DocumentedSystem system) : ModelBuilder
 {
-    private readonly DocumentedSystem _system;
-
-    private readonly ConcurrentDictionary<ElementBase, ElementInfo> _elements = new();
-    private readonly ConcurrentDictionary<ISymbol, ConcurrentSet<ElementBase>> _symbolToElements =
+    private readonly ConcurrentDictionary<Element, ElementInfo> _elements = new();
+    private readonly ConcurrentDictionary<ISymbol, ConcurrentSet<Element>> _symbolToElements =
         new(CompilationIndependentSymbolEqualityComparer.Default);
 
     private readonly ConcurrentSet<Relation> _relations = new();
@@ -29,15 +27,13 @@ public class ModelBuilder : ElementsProvider
     private readonly ConcurrentSet<Trait> _traits = new();
     private readonly ConcurrentSet<Func<ElementsProvider, IEnumerable<Trait>>> _traitFactories = new();
 
-    public ModelBuilder(DocumentedSystem system) => _system = system;
-
     [PublicAPI]
-    public void Add<TElement>(TElement element) where TElement : ElementBase =>
+    public void Add<TElement>(TElement element) where TElement : Element =>
         _elements.TryAdd(element, new ElementInfo<TElement>(element));
 
     [PublicAPI]
     public void Add<TElement>(TElement element, ISymbol symbol)
-        where TElement : ElementBase
+        where TElement : Element
     {
         _elements.AddOrUpdate(element,
             _ =>
@@ -54,7 +50,7 @@ public class ModelBuilder : ElementsProvider
         _symbolToElements.AddOrUpdate(symbol,
             _ =>
             {
-                var set = new ConcurrentSet<ElementBase>();
+                var set = new ConcurrentSet<Element>();
                 set.TryAdd(element);
                 return set;
             },
@@ -67,7 +63,7 @@ public class ModelBuilder : ElementsProvider
 
     [PublicAPI]
     public void Add<TElement>(TElement element, DirectoryInfo directory)
-        where TElement : ElementBase
+        where TElement : Element
     {
         _elements.AddOrUpdate(element,
             _ =>
@@ -97,9 +93,9 @@ public class ModelBuilder : ElementsProvider
     public void Add(Func<ElementsProvider, IEnumerable<Trait>> traitFactory) =>
         _traitFactories.TryAdd(traitFactory);
 
-    IEnumerable<ElementBase> ElementsProvider.For(ISymbol symbol) => _symbolToElements.TryGetValue(symbol, out var elements)
+    IEnumerable<Element> ElementsProvider.For(ISymbol symbol) => _symbolToElements.TryGetValue(symbol, out var elements)
         ? elements
-        : Enumerable.Empty<ElementBase>();
+        : Enumerable.Empty<Element>();
 
     IEnumerable<TElement> ElementsProvider.OfType<TElement>() => _elements.Keys.OfType<TElement>();
 
@@ -117,7 +113,7 @@ public class ModelBuilder : ElementsProvider
         foreach (var trait in traitFactory(this))
             Add(trait);
 
-        return new Model(_system,
+        return new Model(system,
             _elements.Keys
                 .OrderBy(e => e.GetType().FullName)
                 .ThenBy(e => e.Name)

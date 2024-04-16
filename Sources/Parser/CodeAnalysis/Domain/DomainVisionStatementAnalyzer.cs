@@ -1,7 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using P3Model.Parser.ModelSyntax;
 
 namespace P3Model.Parser.CodeAnalysis.Domain;
 

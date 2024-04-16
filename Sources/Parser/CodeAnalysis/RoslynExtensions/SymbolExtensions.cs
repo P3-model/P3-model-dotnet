@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations;
-using P3Model.Parser.ModelSyntax;
 using Serilog;
 
 namespace P3Model.Parser.CodeAnalysis.RoslynExtensions;

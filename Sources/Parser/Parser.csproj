@@ -36,6 +36,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Annotations\Annotations.csproj" />
       <ProjectReference Include="..\DotNetExtensions\DotNetExtensions.csproj" />
+      <ProjectReference Include="..\Parser.CodeAnalysis.Abstractions\Parser.CodeAnalysis.Abstractions.csproj" />
       <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />      
       <ProjectReference Include="..\Parser.OutputFormatting\Parser.OutputFormatting.csproj" />
     </ItemGroup>

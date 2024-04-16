@@ -9,9 +9,9 @@ using P3Model.Parser.ModelSyntax.Technology.CSharp;
 
 namespace P3Model.Parser.Tests.ModelSyntax.ExampleObjects;
 
-public class ExampleElements : IEnumerable<ElementBase>
+public class ExampleElements : IEnumerable<Element>
 {
-    private readonly Dictionary<Type, ElementBase> _elements = new();
+    private readonly Dictionary<Type, Element> _elements = new();
 
     private static readonly DomainModule DomainModule =
         new(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleC"));
@@ -47,10 +47,10 @@ public class ExampleElements : IEnumerable<ElementBase>
     };
 
     private void Add<TElement>(TElement element)
-        where TElement : ElementBase
+        where TElement : Element
         => _elements.Add(typeof(TElement), element);
 
-    public ElementBase ForType(Type type)
+    public Element ForType(Type type)
     {
         if (!_elements.TryGetValue(type, out var element))
             throw new InvalidOperationException($"Missing example for {type.Name}");
@@ -59,5 +59,5 @@ public class ExampleElements : IEnumerable<ElementBase>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public IEnumerator<ElementBase> GetEnumerator() => _elements.Values.GetEnumerator();
+    public IEnumerator<Element> GetEnumerator() => _elements.Values.GetEnumerator();
 }

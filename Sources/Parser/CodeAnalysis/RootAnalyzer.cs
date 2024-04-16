@@ -13,7 +13,7 @@ namespace P3Model.Parser.CodeAnalysis;
 
 public class RootAnalyzer
 {
-    private static readonly string[] SupportedFileTypes = { "json", "md" };
+    private static readonly string[] SupportedFileTypes = ["json", "md"];
     private readonly string _productName;
     private readonly IReadOnlyCollection<RepositoryToAnalyze> _repositories;
     private readonly IReadOnlyCollection<FileAnalyzer> _fileAnalyzers;
@@ -47,7 +47,7 @@ public class RootAnalyzer
             foreach (var outputFormatter in _outputFormatters)
                 await outputFormatter.Clean();
             Log.Information("Previous documentation cleaned.");
-            var modelBuilder = new ModelBuilder(new DocumentedSystem(_productName));
+            var modelBuilder = new DefaultModelBuilder(new DocumentedSystem(_productName));
             foreach (var repository in _repositories)
                 await Analyze(repository, defaultFramework, modelBuilder);
             var model = modelBuilder.Build();

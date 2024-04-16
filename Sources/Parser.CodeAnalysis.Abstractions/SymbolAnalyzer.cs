@@ -1,5 +1,4 @@
 using Microsoft.CodeAnalysis;
-using P3Model.Parser.ModelSyntax;
 
 namespace P3Model.Parser.CodeAnalysis;
 

@@ -4,11 +4,16 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <AssemblyName>P3Model.Parser.CodeAnalysis.Abstractions</AssemblyName>
+        <RootNamespace>P3Model.Parser.CodeAnalysis</RootNamespace>
         <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DotNetExtensions\DotNetExtensions.csproj" />
+      <PackageReference Include="Microsoft.CodeAnalysis" Version="4.9.0-3.final" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />
     </ItemGroup>
 

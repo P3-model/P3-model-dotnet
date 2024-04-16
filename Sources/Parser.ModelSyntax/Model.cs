@@ -2,19 +2,14 @@ using System.Collections.Immutable;
 
 namespace P3Model.Parser.ModelSyntax;
 
-public class Model
+public class Model(
+    DocumentedSystem system,
+    ImmutableArray<Element> elements,
+    ImmutableArray<Relation> relations,
+    ImmutableArray<Trait> traits)
 {
-    public DocumentedSystem System { get; }
-    public ImmutableArray<ElementBase> Elements { get; }
-    public ImmutableArray<Relation> Relations { get; }
-    public ImmutableArray<Trait> Traits { get; }
-    
-    public Model(DocumentedSystem system, ImmutableArray<ElementBase> elements, ImmutableArray<Relation> relations, 
-        ImmutableArray<Trait> traits)
-    {
-        System = system;
-        Elements = elements;
-        Relations = relations;
-        Traits = traits;
-    }
+    public DocumentedSystem System { get; } = system;
+    public ImmutableArray<Element> Elements { get; } = elements;
+    public ImmutableArray<Relation> Relations { get; } = relations;
+    public ImmutableArray<Trait> Traits { get; } = traits;
 }
