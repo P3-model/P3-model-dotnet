@@ -9,7 +9,7 @@ internal class TraitJsonConverter : ModelJsonConverter<Trait>
     protected override void WriteRequiredAttributes(Utf8JsonWriter writer, Trait value)
     {
         writer.WriteString("Type", value.GetType().GetFullTypeName());
-        writer.WriteString(nameof(Trait.ElementId), value.ElementId);
+        writer.WriteString(nameof(Trait.ElementId), value.ElementId.Value);
     }
 
     protected override bool IsAdditionalAttribute(JsonProperty jsonProperty) => 

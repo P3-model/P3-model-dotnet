@@ -7,7 +7,7 @@ namespace P3Model.Parser.CodeAnalysis;
 public interface ElementInfo
 {
     [PublicAPI]
-    public Element Element { get; }
+    public ElementId ElementId { get; }
 
     [PublicAPI]
     public IReadOnlySet<ISymbol> Symbols { get; }

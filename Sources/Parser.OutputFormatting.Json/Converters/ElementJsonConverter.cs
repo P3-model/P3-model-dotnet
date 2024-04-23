@@ -9,7 +9,7 @@ internal class ElementJsonConverter : ModelJsonConverter<ElementBase>
     protected override void WriteRequiredAttributes(Utf8JsonWriter writer, ElementBase value)
     {
         writer.WriteString("Type", value.GetType().GetFullTypeName());
-        writer.WriteString(nameof(ElementBase.Id), value.Id);
+        writer.WriteString(nameof(ElementBase.Id), value.Id.Value);
         writer.WriteString(nameof(ElementBase.Name), value.Name);
     }
 

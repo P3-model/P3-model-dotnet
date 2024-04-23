@@ -12,7 +12,7 @@ internal class ElementInfo<TElement>(TElement element) : ElementInfo
 {
     public TElement Element { get; } = element;
 
-    Element ElementInfo.Element => Element;
+    ElementId ElementInfo.ElementId => Element.Id;
 
     private readonly ConcurrentSet<ISymbol> _symbols = new(CompilationIndependentSymbolEqualityComparer.Default);
     public IReadOnlySet<ISymbol> Symbols => _symbols;

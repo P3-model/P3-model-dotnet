@@ -7,24 +7,31 @@ namespace P3Model.Parser.ModelSyntax;
 public abstract class ElementBase : Element
 {
     public abstract Perspective Perspective { get; }
-    public string Id { get; }
+    public ElementId Id { get; }
     public string Name { get; }
+
+    protected ElementBase(ElementId id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
 
     protected ElementBase(string name) : this(name.Dehumanize(), name) { }
 
     protected ElementBase(string idPartUniqueForElementType, string name)
     {
-        Id = $"{GetType().Name}|{idPartUniqueForElementType}".ToLowerInvariant();
+        Id = ElementId.Create(GetType(), idPartUniqueForElementType);
         Name = name;
     }
 
-    protected void SetOnce<T>(ref T? property, T value, [CallerMemberName] string? propertyName = null)
+    protected static void SetOnce<T>(ref T? property, T value, ElementId elementId,
+        [CallerMemberName] string? propertyName = null)
     {
         if (property is null)
             property = value;
         else if (!property.Equals(value))
             Log.Warning(
-                $"Property: {propertyName} of element: {Id} has already been set. Existing value: {property}. New value: {value}. New value is ignored.");
+                $"Property: {propertyName} of element: {elementId.Value} has already been set. Existing value: {property}. New value: {value}. New value is ignored.");
     }
 
     public override bool Equals(object? obj) => obj is Element other && Equals(other);

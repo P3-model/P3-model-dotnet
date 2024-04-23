@@ -2,7 +2,7 @@ namespace P3Model.Parser.ModelSyntax;
 
 public interface Trait
 {
-    string ElementId => Element.Id;
+    ElementId ElementId => Element.Id;
     ElementBase Element { get; }
 }
 

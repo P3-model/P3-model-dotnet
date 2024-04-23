@@ -9,8 +9,8 @@ internal class RelationJsonConverter : ModelJsonConverter<Relation>
     protected override void WriteRequiredAttributes(Utf8JsonWriter writer, Relation value)
     {
         writer.WriteString("Type", value.GetType().GetFullTypeName());
-        writer.WriteString(nameof(Relation.Source), value.Source.Id);
-        writer.WriteString(nameof(Relation.Destination), value.Destination.Id);
+        writer.WriteString(nameof(Relation.Source), value.Source.Id.Value);
+        writer.WriteString(nameof(Relation.Destination), value.Destination.Id.Value);
     }
 
     protected override bool IsAdditionalAttribute(JsonProperty jsonProperty) => 
