@@ -10,9 +10,6 @@ public static class P3ModelSerializer
 {
     private static readonly JsonConverter[] Converters =
     {
-        new ElementJsonConverter(),
-        new RelationJsonConverter(),
-        new TraitJsonConverter(),
         new ElementIdJsonConverter(),
         new HierarchyPathJsonConverter(),
         new FileInfoJsonConverter(),
