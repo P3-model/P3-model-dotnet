@@ -7,6 +7,7 @@ namespace P3Model.Annotations.Domain;
 public class UseCaseAttribute : DomainBuildingBlockAttribute
 {
     public string? Process { get; init; }
+    public TriggeredBy TriggeredBy { get; init; }
 
     public UseCaseAttribute(string? name = null) : base(name) { }
 
