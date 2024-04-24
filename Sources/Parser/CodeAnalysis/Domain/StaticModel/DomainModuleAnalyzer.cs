@@ -32,17 +32,24 @@ public class DomainModuleAnalyzer(DomainModulesHierarchyResolver modulesHierarch
         if (moduleInfo is null)
             return;
         // TODO: Rethink adding same element from different analyzers (relations and symbols are no problem, but element's data are).
-        var module = new DomainModule(HierarchyId.FromValue(moduleInfo.DomainModule.Dehumanize()));
+        var hierarchyPath = HierarchyPath.FromValue(moduleInfo.DomainModule.Dehumanize());
+        var module = new DomainModule(
+            ElementId.Create<DomainModule>(hierarchyPath.Full),
+            hierarchyPath);
         modelBuilder.Add(module, fileInfo.Directory);
         if (moduleInfo.DevelopmentOwner != null)
         {
-            var team = new DevelopmentTeam(moduleInfo.DevelopmentOwner);
+            var team = new DevelopmentTeam(
+                ElementId.Create<DevelopmentTeam>(moduleInfo.DevelopmentOwner.Dehumanize()),
+                moduleInfo.DevelopmentOwner);
             modelBuilder.Add(team);
             modelBuilder.Add(new DevelopmentTeam.OwnsDomainModule(team, module));
         }
         if (moduleInfo.BusinessOwner != null)
         {
-            var organizationalUnit = new BusinessOrganizationalUnit(moduleInfo.BusinessOwner);
+            var organizationalUnit = new BusinessOrganizationalUnit(
+                ElementId.Create<BusinessOrganizationalUnit>(moduleInfo.BusinessOwner.Dehumanize()),
+                moduleInfo.BusinessOwner);
             modelBuilder.Add(organizationalUnit);
             modelBuilder.Add(new BusinessOrganizationalUnit.OwnsDomainModule(organizationalUnit, module));
         }
@@ -60,9 +67,11 @@ public class DomainModuleAnalyzer(DomainModulesHierarchyResolver modulesHierarch
                     namespaceSymbol.ToDisplayString());
                 continue;
             }
-            if (!modulesHierarchyResolver.TryFind(namespaceSymbol, out var hierarchyId))
+            if (!modulesHierarchyResolver.TryFind(namespaceSymbol, out var hierarchyPath))
                 continue;
-            var module = new DomainModule(hierarchyId.Value);
+            var module = new DomainModule(
+                ElementId.Create<DomainModule>(hierarchyPath.Value.Full),
+                hierarchyPath.Value);
             modelBuilder.Add(module, namespaceSymbol);
             // TODO: relation to teams and business units defined at namespace level
             //  Requires parsing types within the namespace annotated with DevelopmentOwnerAttribute and ApplyOnNamespace == true.

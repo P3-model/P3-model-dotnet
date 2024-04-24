@@ -6,5 +6,5 @@ namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
 public interface DomainModulesHierarchyResolver
 {
-    bool TryFind(ISymbol symbol, [NotNullWhen(true)] out HierarchyId? hierarchyId);
+    bool TryFind(ISymbol symbol, [NotNullWhen(true)] out HierarchyPath? hierarchyPath);
 }

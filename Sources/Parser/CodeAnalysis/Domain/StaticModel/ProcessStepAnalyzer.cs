@@ -18,7 +18,8 @@ public class ProcessStepAnalyzer(DomainModulesHierarchyResolver modulesHierarchy
 {
     protected override Type AttributeType => typeof(ProcessStepAttribute);
 
-    protected override ProcessStep CreateBuildingBlock(string id, string name) => new(id, name);
+    protected override ProcessStep CreateBuildingBlock(string idPartUniqueForElementType, string name) => 
+        new(ElementId.Create<ProcessStep>(idPartUniqueForElementType), name);
 
     protected override void AddElementsAndRelations(ProcessStep processStep, DomainModule? module, ISymbol symbol,
         AttributeData buildingBlockAttribute, ModelBuilder modelBuilder)

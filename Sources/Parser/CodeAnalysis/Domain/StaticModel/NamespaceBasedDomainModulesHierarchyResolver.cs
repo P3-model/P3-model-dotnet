@@ -11,33 +11,33 @@ public class NamespaceBasedDomainModulesHierarchyResolver(
     : DomainModulesHierarchyResolver
 {
     [PublicAPI]
-    public bool TryFind(ISymbol symbol, [NotNullWhen(true)] out HierarchyId? hierarchyId)
+    public bool TryFind(ISymbol symbol, [NotNullWhen(true)] out HierarchyPath? hierarchyPath)
     {
-        hierarchyId = null;
+        hierarchyPath = null;
         return symbol switch
         {
-            INamespaceSymbol namespaceSymbol => TryFind(namespaceSymbol, out hierarchyId),
-            INamedTypeSymbol typeSymbol => TryFind(typeSymbol.ContainingNamespace, out hierarchyId),
-            IMethodSymbol methodSymbol => TryFind(methodSymbol.ContainingType.ContainingNamespace, out hierarchyId),
+            INamespaceSymbol namespaceSymbol => TryFind(namespaceSymbol, out hierarchyPath),
+            INamedTypeSymbol typeSymbol => TryFind(typeSymbol.ContainingNamespace, out hierarchyPath),
+            IMethodSymbol methodSymbol => TryFind(methodSymbol.ContainingType.ContainingNamespace, out hierarchyPath),
             _ => false
         };
     }
     
     [PublicAPI]
-    public bool TryFind(INamespaceSymbol symbol, [NotNullWhen(true)] out HierarchyId? hierarchyId)
+    public bool TryFind(INamespaceSymbol symbol, [NotNullWhen(true)] out HierarchyPath? hierarchyPath)
     {
         if (symbol.IsGlobalNamespace)
         {
-            hierarchyId = null;
+            hierarchyPath = null;
             return false;
         }
         var modulesHierarchy = getModulesHierarchy(symbol);
         if (string.IsNullOrEmpty(modulesHierarchy))
         {
-            hierarchyId = null;
+            hierarchyPath = null;
             return false;
         }
-        hierarchyId = HierarchyId.FromValue(modulesHierarchy);
+        hierarchyPath = HierarchyPath.FromValue(modulesHierarchy);
         return true;
     }
 }

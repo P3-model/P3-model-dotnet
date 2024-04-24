@@ -19,8 +19,9 @@ public class LayerAnalyzer : SymbolAnalyzer<IAssemblySymbol>, SymbolAnalyzer<INa
     {
         if (!IsLayer(symbol, out var name, out _))
             return;
-        name = name.Humanize();
-        var layer = new Layer(name);
+        var layer = new Layer(
+            ElementId.Create<Layer>(name.Dehumanize()),
+            name.Humanize(LetterCasing.Title));
         modelBuilder.Add(layer, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, layer, elements));
     }
@@ -29,7 +30,9 @@ public class LayerAnalyzer : SymbolAnalyzer<IAssemblySymbol>, SymbolAnalyzer<INa
     {
         if (!IsLayer(symbol, out var name, out var layerAttribute))
             return;
-        var layer = new Layer(name);
+        var layer = new Layer(
+            ElementId.Create<Layer>(name.Dehumanize()),
+            name.Humanize(LetterCasing.Title));
         ISymbol targetSymbol = layerAttribute.TryGetNamedArgumentValue<bool>(nameof(LayerAttribute.ApplyOnNamespace),
                 out var applyOnNamespace) &&
             applyOnNamespace

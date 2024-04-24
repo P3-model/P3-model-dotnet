@@ -9,14 +9,14 @@ public class DomainModulesHierarchyResolvers(params DomainModulesHierarchyResolv
 {
     private readonly IReadOnlyList<DomainModulesHierarchyResolver> _finders = finders;
 
-    public bool TryFind(ISymbol symbol, [NotNullWhen(true)] out HierarchyId? hierarchyId)
+    public bool TryFind(ISymbol symbol, [NotNullWhen(true)] out HierarchyPath? hierarchyPath)
     {
         foreach (var finder in _finders)
         {
-            if (finder.TryFind(symbol, out hierarchyId))
+            if (finder.TryFind(symbol, out hierarchyPath))
                 return true;
         }
-        hierarchyId = null;
+        hierarchyPath = null;
         return false;
     }
 }

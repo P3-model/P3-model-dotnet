@@ -14,12 +14,14 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
     SymbolAnalyzer<INamespaceSymbol>,
     SymbolAnalyzer<INamedTypeSymbol>
 {
+    // TODO: getting source code path
     public void Analyze(IAssemblySymbol symbol, ModelBuilder modelBuilder)
     {
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
-        var cSharpProject = new CSharpProject(symbol.Name, 
-            // TODO: finding assembly location in source code
+        var cSharpProject = new CSharpProject(
+            ElementId.Create<CSharpProject>(symbol.Name),
+            symbol.Name,
             string.Empty);
         modelBuilder.Add(cSharpProject, symbol);
         modelBuilder.Add(elements => symbol
@@ -34,10 +36,10 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
     {
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
-        // TODO: getting all folders for namespace
         var cSharpNamespace = new CSharpNamespace(
-            HierarchyId.FromValue(symbol.ToDisplayString()),
-            Path.GetDirectoryName(symbol.GetSourceCodePaths().First())!);
+            ElementId.Create<CSharpNamespace>(symbol.ToDisplayString()),
+            HierarchyPath.FromValue(symbol.ToDisplayString()),
+            string.Empty);
         modelBuilder.Add(cSharpNamespace, symbol);
         if (symbol.ContainingNamespace.IsGlobalNamespace)
             modelBuilder.Add(elements => elements
@@ -56,9 +58,9 @@ public class CodeStructureAnalyzer : SymbolAnalyzer<IAssemblySymbol>,
         if (symbol.TryGetAttribute(typeof(ExcludeFromDocsAttribute), out _))
             return;
         var cSharpType = new CSharpType(
-            symbol.ToDisplayString(),
+            ElementId.Create<CSharpType>(symbol.ToDisplayString()),
             symbol.GetFullName(),
-            symbol.GetSourceCodePaths().First());
+            string.Empty);
         modelBuilder.Add(cSharpType, symbol);
         modelBuilder.Add(elements => elements
             .For(symbol.ContainingNamespace)

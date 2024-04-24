@@ -1,8 +1,12 @@
 namespace P3Model.Parser.ModelSyntax.Technology.CSharp;
 
-public class CSharpType(string idPartUniqueForElementType, string name, string path)
-    : ElementBase(idPartUniqueForElementType, name), CodeStructure
+public class CSharpType(ElementId id, string name, string sourceCodePath) : ElementBase(id, name), CodeStructure
 {
     public override Perspective Perspective => Perspective.Technology;
-    public string Path { get; } = path;
+    public string SourceCodeSourceCodePath { get; } = sourceCodePath;
+
+    public override bool DataEquals(Element? other) =>
+        base.DataEquals(other) &&
+        other is CSharpType otherCSharpType &&
+        SourceCodeSourceCodePath == otherCSharpType.SourceCodeSourceCodePath;
 }

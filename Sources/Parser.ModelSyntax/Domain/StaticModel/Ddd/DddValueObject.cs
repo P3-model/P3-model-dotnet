@@ -1,4 +1,3 @@
 namespace P3Model.Parser.ModelSyntax.Domain.StaticModel.Ddd;
 
-public class DddValueObject(string idPartUniqueForElementType, string name)
-    : DomainBuildingBlock(idPartUniqueForElementType, name);
+public class DddValueObject(ElementId id, string name) : DomainBuildingBlock(id, name);

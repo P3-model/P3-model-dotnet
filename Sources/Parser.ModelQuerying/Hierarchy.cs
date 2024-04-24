@@ -37,7 +37,7 @@ public class Hierarchy<TElement>
         return new(parentToChildren, childToParent);
     }
 
-    public TElement GetRootFor(TElement module) => GetAncestorsFor(module, true).MinBy(m => m.Id.Level)!;
+    public TElement GetRootFor(TElement module) => GetAncestorsFor(module, true).MinBy(m => m.HierarchyPath.Level)!;
 
     public IReadOnlySet<TElement> GetAncestorsFor(TElement element, bool includeSelf = false)
     {
@@ -72,5 +72,5 @@ public class Hierarchy<TElement>
     }
 
     public IEnumerable<TElement> FromLevel(int level) => _parentToChildren.Keys
-        .Where(module => module.Id.Level == level);
+        .Where(module => module.HierarchyPath.Level == level);
 }

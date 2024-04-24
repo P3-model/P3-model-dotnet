@@ -22,10 +22,10 @@ public class DomainModulePage : MermaidPageBase
     private readonly IReadOnlySet<CodeStructure> _codeStructures;
 
     public DomainModulePage(string outputDirectory, DomainModule module, DomainModule? parent,
-        IReadOnlySet<DomainModule> children, IReadOnlySet<Process> processes, 
-        IReadOnlySet<DomainBuildingBlock> directBuildingBlocks, IReadOnlySet<DeployableUnit> deployableUnits, 
-        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits, 
-        IReadOnlySet<CodeStructure> codeStructures) 
+        IReadOnlySet<DomainModule> children, IReadOnlySet<Process> processes,
+        IReadOnlySet<DomainBuildingBlock> directBuildingBlocks, IReadOnlySet<DeployableUnit> deployableUnits,
+        IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits,
+        IReadOnlySet<CodeStructure> codeStructures)
         : base(outputDirectory)
     {
         _module = module;
@@ -39,7 +39,7 @@ public class DomainModulePage : MermaidPageBase
         _codeStructures = codeStructures;
     }
 
-    public override string LinkText => string.Join(" | ", _module.Id.Parts.Select(p => p.Humanize()));
+    public override string LinkText => string.Join(" | ", _module.HierarchyPath.Parts.Select(p => p.Humanize()));
 
     protected override string Description =>
         @$"This view contains details information about {_module.Name} domain module, including:
@@ -50,7 +50,10 @@ public class DomainModulePage : MermaidPageBase
 - engaged people: actors, development teams, business stakeholders";
 
     public override string RelativeFilePath => Path.Combine(
-        "Domain", "Modules", Path.Combine(_module.Id.Parts.ToArray()), $"{_module.Name.Dehumanize()}-module.md");
+        "Domain",
+        "Modules",
+        Path.Combine(_module.HierarchyPath.Parts.ToArray()),
+        $"{_module.Name.Dehumanize()}-module.md");
 
     public override ElementBase MainElement => _module;
 
@@ -60,7 +63,6 @@ public class DomainModulePage : MermaidPageBase
         mermaidWriter.WriteHeading("Related modules", 3);
         if (_parent is null && _children.Count == 0)
         {
-            
             mermaidWriter.WriteLine("No related modules were found.");
         }
         else
@@ -86,7 +88,7 @@ public class DomainModulePage : MermaidPageBase
                 }
             });
         }
-        
+
         mermaidWriter.WriteHeading("Related processes", 3);
         if (_processes.Count == 0)
         {
@@ -104,7 +106,7 @@ public class DomainModulePage : MermaidPageBase
                 }
             });
         }
-        
+
         mermaidWriter.WriteHeading("Direct building blocks", 3);
         if (_directBuildingBlocks.Count == 0)
         {
@@ -147,7 +149,8 @@ public class DomainModulePage : MermaidPageBase
         if (_codeStructures.Count == 1)
             mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
         else
-            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.Path), FormatSourceCodeLink);
+            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.SourceCodeSourceCodePath),
+                FormatSourceCodeLink);
 
         mermaidWriter.WriteHeading("People Perspective", 2);
         mermaidWriter.WriteHeading("Engaged people", 3);
@@ -174,23 +177,24 @@ public class DomainModulePage : MermaidPageBase
             });
         }
     }
-    
+
     private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
-        .FormatLink(codeStructure.Name, GetPathRelativeToPageFile(codeStructure.Path));
+        .FormatLink(codeStructure.Name, GetPathRelativeToPageFile(codeStructure.SourceCodeSourceCodePath));
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
-        DomainModulePage modulePage => _children.Contains(modulePage.MainElement) ,
+        DomainModulePage modulePage => _children.Contains(modulePage.MainElement),
         DomainBuildingBlockPage buildingBlockPage => _directBuildingBlocks.Contains(buildingBlockPage.MainElement),
         ProcessStepPage stepPage => _directBuildingBlocks.Contains(stepPage.MainElement),
         ProcessPage processPage => _processes.Contains(processPage.MainElement),
         DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
-        BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage.MainElement),
+        BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage
+            .MainElement),
         _ => false
     };
 
-    protected override bool IncludeInZoomOutPages(MermaidPage page) => _parent is null 
+    protected override bool IncludeInZoomOutPages(MermaidPage page) => _parent is null
         ? page is DomainModulesPage
         : page is DomainModulePage modulePage && _parent.Equals(modulePage.MainElement);
 }

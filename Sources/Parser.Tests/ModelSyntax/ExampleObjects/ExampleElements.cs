@@ -13,38 +13,81 @@ public class ExampleElements : IEnumerable<Element>
 {
     private readonly Dictionary<Type, Element> _elements = new();
 
-    private static readonly DomainModule DomainModule =
-        new(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleC"));
+    private static readonly DomainModule DomainModule = new(
+        ElementId.Create<DomainModule>("ExampleModuleA.ModuleB.ModuleC"),
+        HierarchyPath.FromParts("ExampleModuleA", "ModuleB", "ModuleC"));
 
-    public static readonly ExampleElements All = new()
-    {
-        new Actor("ExampleActor"),
-        new BusinessOrganizationalUnit("ExampleBusinessOrganizationalUnit"),
-        new CSharpProject("ExampleCSharpProject", "ExampleDirectory/ExampleCSharpProject"),
-        new CSharpNamespace(HierarchyId.FromParts("ExampleParentCSharpNamespace", "ExampleCSharpNamespace"),
-                "ExampleDirectory/ExampleCSharpNamespace"),
-        new CSharpType("ExampleCSharpNamespace.ExampleCSharpType",
+    public static readonly ExampleElements All =
+    [
+        new Actor(ElementId.Create<Actor>("ExampleActor"), "ExampleActor"),
+        new BusinessOrganizationalUnit(
+            ElementId.Create<BusinessOrganizationalUnit>("ExampleBusinessOrganizationalUnit"),
+            "ExampleBusinessOrganizationalUnit"),
+        new CSharpProject(
+            ElementId.Create<CSharpProject>("ExampleCSharpProject"),
+            "ExampleCSharpProject",
+            "ExampleDirectory/ExampleCSharpProject"),
+        new CSharpNamespace(
+            ElementId.Create<CSharpNamespace>("ExampleParentCSharpNamespace.ExampleCSharpNamespace"),
+            HierarchyPath.FromParts("ExampleParentCSharpNamespace", "ExampleCSharpNamespace"), 
+            "ExampleDirectory/ExampleCSharpNamespace"),
+        new CSharpType(
+            ElementId.Create<CSharpType>("ExampleCSharpNamespace.ExampleCSharpType"),
             "ExampleCSharpType",
             "ExampleDirectory/ExampleCSharpType"),
-        new Database("ExampleDatabase"),
-        new DatabaseCluster("ExampleDatabaseCluster"),
-        new DddAggregate("ExampleModuleA.ExampleDddAggregate", "ExampleDddAggregate"),
-        new DddDomainService("ExampleModuleA.ExampleDddDomainService", "ExampleDddDomainService"),
-        new DddEntity("ExampleModuleA.ExampleDddEntity", "ExampleDddEntity"),
-        new DddFactory("ExampleModuleA.ExampleDddFactory", "ExampleDddFactory"),
-        new DddRepository("ExampleModuleA.ExampleDddRepository", "ExampleDddRepository"),
-        new DddValueObject("ExampleModuleA.ExampleDddValueObject", "ExampleDddValueObject"),
-        new DeployableUnit("ExampleDeployableUnit"),
-        new DevelopmentTeam("ExampleDevelopmentTeam"),
-        new DomainBuildingBlock("ExampleModuleA.ExampleBuildingBlock", "ExampleBuildingBlock"),
+        new Database(
+            ElementId.Create<Database>("ExampleDatabase"), 
+            "ExampleDatabase"),
+        new DatabaseCluster(
+            ElementId.Create<DatabaseCluster>("ExampleDatabaseCluster"), 
+            "ExampleDatabaseCluster"),
+        new DddAggregate(
+            ElementId.Create<DddAggregate>("ExampleModuleA.ExampleDddAggregate"), 
+            "ExampleDddAggregate"),
+        new DddDomainService(
+            ElementId.Create<DddDomainService>("ExampleModuleA.ExampleDddDomainService"),
+            "ExampleDddDomainService"),
+        new DddEntity(
+            ElementId.Create<DddEntity>("ExampleModuleA.ExampleDddEntity"), 
+            "ExampleDddEntity"),
+        new DddFactory(
+            ElementId.Create<DddFactory>("ExampleModuleA.ExampleDddFactory"), 
+            "ExampleDddFactory"),
+        new DddRepository(
+            ElementId.Create<DddRepository>("ExampleModuleA.ExampleDddRepository"),
+            "ExampleDddRepository"),
+        new DddValueObject(
+            ElementId.Create<DddValueObject>("ExampleModuleA.ExampleDddValueObject"),
+            "ExampleDddValueObject"),
+        new DeployableUnit(
+            ElementId.Create<DeployableUnit>("ExampleDeployableUnit"), 
+            "ExampleDeployableUnit"),
+        new DevelopmentTeam(
+            ElementId.Create<DevelopmentTeam>("ExampleDevelopmentTeam"), 
+            "ExampleDevelopmentTeam"),
+        new DomainBuildingBlock(
+            ElementId.Create<DomainBuildingBlock>("ExampleModuleA.ExampleBuildingBlock"),
+            "ExampleBuildingBlock"),
         DomainModule,
-        new ExternalSystem("ExampleExternalSystem"),
-        new ExternalSystemIntegration("ExampleModuleA.ExternalSystemIntegration", "ExternalSystemIntegration"),
-        new Layer("ExampleLayer"),
-        new Process("ExampleProcessX"),
-        new ProcessStep("ExampleModuleA.StepA", "StepA"),
-        new Tier("ExampleTier")
-    };
+        new ExternalSystem(
+            ElementId.Create<ExternalSystem>("ExampleExternalSystem"), 
+            "ExampleExternalSystem"),
+        new ExternalSystemIntegration(
+            ElementId.Create<ExternalSystemIntegration>("ExampleModuleA.ExternalSystemIntegration"),
+            "ExternalSystemIntegration"),
+        new Layer(
+            ElementId.Create<Layer>("ExampleLayer"), 
+            "ExampleLayer"),
+        new Process(
+            ElementId.Create<Process>("ExampleProcessX"), 
+            "ExampleProcessX"),
+        new ProcessStep(
+            ElementId.Create<ProcessStep>("ExampleModuleA.StepA"), 
+            "StepA"),
+        new Tier(
+            ElementId.Create<Tier>("ExampleTier"), 
+            "ExampleTier")
+    ];
 
     private void Add<TElement>(TElement element)
         where TElement : Element

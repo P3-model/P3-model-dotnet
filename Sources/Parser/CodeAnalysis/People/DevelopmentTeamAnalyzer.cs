@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.People;
@@ -24,7 +25,9 @@ public class DevelopmentTeamAnalyzer : SymbolAnalyzer<INamedTypeSymbol>
             return;
         var ns = symbol.ContainingNamespace;
         var name = ownerAttribute.GetConstructorArgumentValue<string>(nameof(DevelopmentOwnerAttribute.Name));
-        var team = new DevelopmentTeam(name);
+        var team = new DevelopmentTeam(
+            ElementId.Create<DevelopmentTeam>(name.Dehumanize()),
+            name.Humanize(LetterCasing.Title));
         modelBuilder.Add(team, ns);
         modelBuilder.Add(elements => GetRelations(ns, team, elements));
     }

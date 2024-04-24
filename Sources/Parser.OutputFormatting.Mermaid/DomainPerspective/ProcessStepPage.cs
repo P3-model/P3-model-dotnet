@@ -48,7 +48,7 @@ public class ProcessStepPage : MermaidPageBase
 
     public override string RelativeFilePath => _module is null
         ? Path.Combine("Domain", "Modules", $"{_step.Name.Dehumanize()}.md")
-        : Path.Combine("Domain", "Modules", Path.Combine(_module.Id.Parts.ToArray()),
+        : Path.Combine("Domain", "Modules", Path.Combine(_module.HierarchyPath.Parts.ToArray()),
             $"{_step.Name.Dehumanize()}.md");
     
     public override ElementBase MainElement => _step;
@@ -111,7 +111,7 @@ public class ProcessStepPage : MermaidPageBase
         if (_codeStructures.Count == 1)
             mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
         else
-            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.Path), FormatSourceCodeLink);
+            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.SourceCodeSourceCodePath), FormatSourceCodeLink);
 
         mermaidWriter.WriteHeading("People Perspective", 2);
         if (_actors.Count == 0 && _developmentTeams.Count == 0 && _organizationalUnits.Count == 0)
@@ -146,7 +146,7 @@ public class ProcessStepPage : MermaidPageBase
     }
 
     private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
-        .FormatLink(Path.GetFileName(codeStructure.Path), GetPathRelativeToPageFile(codeStructure.Path));
+        .FormatLink(Path.GetFileName(codeStructure.SourceCodeSourceCodePath), GetPathRelativeToPageFile(codeStructure.SourceCodeSourceCodePath));
     
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {

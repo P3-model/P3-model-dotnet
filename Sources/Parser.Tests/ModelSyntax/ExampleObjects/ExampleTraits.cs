@@ -8,9 +8,6 @@ public class ExampleTraits : IEnumerable<Trait>
 {
     private readonly Dictionary<Type, Trait> _traits = new();
 
-    private static readonly DomainModule DomainModule =
-        new(HierarchyId.FromParts("ExampleModuleA", "ModuleB", "ModuleC"));
-    
     public static readonly ExampleTraits All = new();
     
     private void Add<TTrait>(TTrait trait)

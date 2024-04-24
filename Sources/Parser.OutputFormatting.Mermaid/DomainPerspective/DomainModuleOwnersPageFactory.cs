@@ -16,7 +16,7 @@ public class DomainModuleOwnersPageFactory : MermaidPageFactory
     private static IEnumerable<DomainModuleOwners> GetModulesOwners(ModelGraph modelGraph)
     {
         var modules = modelGraph.Execute(query => query
-            .AllElements<DomainModule>(module => module.Level == 0));
+            .AllElements<DomainModule>(module => module.HierarchyPath.Level == 0));
         foreach (var module in modules)
         {
             var teams = modelGraph.Execute(query => query

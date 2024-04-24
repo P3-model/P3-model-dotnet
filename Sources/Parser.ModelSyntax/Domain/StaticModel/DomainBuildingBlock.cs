@@ -1,32 +1,23 @@
-using System.Text.Json.Serialization;
 using P3Model.Parser.ModelSyntax.Technology;
 
 namespace P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
-public class DomainBuildingBlock(string idPartUniqueForElementType, string name)
-    : ElementBase(idPartUniqueForElementType, name)
+public class DomainBuildingBlock(ElementId id, string name) : ElementBase(id, name)
 {
     public override Perspective Perspective => Perspective.Domain;
 
-    public Attributes AdditionalAttributes { get; } = new();
-    
-    [JsonIgnore]
+    private string? _shortDescription;
     public string? ShortDescription
     {
-        get => AdditionalAttributes.ShortDescription;
-        set => SetOnce(ref AdditionalAttributes.ShortDescription, value, Id);
+        get => _shortDescription;
+        set => SetOnce(ref _shortDescription, value);
     }
 
     public override bool DataEquals(Element? other) =>
-        base.DataEquals(other) &&
-        other is DomainBuildingBlock otherBuildingBlock &&
-        ShortDescription == otherBuildingBlock.ShortDescription;
+        base.DataEquals(other) && 
+        other is DomainBuildingBlock otherDomainBuildingBlock &&
+        ShortDescription == otherDomainBuildingBlock.ShortDescription;
 
-    public class Attributes
-    {
-        public string? ShortDescription;
-    }
-    
     public class DependsOnBuildingBlock(DomainBuildingBlock source, DomainBuildingBlock destination)
         : RelationBase<DomainBuildingBlock, DomainBuildingBlock>(source, destination);
 

@@ -8,4 +8,6 @@ public readonly record struct ElementId(string Value)
 
     public static ElementId Create(Type type, string idPartUniqueForElementType) =>
         new($"{type.Name}|{idPartUniqueForElementType}".ToLowerInvariant());
+
+    public override string ToString() => Value;
 }

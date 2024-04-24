@@ -17,8 +17,10 @@ public class TierAnalyzer : SymbolAnalyzer<IAssemblySymbol>
     {
         if (!symbol.TryGetAttribute(typeof(TierAttribute), out var tierAttribute))
             return;
-        var name = tierAttribute.GetConstructorArgumentValue<string>(nameof(TierAttribute.Name)).Humanize();
-        var tier = new Tier(name);
+        var name = tierAttribute.GetConstructorArgumentValue<string>(nameof(TierAttribute.Name));
+        var tier = new Tier(
+            ElementId.Create<Tier>(name.Dehumanize()),
+            name.Humanize(LetterCasing.Title));
         modelBuilder.Add(tier, symbol);
         modelBuilder.Add(elements => GetRelations(symbol, tier, elements));
     }

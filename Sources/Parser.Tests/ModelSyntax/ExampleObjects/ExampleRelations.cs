@@ -12,88 +12,157 @@ public class ExampleRelations : IEnumerable<Relation>
 {
     private readonly Dictionary<Type, Relation> _relations = new();
 
-    public static readonly ExampleRelations All = new()
-    {
+    public static readonly ExampleRelations All =
+    [
         new Actor.UsesProcessStep(
-            new Actor("ExampleActor"),
-            new ProcessStep("ExampleModuleA.StepA", "StepA")),
+            new Actor(
+                ElementId.Create<Actor>("ExampleActor"), 
+                "ExampleActor"),
+            new ProcessStep(
+                ElementId.Create<ProcessStep>("ExampleModuleA.StepA"), 
+                "StepA")),
         new BusinessOrganizationalUnit.OwnsDomainModule(
-            new BusinessOrganizationalUnit("ExampleBusinessOrganizationalUnit"),
-            new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
+            new BusinessOrganizationalUnit(
+                ElementId.Create<BusinessOrganizationalUnit>("ExampleBusinessOrganizationalUnit"),
+                "ExampleBusinessOrganizationalUnit"),
+            new DomainModule(
+                ElementId.Create<DomainModule>("ExampleModuleA.ModuleB"),
+                HierarchyPath.FromValue("ExampleModuleA.ModuleB"))),
+
         new CodeStructure.BelongsToLayer(
-            new CSharpProject("ExampleCSharpProjectA", "ExampleDirectory/ExampleCodeStructure"),
-            new Layer("ExampleLayer")),
+            new CSharpProject(
+                ElementId.Create<CSharpProject>("ExampleCSharpProjectA"),
+                "ExampleCSharpProjectA",
+                "ExampleDirectory/ExampleCodeStructure"),
+            new Layer(ElementId.Create<Layer>("ExampleLayer"), "ExampleLayer")),
+
         new CSharpProject.ReferencesProject(
-            new CSharpProject("ExampleCSharpProjectA", "ExampleDirectory/ExampleCSharpProjectA"),
-            new CSharpProject("ExampleCSharpProjectB", "ExampleDirectory/ExampleCSharpProjectB")),
+            new CSharpProject(ElementId.Create<CSharpProject>("ExampleCSharpProjectA"),
+                "ExampleCSharpProjectA",
+                "ExampleDirectory/ExampleCSharpProjectA"),
+            new CSharpProject(ElementId.Create<CSharpProject>("ExampleCSharpProjectB"),
+                "ExampleCSharpProjectB",
+                "ExampleDirectory/ExampleCSharpProjectB")),
+
         new CSharpProject.ContainsNamespace(
-            new CSharpProject("ExampleCSharpProjectA", "ExampleDirectory/ExampleCSharpProjectA"),
-            new CSharpNamespace(HierarchyId.FromParts("ExampleCSharpNamespace"), 
+            new CSharpProject(ElementId.Create<CSharpProject>("ExampleCSharpProjectA"),
+                "ExampleCSharpProjectA",
+                "ExampleDirectory/ExampleCSharpProjectA"),
+            new CSharpNamespace(
+                ElementId.Create<CSharpNamespace>("ExampleCSharpNamespace"),
+                HierarchyPath.FromValue("ExampleCSharpNamespace"),
                 "ExampleDirectory/ExampleCSharpNamespace")),
+
         new CSharpNamespace.ContainsNamespace(
-            new CSharpNamespace(HierarchyId.FromParts("ExampleCSharpNamespaceA"), 
+            new CSharpNamespace(
+                ElementId.Create<CSharpNamespace>("ExampleCSharpNamespaceA"),
+                HierarchyPath.FromValue("ExampleCSharpNamespaceA"),
                 "ExampleDirectory/ExampleCSharpNamespaceA"),
-            new CSharpNamespace(HierarchyId.FromParts("ExampleCSharpNamespaceB"), 
+            new CSharpNamespace(
+                ElementId.Create<CSharpNamespace>("ExampleCSharpNamespaceB"),
+                HierarchyPath.FromValue("ExampleCSharpNamespaceB"),
                 "ExampleDirectory/ExampleCSharpNamespaceB")),
+
         new CSharpNamespace.ContainsType(
-            new CSharpNamespace(HierarchyId.FromParts("ExampleCSharpNamespace"), "ExampleDirectory/"),
-            new CSharpType("ExampleCSharpNamespace.ExampleCSharpType",
+            new CSharpNamespace(
+                ElementId.Create<CSharpNamespace>("ExampleCSharpNamespace"),
+                HierarchyPath.FromValue("ExampleCSharpNamespace"), 
+                "ExampleDirectory/"),
+            new CSharpType(ElementId.Create<CSharpType>("ExampleCSharpNamespace.ExampleCSharpType"),
                 "ExampleCSharpType",
                 "ExampleDirectory/ExampleCSharpType")),
+
         new Database.BelongsToCluster(
-            new Database("ExampleDatabase"), 
-            new DatabaseCluster("ExampleDatabaseCluster")),
+            new Database(ElementId.Create<Database>("ExampleDatabase"), "ExampleDatabase"),
+            new DatabaseCluster(ElementId.Create<DatabaseCluster>("ExampleDatabaseCluster"), "ExampleDatabaseCluster")),
+
         new DeployableUnit.ContainsCSharpProject(
-            new DeployableUnit("ExampleDeployableUnit"),
-            new CSharpProject("ExampleCSharpProject", "ExampleDirectory/ExampleCSharpProject")),
+            new DeployableUnit(ElementId.Create<DeployableUnit>("ExampleDeployableUnit"), "ExampleDeployableUnit"),
+            new CSharpProject(ElementId.Create<CSharpProject>("ExampleCSharpProject"),
+                "ExampleCSharpProject",
+                "ExampleDirectory/ExampleCSharpProject")),
+
         new DeployableUnit.UsesDatabase(
-            new DeployableUnit("ExampleDeployableUnit"),
-            new Database("ExampleDatabase")),
+            new DeployableUnit(ElementId.Create<DeployableUnit>("ExampleDeployableUnit"), "ExampleDeployableUnit"),
+            new Database(ElementId.Create<Database>("ExampleDatabase"), "ExampleDatabase")),
+
         new DevelopmentTeam.OwnsDomainModule(
-            new DevelopmentTeam("ExampleDevelopmentTeam"),
-            new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
+            new DevelopmentTeam(ElementId.Create<DevelopmentTeam>("ExampleDevelopmentTeam"), "ExampleDevelopmentTeam"),
+            new DomainModule(
+                ElementId.Create<DomainModule>("ExampleModuleA.ModuleB"),
+                HierarchyPath.FromValue("ExampleModuleA.ModuleB"))),
+
         new DomainBuildingBlock.DependsOnBuildingBlock(
-            new DomainBuildingBlock("ExampleModuleA.ExampleDomainBuildingBlockA", "ExampleDomainBuildingBlockA"),
-            new DomainBuildingBlock("ExampleModuleA.ExampleDomainBuildingBlockB", "ExampleDomainBuildingBlockB")),
+            new DomainBuildingBlock(ElementId.Create<DomainBuildingBlock>("ExampleModuleA.ExampleDomainBuildingBlockA"),
+                "ExampleDomainBuildingBlockA"),
+            new DomainBuildingBlock(ElementId.Create<DomainBuildingBlock>("ExampleModuleA.ExampleDomainBuildingBlockB"),
+                "ExampleDomainBuildingBlockB")),
+
         new DomainBuildingBlock.IsImplementedBy(
-            new DomainBuildingBlock("ExampleModuleA.ExampleDomainBuildingBlockA", "ExampleDomainBuildingBlockA"),
-            new CSharpType("ExampleCSharpNamespace.ExampleCSharpType",
+            new DomainBuildingBlock(ElementId.Create<DomainBuildingBlock>("ExampleModuleA.ExampleDomainBuildingBlockA"),
+                "ExampleDomainBuildingBlockA"),
+            new CSharpType(ElementId.Create<CSharpType>("ExampleCSharpNamespace.ExampleCSharpType"),
                 "ExampleCSharpType",
                 "ExampleDirectory/ExampleCSharpType")),
+
         new DomainModule.ContainsDomainModule(
-            new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
-            new DomainModule(HierarchyId.FromParts("ExampleModuleA", "ModuleB"))),
+            new DomainModule(
+                ElementId.Create<DomainModule>("ExampleModuleA"),
+                HierarchyPath.FromValue("ExampleModuleA")),
+            new DomainModule(
+                ElementId.Create<DomainModule>("ExampleModuleA.ModuleB"),
+                HierarchyPath.FromValue("ExampleModuleA.ModuleB"))),
+
         new DomainModule.ContainsBuildingBlock(
-            new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
-            new DomainBuildingBlock("ExampleModuleA.ExampleDomainBuildingBlock", "ExampleDomainBuildingBlock")),
+            new DomainModule(
+                ElementId.Create<DomainModule>("ExampleModuleA"),
+                HierarchyPath.FromValue("ExampleModuleA")),
+            new DomainBuildingBlock(ElementId.Create<DomainBuildingBlock>("ExampleModuleA.ExampleDomainBuildingBlock"),
+                "ExampleDomainBuildingBlock")),
+
         new DomainModule.IsDeployedInDeployableUnit(
-            new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
-            new DeployableUnit("ExampleDeployableUnit")),
+            new DomainModule(
+                ElementId.Create<DomainModule>("ExampleModuleA"),
+                HierarchyPath.FromValue("ExampleModuleA")),
+            new DeployableUnit(ElementId.Create<DeployableUnit>("ExampleDeployableUnit"), "ExampleDeployableUnit")),
+
         new DomainModule.IsImplementedBy(
-            new DomainModule(HierarchyId.FromParts("ExampleModuleA")),
-            new CSharpNamespace(HierarchyId.FromParts("ExampleParentCSharpNamespace", "ExampleCSharpNamespace"),
+            new DomainModule(
+                ElementId.Create<DomainModule>("ExampleModuleA"),
+                HierarchyPath.FromValue("ExampleModuleA")),
+            new CSharpNamespace(
+                ElementId.Create<CSharpNamespace>("ExampleParentCSharpNamespace.ExampleCSharpNamespace"),
+                HierarchyPath.FromValue("ExampleParentCSharpNamespace.ExampleCSharpNamespace"), 
                 "ExampleDirectory/ExampleCSharpNamespace")),
+
         new ExternalSystemIntegration.Integrates(
-            new ExternalSystemIntegration("ExampleModuleA.ExternalSystemIntegration", "ExternalSystemIntegration"),
-            new ExternalSystem("ExampleExternalSystem")),
+            new ExternalSystemIntegration(
+                ElementId.Create<ExternalSystemIntegration>("ExampleModuleA.ExternalSystemIntegration"),
+                "ExternalSystemIntegration"),
+            new ExternalSystem(ElementId.Create<ExternalSystem>("ExampleExternalSystem"), "ExampleExternalSystem")),
+
         new Process.ContainsProcessStep(
-            new Process("ExampleProcess"),
-            new ProcessStep("ExampleModuleA.StepA", "StepA")),
+            new Process(ElementId.Create<Process>("ExampleProcess"), "ExampleProcess"),
+            new ProcessStep(ElementId.Create<ProcessStep>("ExampleModuleA.StepA"), "StepA")),
+
         new ProcessStep.HasNextStep(
-            new ProcessStep("ExampleModuleA.StepA", "StepA"),
-            new ProcessStep("ExampleModuleA.StepB", "StepB")),
-            new ProcessStep.DependsOnBuildingBlock(
-            new ProcessStep("ExampleModuleA.StepZ", "StepZ"),
-            new DomainBuildingBlock("ExampleModuleA.ExampleBuildingBlock", "ExampleBuildingBlock")),
+            new ProcessStep(ElementId.Create<ProcessStep>("ExampleModuleA.StepA"), "StepA"),
+            new ProcessStep(ElementId.Create<ProcessStep>("ExampleModuleA.StepB"), "StepB")),
+
+        new ProcessStep.DependsOnBuildingBlock(
+            new ProcessStep(ElementId.Create<ProcessStep>("ExampleModuleA.StepZ"), "StepZ"),
+            new DomainBuildingBlock(ElementId.Create<DomainBuildingBlock>("ExampleModuleA.ExampleBuildingBlock"),
+                "ExampleBuildingBlock")),
+
         new Tier.ContainsDeployableUnit(
-            new Tier("ExampleTier"),
-            new DeployableUnit("ExampleDeployableUnit")),
-    };
-    
+            new Tier(ElementId.Create<Tier>("ExampleTier"), "ExampleTier"),
+            new DeployableUnit(ElementId.Create<DeployableUnit>("ExampleDeployableUnit"), "ExampleDeployableUnit"))
+    ];
+
     private void Add<TRelation>(TRelation relation)
         where TRelation : class, Relation
         => _relations.Add(typeof(TRelation), relation);
-    
+
     public Relation ForType(Type type)
     {
         if (!_relations.TryGetValue(type, out var relation))

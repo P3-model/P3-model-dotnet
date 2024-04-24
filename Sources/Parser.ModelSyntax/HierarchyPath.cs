@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 
 namespace P3Model.Parser.ModelSyntax;
 
-public readonly struct HierarchyId : IEquatable<HierarchyId>
+public readonly struct HierarchyPath : IEquatable<HierarchyPath>
 {
     [PublicAPI]
     public const char DefaultSeparator = '.';
@@ -11,23 +11,23 @@ public readonly struct HierarchyId : IEquatable<HierarchyId>
     private readonly string _value;
 
     [PublicAPI]
-    public static HierarchyId FromParts(params string[] parts) => FromParts(DefaultSeparator, parts);
+    public static HierarchyPath FromParts(params string[] parts) => FromParts(DefaultSeparator, parts);
 
     [PublicAPI]
-    public static HierarchyId FromParts(IEnumerable<string> parts) => FromParts(DefaultSeparator, parts);
+    public static HierarchyPath FromParts(IEnumerable<string> parts) => FromParts(DefaultSeparator, parts);
 
     [PublicAPI]
-    public static HierarchyId FromParts(char separator, params string[] parts) =>
+    public static HierarchyPath FromParts(char separator, params string[] parts) =>
         FromParts(separator, (IEnumerable<string>)parts);
 
     [PublicAPI]
-    public static HierarchyId FromParts(char separator, IEnumerable<string> parts) =>
+    public static HierarchyPath FromParts(char separator, IEnumerable<string> parts) =>
         new(string.Join(separator, parts), separator);
 
     [PublicAPI]
-    public static HierarchyId FromValue(string value, char separator = DefaultSeparator) => new(value, separator);
+    public static HierarchyPath FromValue(string value, char separator = DefaultSeparator) => new(value, separator);
 
-    private HierarchyId(string value, char separator = DefaultSeparator)
+    private HierarchyPath(string value, char separator = DefaultSeparator)
     {
         _separator = separator;
         _value = value;
@@ -55,19 +55,19 @@ public readonly struct HierarchyId : IEquatable<HierarchyId>
     public IEnumerable<string> Parts => _value.Split(_separator);
 
     [PublicAPI]
-    public bool IsAncestorOf(HierarchyId other) => other._value.Length < _value.Length &&
+    public bool IsAncestorOf(HierarchyPath other) => other._value.Length < _value.Length &&
                                                    other._value.StartsWith(_value);
 
     [PublicAPI]
-    public bool IsDescendantOf(HierarchyId other) => other.Level < Level && _value.StartsWith(other._value);
+    public bool IsDescendantOf(HierarchyPath other) => other.Level < Level && _value.StartsWith(other._value);
 
-    public override bool Equals(object? obj) => obj is HierarchyId other && Equals(other);
-    public bool Equals(HierarchyId other) => _value == other._value;
+    public override bool Equals(object? obj) => obj is HierarchyPath other && Equals(other);
+    public bool Equals(HierarchyPath other) => _value == other._value;
     public override int GetHashCode() => _value.GetHashCode();
 
-    public static bool operator ==(HierarchyId left, HierarchyId right) => left.Equals(right);
+    public static bool operator ==(HierarchyPath left, HierarchyPath right) => left.Equals(right);
 
-    public static bool operator !=(HierarchyId left, HierarchyId right) => !(left == right);
+    public static bool operator !=(HierarchyPath left, HierarchyPath right) => !(left == right);
 
     public override string ToString() => _value;
 }

@@ -33,7 +33,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
 
     public override string RelativeFilePath => _module is null
         ? Path.Combine("Domain", "Modules", $"{_buildingBlock.Name.Dehumanize()}.md")
-        : Path.Combine("Domain", "Modules", Path.Combine(_module.Id.Parts.ToArray()),
+        : Path.Combine("Domain", "Modules", Path.Combine(_module.HierarchyPath.Parts.ToArray()),
             $"{_buildingBlock.Name.Dehumanize()}.md");
 
     public override ElementBase MainElement => _buildingBlock;
@@ -60,27 +60,27 @@ public class DomainBuildingBlockPage : MermaidPageBase
                 var usingElementIds = new List<string>();
                 foreach (var group in _usingElements
                              .GroupBy(t => t.Module, t => t.BuildingBlock)
-                             .OrderBy(t => t.Key is null ? string.Empty : t.Key.FullName))
+                             .OrderBy(t => t.Key is null ? string.Empty : t.Key.HierarchyPath.Full))
                 {
                     if (group.Key is null)
                         usingElementIds.AddRange(WriteDependencies(group, flowchartWriter));
                     else
-                        usingElementIds.Add(flowchartWriter.WriteSubgraph(group.Key.FullName, subgraphWriter =>
-                            WriteDependencies(group, subgraphWriter)));
+                        usingElementIds.Add(flowchartWriter.WriteSubgraph(group.Key.HierarchyPath.Full, 
+                            subgraphWriter => WriteDependencies(group, subgraphWriter)));
                 }
                 var buildingBlockId = _module is null
                     ? flowchartWriter.WriteRectangle(_buildingBlock.Name, Style.DomainPerspective)
-                    : flowchartWriter.WriteSubgraph(_module.FullName, subGraphWriter => subGraphWriter
+                    : flowchartWriter.WriteSubgraph(_module.HierarchyPath.Full, subGraphWriter => subGraphWriter
                         .WriteRectangle(_buildingBlock.Name, Style.DomainPerspective));
                 var usedElementIds = new List<string>();
                 foreach (var group in _usedElements
                              .GroupBy(t => t.Module, t => t.BuildingBlock)
-                             .OrderBy(t => t.Key is null ? string.Empty : t.Key.FullName))
+                             .OrderBy(t => t.Key is null ? string.Empty : t.Key.HierarchyPath.Full))
                 {
                     if (group.Key is null)
                         usedElementIds.AddRange(WriteDependencies(group, flowchartWriter));
                     else
-                        usedElementIds.Add(flowchartWriter.WriteSubgraph(group.Key.FullName, subgraphWriter =>
+                        usedElementIds.Add(flowchartWriter.WriteSubgraph(group.Key.HierarchyPath.Full, subgraphWriter =>
                             WriteDependencies(group, subgraphWriter)));
                 }
                 foreach (var usingElementId in usingElementIds)
@@ -118,11 +118,11 @@ public class DomainBuildingBlockPage : MermaidPageBase
         if (_codeStructures.Count == 1)
             mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
         else
-            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.Path), FormatSourceCodeLink);
+            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.SourceCodeSourceCodePath), FormatSourceCodeLink);
     }
 
     private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
-        .FormatLink(Path.GetFileName(codeStructure.Path), GetPathRelativeToPageFile(codeStructure.Path));
+        .FormatLink(Path.GetFileName(codeStructure.SourceCodeSourceCodePath), GetPathRelativeToPageFile(codeStructure.SourceCodeSourceCodePath));
 
     private static IEnumerable<string> WriteDependencies(IEnumerable<DomainBuildingBlock> dependencies,
         FlowchartElementsWriter flowchartWriter) => dependencies

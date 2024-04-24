@@ -54,7 +54,7 @@ public class DeployableUnitPageFactory : MermaidPageFactory
                     .Elements<DomainModule>()
                     .RelatedTo(unit)
                     .ByRelation<DomainModule.IsDeployedInDeployableUnit>())
-                .Where(m => m.Level == 0)
+                .Where(m => m.HierarchyPath.Level == 0)
                 .ToHashSet();
             var teams = modelGraph.Execute(query => query
                 .Elements<DevelopmentTeam>()

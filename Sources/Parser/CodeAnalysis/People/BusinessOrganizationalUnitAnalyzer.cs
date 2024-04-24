@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.People;
@@ -24,7 +25,9 @@ public class BusinessOrganizationalUnitAnalyzer : SymbolAnalyzer<INamedTypeSymbo
             return;
         var ns = symbol.ContainingNamespace;
         var name = ownerAttribute.GetConstructorArgumentValue<string>(nameof(BusinessOwnerAttribute.Name));
-        var unit = new BusinessOrganizationalUnit(name);
+        var unit = new BusinessOrganizationalUnit(
+            ElementId.Create<BusinessOrganizationalUnit>(name.Dehumanize()),
+            name.Humanize(LetterCasing.Title));
         modelBuilder.Add(unit, ns);
         modelBuilder.Add(elements => GetRelations(ns, unit, elements));
     }

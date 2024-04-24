@@ -14,7 +14,7 @@ public static class P3ModelSerializer
         new RelationJsonConverter(),
         new TraitJsonConverter(),
         new ElementIdJsonConverter(),
-        new HierarchyIdJsonConverter(),
+        new HierarchyPathJsonConverter(),
         new FileInfoJsonConverter(),
     };
 

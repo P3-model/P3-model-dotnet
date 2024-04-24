@@ -37,7 +37,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                     .RelatedToAny(subQuery => subQuery
                         .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>(filter => filter
-                        .MaxBy(r => r.Source.Level)));
+                        .MaxBy(r => r.Source.HierarchyPath.Level)));
             var actors = modelGraph.Execute(query => query
                 .Elements<Actor>()
                 .RelatedTo(step)
@@ -50,7 +50,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                         .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByRelation<DevelopmentTeam.OwnsDomainModule>(filter => filter
                         .GroupBy(r => r.Destination)
-                        .MaxBy(g => g.Key.Level) ?? Enumerable.Empty<DevelopmentTeam.OwnsDomainModule>()));
+                        .MaxBy(g => g.Key.HierarchyPath.Level) ?? Enumerable.Empty<DevelopmentTeam.OwnsDomainModule>()));
             var organizationalUnits = module is null
                 ? new HashSet<BusinessOrganizationalUnit>()
                 : modelGraph.Execute(query => query
@@ -59,7 +59,7 @@ public class ProcessStepPageFactory : MermaidPageFactory
                         .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>(filter => filter
                         .GroupBy(r => r.Destination)
-                        .MaxBy(g => g.Key.Level) ?? Enumerable.Empty<BusinessOrganizationalUnit.OwnsDomainModule>()));
+                        .MaxBy(g => g.Key.HierarchyPath.Level) ?? Enumerable.Empty<BusinessOrganizationalUnit.OwnsDomainModule>()));
             var codeStructures = modelGraph.Execute(query => query
                 .Elements<CodeStructure>()
                 .RelatedTo((DomainBuildingBlock)step)

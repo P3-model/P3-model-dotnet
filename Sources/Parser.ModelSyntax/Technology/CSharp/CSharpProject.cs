@@ -1,16 +1,19 @@
 namespace P3Model.Parser.ModelSyntax.Technology.CSharp;
 
-public class CSharpProject(string name, string path) : ElementBase(name), CodeStructure
+public class CSharpProject(ElementId id, string name, string sourceCodePath) : ElementBase(id, name), CodeStructure
 {
     public override Perspective Perspective => Perspective.Technology;
-    
-    public string Path { get; } = path;
 
-    public bool Equals(CodeStructure? other) => other != null && Equals((ElementBase)other);
+    public string SourceCodeSourceCodePath { get; } = sourceCodePath;
 
-    public class ReferencesProject(CSharpProject source, CSharpProject destination) 
+    public override bool DataEquals(Element? other) =>
+        base.DataEquals(other) &&
+        other is CSharpProject otherCSharpProject &&
+        SourceCodeSourceCodePath == otherCSharpProject.SourceCodeSourceCodePath;
+
+    public class ReferencesProject(CSharpProject source, CSharpProject destination)
         : HierarchyRelation<CSharpProject>(source, destination);
-    
-    public class ContainsNamespace(CSharpProject source, CSharpNamespace destination) 
+
+    public class ContainsNamespace(CSharpProject source, CSharpNamespace destination)
         : RelationBase<CSharpProject, CSharpNamespace>(source, destination);
 }

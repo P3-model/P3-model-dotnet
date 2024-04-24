@@ -20,7 +20,7 @@ public static class DomainQueries
             .RelatedToAny(subQuery => subQuery
                 .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
             .ByReverseRelation<DomainModule.IsDeployedInDeployableUnit>(filter => filter
-                .MaxBy(r => r.Source.Level)));
+                .MaxBy(r => r.Source.HierarchyPath.Level)));
         var descendantsDeployableUnits = modelGraph.Execute(query => query
             .Elements<DeployableUnit>()
             .RelatedToAny(subQuery => subQuery
@@ -46,7 +46,7 @@ public static class DomainQueries
             .RelatedToAny(subQuery => subQuery
                 .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
             .ByRelation<DevelopmentTeam.OwnsDomainModule>(filter => filter
-                .MaxBy(g => g.Destination.Level)));
+                .MaxBy(g => g.Destination.HierarchyPath.Level)));
         var descendantsTeams = modelGraph.Execute(query => query
             .Elements<DevelopmentTeam>()
             .RelatedToAny(subQuery => subQuery
@@ -73,7 +73,7 @@ public static class DomainQueries
             .RelatedToAny(subQuery => subQuery
                 .AncestorsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
             .ByRelation<BusinessOrganizationalUnit.OwnsDomainModule>(filter => filter
-                .MaxBy(g => g.Destination.Level)));
+                .MaxBy(g => g.Destination.HierarchyPath.Level)));
         var descendantsUnits = modelGraph.Execute(query => query
             .Elements<BusinessOrganizationalUnit>()
             .RelatedToAny(subQuery => subQuery

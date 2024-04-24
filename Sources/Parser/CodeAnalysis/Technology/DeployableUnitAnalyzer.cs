@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DotNetExtensions;
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Technology;
@@ -20,7 +21,9 @@ public class DeployableUnitAnalyzer : SymbolAnalyzer<IAssemblySymbol>
         if (!symbol.TryGetAttribute(typeof(DeployableUnitAttribute), out var deployableUnitAttribute))
             return;
         var name = deployableUnitAttribute.GetConstructorArgumentValue<string>(nameof(DeployableUnitAttribute.Name));
-        var deployableUnit = new DeployableUnit(name);
+        var deployableUnit = new DeployableUnit(
+            ElementId.Create<DeployableUnit>(name.Dehumanize()),
+            name);
         modelBuilder.Add(deployableUnit, symbol);
         modelBuilder.Add(elements => GetRelationsToDomainModules(symbol, deployableUnit, elements));
         modelBuilder.Add(elements => GetRelationsToCodeStructures(symbol, deployableUnit, elements));

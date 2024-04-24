@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using P3Model.Annotations;
 using P3Model.Annotations.Domain.StaticModel;
 using P3Model.Parser.CodeAnalysis.RoslynExtensions;
+using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax.Technology;
 using Serilog;
@@ -67,7 +68,9 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(
         if (modulesHierarchyResolver.TryFind(symbol, out var hierarchyId))
         {
             var buildingBlock = CreateBuildingBlock($"{hierarchyId.Value.Full}.{name.Dehumanize()}", name);
-            var module = new DomainModule(hierarchyId.Value);
+            var module = new DomainModule(
+                ElementId.Create<DomainModule>(hierarchyId.Value.Full),
+                hierarchyId.Value);
             return (buildingBlock, module);
         }
         else
@@ -87,7 +90,7 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(
         return name.Humanize(LetterCasing.Title);
     }
 
-    protected abstract TBuildingBlock CreateBuildingBlock(string id, string name);
+    protected abstract TBuildingBlock CreateBuildingBlock(string idPartUniqueForElementType, string name);
 
     private static string? GetShortDescription(ISymbol symbol) =>
         symbol.TryGetAttribute(typeof(ShortDescriptionAttribute), out var descriptionAttribute)

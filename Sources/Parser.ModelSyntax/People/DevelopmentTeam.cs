@@ -2,7 +2,7 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
 namespace P3Model.Parser.ModelSyntax.People;
 
-public class DevelopmentTeam(string name) : ElementBase(name)
+public class DevelopmentTeam(ElementId id, string name) : ElementBase(id,  name)
 {
     public override Perspective Perspective => Perspective.People;
 
