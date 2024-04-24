@@ -10,4 +10,6 @@ public class UseCase(ElementId id, string name) : DomainBuildingBlock(id, name)
 
         public new UseCase Source { get; } = source;
     }
+
+    public class UsesUseCase(UseCase source, UseCase destination) : RelationBase<UseCase, UseCase>(source, destination);
 }
