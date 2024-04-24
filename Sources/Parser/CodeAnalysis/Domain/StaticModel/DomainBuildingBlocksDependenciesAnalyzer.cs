@@ -123,7 +123,7 @@ public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSym
     private static DomainBuildingBlock.DependsOnBuildingBlock CreateRelation(DomainBuildingBlock source,
         DomainBuildingBlock destination) => source switch
     {
-        ProcessStep processStep => new ProcessStep.DependsOnBuildingBlock(processStep, destination),
+        UseCase useCase => new UseCase.DependsOnBuildingBlock(useCase, destination),
         _ => new DomainBuildingBlock.DependsOnBuildingBlock(source, destination)
     };
 }

@@ -12,20 +12,20 @@ namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 public class ProcessPage : MermaidPageBase
 {
     private readonly Process _process;
-    private readonly IReadOnlySet<ProcessStep> _steps;
+    private readonly IReadOnlySet<UseCase> _useCases;
     private readonly IReadOnlySet<DomainModule> _modules;
     private readonly IReadOnlySet<DeployableUnit> _deployableUnits;
     private readonly IReadOnlySet<Actor> _actors;
     private readonly IReadOnlySet<DevelopmentTeam> _developmentTeams;
     private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
 
-    public ProcessPage(string outputDirectory, Process process, IReadOnlySet<ProcessStep> steps,
+    public ProcessPage(string outputDirectory, Process process, IReadOnlySet<UseCase> useCases,
         IReadOnlySet<DomainModule> modules, IReadOnlySet<DeployableUnit> deployableUnits, 
         IReadOnlySet<Actor> actors, IReadOnlySet<DevelopmentTeam> developmentTeams, 
         IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits) : base(outputDirectory)
     {
         _process = process;
-        _steps = steps;
+        _useCases = useCases;
         _modules = modules;
         _deployableUnits = deployableUnits;
         _actors = actors;
@@ -35,7 +35,7 @@ public class ProcessPage : MermaidPageBase
 
     protected override string Description =>
         @$"This view contains details information about {_process.Name} business process, including:
-- process steps
+- use cases
 - related domain modules
 - related deployable units
 - engaged people: actors, development teams, business stakeholders";
@@ -47,20 +47,20 @@ public class ProcessPage : MermaidPageBase
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
         mermaidWriter.WriteHeading("Domain Perspective", 2);
-        mermaidWriter.WriteHeading("Related process steps", 3);
-        if (_steps.Count == 0)
+        mermaidWriter.WriteHeading("Related use cases", 3);
+        if (_useCases.Count == 0)
         {
-            mermaidWriter.WriteLine("No related process steps were found.");
+            mermaidWriter.WriteLine("No related use cases were found.");
         }
         else
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
                 var processId = flowchartWriter.WriteRectangle(_process.Name, Style.DomainPerspective);
-                foreach (var step in _steps.OrderBy(s => s.Name))
+                foreach (var useCase in _useCases.OrderBy(s => s.Name))
                 {
-                    var stepId = flowchartWriter.WriteStadiumShape(step.Name, Style.DomainPerspective);
-                    flowchartWriter.WriteArrow(processId, stepId, "contains");
+                    var useCaseId = flowchartWriter.WriteStadiumShape(useCase.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteArrow(processId, useCaseId, "contains");
                 }
             });
         }
@@ -177,7 +177,7 @@ public class ProcessPage : MermaidPageBase
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
-        ProcessStepPage stepPage => _steps.Contains(stepPage.MainElement),
+        UseCasePage useCasePage => _useCases.Contains(useCasePage.MainElement),
         DeployableUnitPage deployableUnitPage => _deployableUnits.Contains(deployableUnitPage.MainElement),
         DevelopmentTeamPage developmentTeamPage => _developmentTeams.Contains(developmentTeamPage.MainElement),
         BusinessOrganizationalUnitPage organizationalUnitPage => _organizationalUnits.Contains(organizationalUnitPage

@@ -51,9 +51,9 @@ public class DomainBuildingBlockTests
             ElementId.Create<ExternalSystemIntegration>(
                 "Domain.DomainBuildingBlocks.SampleModule.SampleExternalSystemIntegration"),
             "Sample External System Integration"),
-        new ProcessStep(
-            ElementId.Create<ProcessStep>("Domain.DomainBuildingBlocks.SampleModule.SampleProcessStep"),
-            "Sample Process Step"));
+        new UseCase(
+            ElementId.Create<UseCase>("Domain.DomainBuildingBlocks.SampleModule.SampleUseCase"),
+            "Sample Use Case"));
 
     [Test]
     public void AllDependsOnRelationsArePresent()
@@ -70,9 +70,9 @@ public class DomainBuildingBlockTests
         var factory = new DddFactory(
             ElementId.Create<DddFactory>("Domain.DomainBuildingBlocks.SampleModule.SampleDddFactory"),
             "Sample Ddd Factory");
-        var processStep = new ProcessStep(
-            ElementId.Create<ProcessStep>("Domain.DomainBuildingBlocks.SampleModule.SampleProcessStep"),
-            "Sample Process Step");
+        var useCase = new UseCase(
+            ElementId.Create<UseCase>("Domain.DomainBuildingBlocks.SampleModule.SampleUseCase"),
+            "Sample Use Case");
         var repository = new DddRepository(
             ElementId.Create<DddRepository>("Domain.DomainBuildingBlocks.SampleModule.SampleDddRepository"),
             "Sample Ddd Repository");
@@ -81,12 +81,12 @@ public class DomainBuildingBlockTests
             "Sample Ddd Value Object");
         ParserOutput.AssertModelContainsOnlyRelations(
             new DomainBuildingBlock.DependsOnBuildingBlock(aggregate, domainService),
-            new DomainBuildingBlock.DependsOnBuildingBlock(processStep, aggregate),
-            new DomainBuildingBlock.DependsOnBuildingBlock(processStep, domainService),
-            new DomainBuildingBlock.DependsOnBuildingBlock(processStep, entity),
-            new DomainBuildingBlock.DependsOnBuildingBlock(processStep, factory),
-            new DomainBuildingBlock.DependsOnBuildingBlock(processStep, repository),
-            new DomainBuildingBlock.DependsOnBuildingBlock(processStep, valueObject),
+            new DomainBuildingBlock.DependsOnBuildingBlock(useCase, aggregate),
+            new DomainBuildingBlock.DependsOnBuildingBlock(useCase, domainService),
+            new DomainBuildingBlock.DependsOnBuildingBlock(useCase, entity),
+            new DomainBuildingBlock.DependsOnBuildingBlock(useCase, factory),
+            new DomainBuildingBlock.DependsOnBuildingBlock(useCase, repository),
+            new DomainBuildingBlock.DependsOnBuildingBlock(useCase, valueObject),
             new DomainBuildingBlock.DependsOnBuildingBlock(repository, aggregate));
     }
 

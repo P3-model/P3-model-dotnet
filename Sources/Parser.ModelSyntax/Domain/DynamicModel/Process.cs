@@ -6,6 +6,6 @@ public class Process(ElementId id, string name) : ElementBase(id, name)
 {
     public override Perspective Perspective => Perspective.Domain;
 
-    public class ContainsProcessStep(Process source, ProcessStep destination) 
-        : RelationBase<Process, ProcessStep>(source, destination);
+    public class ContainsUseCase(Process source, UseCase destination) 
+        : RelationBase<Process, UseCase>(source, destination);
 }

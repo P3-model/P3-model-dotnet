@@ -8,28 +8,28 @@ using Parser.ModelQuerying;
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
 [UsedImplicitly]
-public class ProcessStepPageFactory : MermaidPageFactory
+public class UseCasePageFactory : MermaidPageFactory
 {
     public IEnumerable<MermaidPage> Create(string outputDirectory, ModelGraph modelGraph) => modelGraph
         .Execute(query => query
-            .AllElements<ProcessStep>())
-        .Select(step =>
+            .AllElements<UseCase>())
+        .Select(useCase =>
         {
             var process = modelGraph.Execute(query => query
                     .Elements<Process>()
-                    .RelatedTo(step)
-                    .ByRelation<Process.ContainsProcessStep>())
+                    .RelatedTo(useCase)
+                    .ByRelation<Process.ContainsUseCase>())
                 .SingleOrDefault();
-            // TODO: warning logging if more than one element (non unique names o process steps)
+            // TODO: warning logging if more than one element (non unique names o use cases)
             var module = modelGraph.Execute(query => query
                     .Elements<DomainModule>()
-                    .RelatedTo((DomainBuildingBlock)step)
+                    .RelatedTo((DomainBuildingBlock)useCase)
                     .ByRelation<DomainModule.ContainsBuildingBlock>())
                 .SingleOrDefault();
             var buildingBlocks = modelGraph.Execute(query => query
                 .Elements<DomainBuildingBlock>()
-                .RelatedTo(step)
-                .ByReverseRelation<ProcessStep.DependsOnBuildingBlock>());
+                .RelatedTo(useCase)
+                .ByReverseRelation<UseCase.DependsOnBuildingBlock>());
             var deployableUnit = module is null
                 ? null
                 : modelGraph.Execute(query => query
@@ -40,8 +40,8 @@ public class ProcessStepPageFactory : MermaidPageFactory
                         .MaxBy(r => r.Source.HierarchyPath.Level)));
             var actors = modelGraph.Execute(query => query
                 .Elements<Actor>()
-                .RelatedTo(step)
-                .ByRelation<Actor.UsesProcessStep>());
+                .RelatedTo(useCase)
+                .ByRelation<Actor.UsesUseCase>());
             var developmentTeams = module is null
                 ? new HashSet<DevelopmentTeam>()
                 : modelGraph.Execute(query => query
@@ -62,9 +62,9 @@ public class ProcessStepPageFactory : MermaidPageFactory
                         .MaxBy(g => g.Key.HierarchyPath.Level) ?? Enumerable.Empty<BusinessOrganizationalUnit.OwnsDomainModule>()));
             var codeStructures = modelGraph.Execute(query => query
                 .Elements<CodeStructure>()
-                .RelatedTo((DomainBuildingBlock)step)
+                .RelatedTo((DomainBuildingBlock)useCase)
                 .ByReverseRelation<DomainBuildingBlock.IsImplementedBy>());
-            return new ProcessStepPage(outputDirectory, step, module, process, buildingBlocks, deployableUnit, actors,
+            return new UseCasePage(outputDirectory, useCase, module, process, buildingBlocks, deployableUnit, actors,
                 developmentTeams, organizationalUnits, codeStructures);
         });
 }

@@ -17,14 +17,14 @@ public class ProcessPageFactory : MermaidPageFactory
                 .AllElements<Process>())
             .Select(process =>
             {
-                var steps = modelGraph.Execute(query => query
-                    .Elements<ProcessStep>()
+                var useCases = modelGraph.Execute(query => query
+                    .Elements<UseCase>()
                     .RelatedTo(process)
-                    .ByReverseRelation<Process.ContainsProcessStep>());
+                    .ByReverseRelation<Process.ContainsUseCase>());
                 var modules = modelGraph.Execute(query => query
                     .Elements<DomainModule>()
                     // TODO: passing more specific objects as an argument to RelatedTo / RelatedToAny
-                    .RelatedToAny(steps.Cast<DomainBuildingBlock>().ToHashSet())
+                    .RelatedToAny(useCases.Cast<DomainBuildingBlock>().ToHashSet())
                     .ByRelation<DomainModule.ContainsBuildingBlock>());
                 var topLevelModules = modules
                     .Select(module => modulesHierarchy.GetRootFor(module))
@@ -32,11 +32,11 @@ public class ProcessPageFactory : MermaidPageFactory
                 var deployableUnits = modelGraph.GetDeployableUnitsFor(modules);
                 var actors = modelGraph.Execute(query => query
                     .Elements<Actor>()
-                    .RelatedToAny(steps)
-                    .ByRelation<Actor.UsesProcessStep>());
+                    .RelatedToAny(useCases)
+                    .ByRelation<Actor.UsesUseCase>());
                 var developmentTeams = modelGraph.GetDevelopmentTeamsFor(modules);
                 var organizationalUnits = modelGraph.GetBusinessOrganizationalUnitsFor(modules);
-                return new ProcessPage(outputDirectory, process, steps, topLevelModules, deployableUnits!, actors, 
+                return new ProcessPage(outputDirectory, process, useCases, topLevelModules, deployableUnits!, actors, 
                     developmentTeams, organizationalUnits);
             });
     }

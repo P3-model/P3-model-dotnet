@@ -90,7 +90,7 @@ public abstract class MermaidPageBase : MermaidPage
 
     private void WriteLinks(MermaidWriter mermaidWriter)
     {
-        mermaidWriter.WriteHeading("Next steps", 2);
+        mermaidWriter.WriteHeading("Next use cases", 2);
         if (_zoomInLinks is { Count: > 0 })
         {
             mermaidWriter.WriteHeading("Zoom-in", 3);

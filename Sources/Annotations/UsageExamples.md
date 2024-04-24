@@ -19,7 +19,7 @@
 
 #### `DomainBuildingBlockAttribute`
 #### `ExternalSystemIntegrationAttribute`
-#### `ProcessStepAttribute`
+#### `UseCaseAttribute`
 
 #### DDD
 

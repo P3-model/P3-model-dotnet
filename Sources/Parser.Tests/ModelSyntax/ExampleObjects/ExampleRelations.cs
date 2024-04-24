@@ -14,13 +14,13 @@ public class ExampleRelations : IEnumerable<Relation>
 
     public static readonly ExampleRelations All =
     [
-        new Actor.UsesProcessStep(
+        new Actor.UsesUseCase(
             new Actor(
                 ElementId.Create<Actor>("ExampleActor"), 
                 "ExampleActor"),
-            new ProcessStep(
-                ElementId.Create<ProcessStep>("ExampleModuleA.StepA"), 
-                "StepA")),
+            new UseCase(
+                ElementId.Create<UseCase>("ExampleModuleA.UseCaseA"), 
+                "UseCaseA")),
         new BusinessOrganizationalUnit.OwnsDomainModule(
             new BusinessOrganizationalUnit(
                 ElementId.Create<BusinessOrganizationalUnit>("ExampleBusinessOrganizationalUnit"),
@@ -141,16 +141,12 @@ public class ExampleRelations : IEnumerable<Relation>
                 "ExternalSystemIntegration"),
             new ExternalSystem(ElementId.Create<ExternalSystem>("ExampleExternalSystem"), "ExampleExternalSystem")),
 
-        new Process.ContainsProcessStep(
+        new Process.ContainsUseCase(
             new Process(ElementId.Create<Process>("ExampleProcess"), "ExampleProcess"),
-            new ProcessStep(ElementId.Create<ProcessStep>("ExampleModuleA.StepA"), "StepA")),
+            new UseCase(ElementId.Create<UseCase>("ExampleModuleA.UseCaseA"), "UseCaseA")),
 
-        new ProcessStep.HasNextStep(
-            new ProcessStep(ElementId.Create<ProcessStep>("ExampleModuleA.StepA"), "StepA"),
-            new ProcessStep(ElementId.Create<ProcessStep>("ExampleModuleA.StepB"), "StepB")),
-
-        new ProcessStep.DependsOnBuildingBlock(
-            new ProcessStep(ElementId.Create<ProcessStep>("ExampleModuleA.StepZ"), "StepZ"),
+        new UseCase.DependsOnBuildingBlock(
+            new UseCase(ElementId.Create<UseCase>("ExampleModuleA.UseCaseZ"), "UseCaseZ"),
             new DomainBuildingBlock(ElementId.Create<DomainBuildingBlock>("ExampleModuleA.ExampleBuildingBlock"),
                 "ExampleBuildingBlock")),
 

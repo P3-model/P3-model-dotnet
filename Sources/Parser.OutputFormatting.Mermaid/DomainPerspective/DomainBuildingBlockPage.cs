@@ -89,14 +89,14 @@ public class DomainBuildingBlockPage : MermaidPageBase
                     flowchartWriter.WriteArrow(buildingBlockId, usedElementId, "depends on");
             });
         }
-        mermaidWriter.WriteHeading("Related process steps", 3);
-        var processSteps = _usingElements
+        mermaidWriter.WriteHeading("Related use cases", 3);
+        var useCases = _usingElements
             .Select(e => e.BuildingBlock)
-            .OfType<ProcessStep>()
-            .OrderBy(step => step.Id)
-            .ThenBy(step => step.Name)
+            .OfType<UseCase>()
+            .OrderBy(useCase => useCase.Id)
+            .ThenBy(useCase => useCase.Name)
             .ToList();
-        if (processSteps.Count == 0)
+        if (useCases.Count == 0)
         {
             mermaidWriter.WriteLine("No related processes were found.");
         }
@@ -105,10 +105,10 @@ public class DomainBuildingBlockPage : MermaidPageBase
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
                 var buildingBlockId = flowchartWriter.WriteRectangle(_buildingBlock.Name, Style.DomainPerspective);
-                foreach (var processStep in processSteps)
+                foreach (var useCase in useCases)
                 {
-                    var processStepId = flowchartWriter.WriteStadiumShape(processStep.Name, Style.DomainPerspective);
-                    flowchartWriter.WriteArrow(buildingBlockId, processStepId, "is used in");
+                    var useCaseId = flowchartWriter.WriteStadiumShape(useCase.Name, Style.DomainPerspective);
+                    flowchartWriter.WriteArrow(buildingBlockId, useCaseId, "is used in");
                 }
             });
         }
@@ -135,10 +135,10 @@ public class DomainBuildingBlockPage : MermaidPageBase
         DomainBuildingBlockPage buildingBlockPage => _usedElements
             .Select(e => e.BuildingBlock)
             .Contains(buildingBlockPage.MainElement),
-        ProcessStepPage processStepPage => _usingElements
+        UseCasePage useCasePage => _usingElements
             .Select(e => e.BuildingBlock)
-            .OfType<ProcessStep>()
-            .Contains(processStepPage.MainElement),
+            .OfType<UseCase>()
+            .Contains(useCasePage.MainElement),
         _ => false
     };
 

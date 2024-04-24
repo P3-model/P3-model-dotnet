@@ -81,9 +81,9 @@ public class ExampleElements : IEnumerable<Element>
         new Process(
             ElementId.Create<Process>("ExampleProcessX"), 
             "ExampleProcessX"),
-        new ProcessStep(
-            ElementId.Create<ProcessStep>("ExampleModuleA.StepA"), 
-            "StepA"),
+        new UseCase(
+            ElementId.Create<UseCase>("ExampleModuleA.UseCaseA"), 
+            "UseCaseA"),
         new Tier(
             ElementId.Create<Tier>("ExampleTier"), 
             "ExampleTier")

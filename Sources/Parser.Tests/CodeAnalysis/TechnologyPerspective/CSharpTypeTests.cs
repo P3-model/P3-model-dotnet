@@ -50,8 +50,8 @@ public class CSharpTypeTests
             "SampleExternalSystemIntegration",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleProcessStep"),
-            "SampleProcessStep",
+            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleUseCase"),
+            "SampleUseCase",
             string.Empty),
         new CSharpType(
             ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainModules.NotModule.WithCode.Class1"),

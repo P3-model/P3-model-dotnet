@@ -8,7 +8,7 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
 
 [UsedImplicitly]
-public class ProcessStepDependenciesAnalyzer : SymbolAnalyzer<IFieldSymbol>,
+public class UseCaseDependenciesAnalyzer : SymbolAnalyzer<IFieldSymbol>,
     SymbolAnalyzer<IPropertySymbol>,
     SymbolAnalyzer<IParameterSymbol>,
     SymbolAnalyzer<ILocalSymbol>
@@ -44,10 +44,10 @@ public class ProcessStepDependenciesAnalyzer : SymbolAnalyzer<IFieldSymbol>,
     private static IEnumerable<Relation> AddRelations(ISymbol sourceSymbol, ISymbol destinationSymbol,
         ElementsProvider elements)
     {
-        var sources = elements.For(sourceSymbol).OfType<ProcessStep>();
+        var sources = elements.For(sourceSymbol).OfType<UseCase>();
         var destinations = elements.For(destinationSymbol).OfType<DomainBuildingBlock>().ToList();
         foreach (var source in sources)
         foreach (var destination in destinations)
-            yield return new ProcessStep.DependsOnBuildingBlock(source, destination);
+            yield return new UseCase.DependsOnBuildingBlock(source, destination);
     }
 }

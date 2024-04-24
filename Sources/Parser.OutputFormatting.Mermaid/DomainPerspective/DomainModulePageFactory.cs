@@ -33,17 +33,17 @@ public class DomainModulePageFactory : MermaidPageFactory
                     .RelatedToAny(subQuery => subQuery
                         .DescendantsAndSelf<DomainModule, DomainModule.ContainsDomainModule>(module))
                     .ByReverseRelation<DomainModule.ContainsBuildingBlock>());
-                var steps = allBuildingBlocks
-                    .OfType<ProcessStep>()
+                var useCases = allBuildingBlocks
+                    .OfType<UseCase>()
                     .Union(modelGraph.Execute(query => query
-                        .Elements<ProcessStep>()
+                        .Elements<UseCase>()
                         .RelatedToAny(allBuildingBlocks)
-                        .ByRelation<ProcessStep.DependsOnBuildingBlock>()))
+                        .ByRelation<UseCase.DependsOnBuildingBlock>()))
                     .ToHashSet();
                 var processes = modelGraph.Execute(query => query
                     .Elements<Process>()
-                    .RelatedToAny(steps)
-                    .ByRelation<Process.ContainsProcessStep>());
+                    .RelatedToAny(useCases)
+                    .ByRelation<Process.ContainsUseCase>());
                 var deployableUnits = modelGraph.GetDeployableUnitsFor(module);
                 var teams = modelGraph.GetDevelopmentTeamsFor(module);
                 var organizationalUnits = modelGraph.GetBusinessOrganizationalUnitsFor(module);

@@ -32,7 +32,7 @@ public class AnalyzersBuilder
         var dddRepositoryAnalyzer = new DddRepositoryAnalyzer(domainModuleFinder);
         var dddValueObjectAnalyzer = new DddValueObjectAnalyzer(domainModuleFinder);
         var externalSystemIntegrationAnalyzer = new ExternalSystemIntegrationAnalyzer(domainModuleFinder);
-        var processStepAnalyzer = new ProcessStepAnalyzer(domainModuleFinder);
+        var useCaseAnalyzer = new UseCaseAnalyzer(domainModuleFinder);
         _symbolAnalyzers.Add(domainModuleAnalyzer);
         _symbolAnalyzers.Add(domainBuildingBlockAnalyzer);
         _symbolAnalyzers.Add(dddAggregateAnalyzer);
@@ -42,7 +42,7 @@ public class AnalyzersBuilder
         _symbolAnalyzers.Add(dddRepositoryAnalyzer);
         _symbolAnalyzers.Add(dddValueObjectAnalyzer);
         _symbolAnalyzers.Add(externalSystemIntegrationAnalyzer);
-        _symbolAnalyzers.Add(processStepAnalyzer);
+        _symbolAnalyzers.Add(useCaseAnalyzer);
         _fileAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<FileAnalyzer>());
         _fileAnalyzers.Add(domainModuleAnalyzer);
         _operationAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<OperationAnalyzer>());

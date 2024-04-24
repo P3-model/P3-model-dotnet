@@ -9,9 +9,9 @@ using P3Model.Parser.OutputFormatting.Mermaid.TechnologyPerspective;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
 
-public class ProcessStepPage : MermaidPageBase
+public class UseCasePage : MermaidPageBase
 {
-    private readonly ProcessStep _step;
+    private readonly UseCase _useCase;
     private readonly DomainModule? _module;
     private readonly Process? _process;
     private readonly IReadOnlySet<DomainBuildingBlock> _buildingBlocks;
@@ -21,13 +21,13 @@ public class ProcessStepPage : MermaidPageBase
     private readonly IReadOnlySet<BusinessOrganizationalUnit> _organizationalUnits;
     private readonly IReadOnlySet<CodeStructure> _codeStructures;
 
-    public ProcessStepPage(string outputDirectory, ProcessStep step, DomainModule? module, Process? process,
+    public UseCasePage(string outputDirectory, UseCase useCase, DomainModule? module, Process? process,
         IReadOnlySet<DomainBuildingBlock> buildingBlocks, DeployableUnit? deployableUnit, IReadOnlySet<Actor> actors,
         IReadOnlySet<DevelopmentTeam> developmentTeams, IReadOnlySet<BusinessOrganizationalUnit> organizationalUnits, 
         IReadOnlySet<CodeStructure> codeStructures)
         : base(outputDirectory)
     {
-        _step = step;
+        _useCase = useCase;
         _module = module;
         _process = process;
         _buildingBlocks = buildingBlocks;
@@ -39,19 +39,18 @@ public class ProcessStepPage : MermaidPageBase
     }
 
     protected override string Description =>
-        @$"This view contains details information about {_step.Name} business processes step, including:
+        @$"This view contains details information about {_useCase.Name} use case, including:
 - related process
-- next process steps
 - related domain module
 - related deployable unit
 - engaged people: actors, development teams, business stakeholders";
 
     public override string RelativeFilePath => _module is null
-        ? Path.Combine("Domain", "Modules", $"{_step.Name.Dehumanize()}.md")
+        ? Path.Combine("Domain", "Modules", $"{_useCase.Name.Dehumanize()}.md")
         : Path.Combine("Domain", "Modules", Path.Combine(_module.HierarchyPath.Parts.ToArray()),
-            $"{_step.Name.Dehumanize()}.md");
+            $"{_useCase.Name.Dehumanize()}.md");
     
-    public override ElementBase MainElement => _step;
+    public override ElementBase MainElement => _useCase;
 
     protected override void WriteBody(MermaidWriter mermaidWriter)
     {
@@ -65,10 +64,10 @@ public class ProcessStepPage : MermaidPageBase
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var stepId = flowchartWriter.WriteRectangle(_step.Name, Style.DomainPerspective);
+                var useCaseId = flowchartWriter.WriteRectangle(_useCase.Name, Style.DomainPerspective);
                 {
                     var processId = flowchartWriter.WriteStadiumShape(_process.Name, Style.DomainPerspective);
-                    flowchartWriter.WriteArrow(stepId, processId, "is part of");
+                    flowchartWriter.WriteArrow(useCaseId, processId, "is part of");
                 }
             });
         }
@@ -76,18 +75,18 @@ public class ProcessStepPage : MermaidPageBase
         mermaidWriter.WriteHeading("Used Building Blocks", 3);
         if (_buildingBlocks.Count == 0)
         {
-            mermaidWriter.WriteLine("No building blocks were found. Maybe this process step is not implemented yet?");
+            mermaidWriter.WriteLine("No building blocks were found. Maybe this use case is not implemented yet?");
         }
         else
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var stepId = flowchartWriter.WriteRectangle(_step.Name, Style.DomainPerspective);
+                var useCaseId = flowchartWriter.WriteRectangle(_useCase.Name, Style.DomainPerspective);
                 foreach (var buildingBlock in _buildingBlocks.OrderBy(b => b.Name))
                 {
                     var buildingBlockId =
                         flowchartWriter.WriteStadiumShape(buildingBlock.Name, Style.DomainPerspective);
-                    flowchartWriter.WriteArrow(stepId, buildingBlockId, "uses");
+                    flowchartWriter.WriteArrow(useCaseId, buildingBlockId, "uses");
                 }
             });
         }
@@ -101,10 +100,10 @@ public class ProcessStepPage : MermaidPageBase
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var stepId = flowchartWriter.WriteRectangle(_step.Name, Style.DomainPerspective);
+                var useCaseId = flowchartWriter.WriteRectangle(_useCase.Name, Style.DomainPerspective);
                 var deployableUnitId = flowchartWriter.WriteStadiumShape(_deployableUnit.Name,
                     Style.TechnologyPerspective);
-                flowchartWriter.WriteArrow(stepId, deployableUnitId, "is deployed in");
+                flowchartWriter.WriteArrow(useCaseId, deployableUnitId, "is deployed in");
             });
         }
         mermaidWriter.WriteHeading("Source code", 3);
@@ -122,24 +121,24 @@ public class ProcessStepPage : MermaidPageBase
         {
             mermaidWriter.WriteFlowchart(flowchartWriter =>
             {
-                var stepId = flowchartWriter.WriteRectangle(_step.Name, Style.DomainPerspective);
+                var useCaseId = flowchartWriter.WriteRectangle(_useCase.Name, Style.DomainPerspective);
                 foreach (var actor in _actors.OrderBy(a => a.Name))
                 {
                     var actorId = flowchartWriter.WriteStadiumShape(actor.Name, Style.PeoplePerspective);
-                    flowchartWriter.WriteArrow(actorId, stepId, "uses");
+                    flowchartWriter.WriteArrow(actorId, useCaseId, "uses");
                 }
 
                 foreach (var team in _developmentTeams.OrderBy(t => t.Name))
                 {
                     var teamId = flowchartWriter.WriteStadiumShape(team.Name, Style.PeoplePerspective);
-                    flowchartWriter.WriteArrow(teamId, stepId, "develops & maintains");
+                    flowchartWriter.WriteArrow(teamId, useCaseId, "develops & maintains");
                 }
 
                 foreach (var organizationalUnit in _organizationalUnits.OrderBy(u => u.Name))
                 {
                     var organizationalUnitId = flowchartWriter.WriteStadiumShape(organizationalUnit.Name,
                         Style.PeoplePerspective);
-                    flowchartWriter.WriteArrow(organizationalUnitId, stepId, "owns");
+                    flowchartWriter.WriteArrow(organizationalUnitId, useCaseId, "owns");
                 }
             });
         }

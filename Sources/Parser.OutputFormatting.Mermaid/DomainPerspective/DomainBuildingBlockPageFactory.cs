@@ -11,7 +11,7 @@ public class DomainBuildingBlockPageFactory : MermaidPageFactory
     public IEnumerable<MermaidPage> Create(string outputDirectory, ModelGraph modelGraph) => modelGraph
         .Execute(query => query
             .AllElements<DomainBuildingBlock>())
-        .Where(buildingBlock => buildingBlock is not ProcessStep)
+        .Where(buildingBlock => buildingBlock is not UseCase)
         .Select(buildingBlock =>
         {
             var module = modelGraph

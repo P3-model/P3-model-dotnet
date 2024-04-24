@@ -32,6 +32,6 @@ public class ActorAnalyzer : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnalyzer<IM
     
     private static IEnumerable<Relation> GetRelations(ISymbol symbol, Actor actor, ElementsProvider elements) => 
         elements.For(symbol)
-            .OfType<ProcessStep>()
-            .Select(processStep => new Actor.UsesProcessStep(actor, processStep));
+            .OfType<UseCase>()
+            .Select(useCase => new Actor.UsesUseCase(actor, useCase));
 }
