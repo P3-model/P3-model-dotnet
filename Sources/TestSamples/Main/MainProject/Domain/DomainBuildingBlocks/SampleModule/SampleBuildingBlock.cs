@@ -1,4 +1,4 @@
-using P3Model.Annotations.Domain.StaticModel;
+using P3Model.Annotations.Domain;
 
 namespace TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule;
 

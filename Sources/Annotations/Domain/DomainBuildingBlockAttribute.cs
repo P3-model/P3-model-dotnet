@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace P3Model.Annotations.Domain.StaticModel;
+namespace P3Model.Annotations.Domain;
 
 [PublicAPI]
 [AttributeUsage(AttributeTargets.Class |
@@ -9,4 +9,7 @@ namespace P3Model.Annotations.Domain.StaticModel;
                 AttributeTargets.Enum |
                 AttributeTargets.Delegate |
                 AttributeTargets.Method)]
-public class CoreConceptAttribute : Attribute, DomainPerspectiveAttribute;
+public class DomainBuildingBlockAttribute(string? name = null) : Attribute, DomainPerspectiveAttribute
+{
+    public string? Name { get; } = name;
+}

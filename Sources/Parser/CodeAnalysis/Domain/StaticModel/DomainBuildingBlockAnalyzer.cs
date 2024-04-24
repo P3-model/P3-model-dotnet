@@ -1,6 +1,6 @@
 using System;
 using JetBrains.Annotations;
-using P3Model.Annotations.Domain.StaticModel;
+using P3Model.Annotations.Domain;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 

@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace P3Model.Annotations.Domain.StaticModel.DDD;
+namespace P3Model.Annotations.Domain.DDD;
 
 /// <summary>
 /// <para>

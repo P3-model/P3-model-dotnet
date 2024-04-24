@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
-using P3Model.Annotations.Domain.StaticModel;
+using P3Model.Annotations.Domain;
 using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain.DynamicModel;

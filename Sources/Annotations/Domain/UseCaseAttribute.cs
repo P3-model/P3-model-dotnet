@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace P3Model.Annotations.Domain.StaticModel;
+namespace P3Model.Annotations.Domain;
 
 [PublicAPI]
 [AttributeUsage(AttributeTargets.Method)]

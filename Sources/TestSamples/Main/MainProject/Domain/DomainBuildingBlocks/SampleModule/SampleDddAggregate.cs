@@ -1,5 +1,5 @@
 using P3Model.Annotations;
-using P3Model.Annotations.Domain.StaticModel.DDD;
+using P3Model.Annotations.Domain.DDD;
 
 namespace TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule;
 
