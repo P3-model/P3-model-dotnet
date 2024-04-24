@@ -12,7 +12,7 @@ using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
 using Serilog;
 
-namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
+namespace P3Model.Parser.CodeAnalysis.Domain;
 
 // TODO: support for defining domain modules structure without namespaces
 public class DomainModuleAnalyzer(DomainModulesHierarchyResolver modulesHierarchyResolver)

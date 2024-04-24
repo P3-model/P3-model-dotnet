@@ -6,7 +6,7 @@ using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain.DynamicModel;
 
-namespace P3Model.Parser.CodeAnalysis.Domain.DynamicModel;
+namespace P3Model.Parser.CodeAnalysis.Domain;
 
 [UsedImplicitly]
 public class ProcessAnalyzer : SymbolAnalyzer<INamedTypeSymbol>

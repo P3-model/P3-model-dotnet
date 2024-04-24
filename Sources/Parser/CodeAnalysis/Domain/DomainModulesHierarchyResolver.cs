@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
 
-namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
+namespace P3Model.Parser.CodeAnalysis.Domain;
 
 public interface DomainModulesHierarchyResolver
 {

@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Operations;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
-namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
+namespace P3Model.Parser.CodeAnalysis.Domain;
 
 [UsedImplicitly]
 public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSymbol>,

@@ -8,7 +8,7 @@ using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax.Technology;
 
-namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
+namespace P3Model.Parser.CodeAnalysis.Domain;
 
 [UsedImplicitly]
 public class ExternalSystemIntegrationAnalyzer(DomainModulesHierarchyResolver modulesHierarchyResolver)

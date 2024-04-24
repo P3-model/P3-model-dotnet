@@ -11,7 +11,7 @@ using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 using P3Model.Parser.ModelSyntax.Technology;
 using Serilog;
 
-namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
+namespace P3Model.Parser.CodeAnalysis.Domain;
 
 public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(
     DomainModulesHierarchyResolver modulesHierarchyResolver)

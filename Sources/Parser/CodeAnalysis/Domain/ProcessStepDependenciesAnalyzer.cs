@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain.StaticModel;
 
-namespace P3Model.Parser.CodeAnalysis.Domain.StaticModel;
+namespace P3Model.Parser.CodeAnalysis.Domain;
 
 [UsedImplicitly]
 public class UseCaseDependenciesAnalyzer : SymbolAnalyzer<IFieldSymbol>,
