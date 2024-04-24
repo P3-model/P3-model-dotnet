@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using P3Model.Annotations.People;
 using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.Domain.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain;
 using P3Model.Parser.ModelSyntax.People;
 
 namespace P3Model.Parser.CodeAnalysis.People;

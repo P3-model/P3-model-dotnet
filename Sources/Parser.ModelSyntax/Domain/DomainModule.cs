@@ -1,7 +1,7 @@
 using Humanizer;
 using P3Model.Parser.ModelSyntax.Technology;
 
-namespace P3Model.Parser.ModelSyntax.Domain.StaticModel;
+namespace P3Model.Parser.ModelSyntax.Domain;
 
 public class DomainModule(ElementId id, HierarchyPath hierarchyPath) : 
     ElementBase(id, hierarchyPath.LastPart.Humanize(LetterCasing.Title)), 

@@ -1,5 +1,5 @@
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.Domain.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain;
 using Parser.ModelQuerying;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;

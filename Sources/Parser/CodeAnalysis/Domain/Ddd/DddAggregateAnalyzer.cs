@@ -2,7 +2,7 @@ using System;
 using JetBrains.Annotations;
 using P3Model.Annotations.Domain.DDD;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.Domain.StaticModel.Ddd;
+using P3Model.Parser.ModelSyntax.Domain.Ddd;
 
 namespace P3Model.Parser.CodeAnalysis.Domain.Ddd;
 

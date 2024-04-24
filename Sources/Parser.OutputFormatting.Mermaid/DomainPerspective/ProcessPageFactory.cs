@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
-using P3Model.Parser.ModelSyntax.Domain.DynamicModel;
-using P3Model.Parser.ModelSyntax.Domain.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain;
 using P3Model.Parser.ModelSyntax.People;
 using Parser.ModelQuerying;
 

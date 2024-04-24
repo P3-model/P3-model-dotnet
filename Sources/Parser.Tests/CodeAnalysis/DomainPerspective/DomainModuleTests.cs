@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.Domain.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain;
 
 namespace P3Model.Parser.Tests.CodeAnalysis.DomainPerspective;
 

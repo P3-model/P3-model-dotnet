@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Operations;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.Domain.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain;
 
 namespace P3Model.Parser.CodeAnalysis.Domain;
 

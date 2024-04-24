@@ -1,6 +1,4 @@
-using P3Model.Parser.ModelSyntax.Domain.StaticModel;
-
-namespace P3Model.Parser.ModelSyntax.Domain.DynamicModel;
+namespace P3Model.Parser.ModelSyntax.Domain;
 
 public class Process(ElementId id, string name) : ElementBase(id, name)
 {

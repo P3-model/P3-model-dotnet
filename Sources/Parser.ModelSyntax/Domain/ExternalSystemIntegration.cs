@@ -1,6 +1,6 @@
 using P3Model.Parser.ModelSyntax.Technology;
 
-namespace P3Model.Parser.ModelSyntax.Domain.StaticModel;
+namespace P3Model.Parser.ModelSyntax.Domain;
 
 public class ExternalSystemIntegration(ElementId id, string name) : DomainBuildingBlock(id, name)
 {

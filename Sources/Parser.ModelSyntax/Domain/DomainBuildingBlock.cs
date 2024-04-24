@@ -1,6 +1,6 @@
 using P3Model.Parser.ModelSyntax.Technology;
 
-namespace P3Model.Parser.ModelSyntax.Domain.StaticModel;
+namespace P3Model.Parser.ModelSyntax.Domain;
 
 public class DomainBuildingBlock(ElementId id, string name) : ElementBase(id, name)
 {

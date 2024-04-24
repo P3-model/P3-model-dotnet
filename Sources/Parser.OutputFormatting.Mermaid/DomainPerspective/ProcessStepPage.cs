@@ -1,7 +1,6 @@
 using Humanizer;
 using P3Model.Parser.ModelSyntax;
-using P3Model.Parser.ModelSyntax.Domain.DynamicModel;
-using P3Model.Parser.ModelSyntax.Domain.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
 using P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;

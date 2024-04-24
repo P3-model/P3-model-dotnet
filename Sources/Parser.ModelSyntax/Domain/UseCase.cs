@@ -1,4 +1,4 @@
-namespace P3Model.Parser.ModelSyntax.Domain.StaticModel;
+namespace P3Model.Parser.ModelSyntax.Domain;
 
 public class UseCase(ElementId id, string name) : DomainBuildingBlock(id, name)
 {

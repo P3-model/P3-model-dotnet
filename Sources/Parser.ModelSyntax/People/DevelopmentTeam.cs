@@ -1,4 +1,4 @@
-using P3Model.Parser.ModelSyntax.Domain.StaticModel;
+using P3Model.Parser.ModelSyntax.Domain;
 
 namespace P3Model.Parser.ModelSyntax.People;
 
