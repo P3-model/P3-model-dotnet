@@ -148,6 +148,9 @@ public class ExampleRelations : IEnumerable<Relation>
             new UseCase(ElementId.Create<UseCase>("ExampleModuleA.UseCaseZ"), "UseCaseZ"),
             new DomainBuildingBlock(ElementId.Create<DomainBuildingBlock>("ExampleModuleA.ExampleBuildingBlock"),
                 "ExampleBuildingBlock")),
+        new UseCase.UsesUseCase(
+            new UseCase(ElementId.Create<UseCase>("ExampleModuleA.UseCaseX"), "UseCaseX"),
+            new UseCase(ElementId.Create<UseCase>("ExampleModuleA.UseCaseY"), "UseCaseY")),
 
         new Tier.ContainsDeployableUnit(
             new Tier(ElementId.Create<Tier>("ExampleTier"), "ExampleTier"),
