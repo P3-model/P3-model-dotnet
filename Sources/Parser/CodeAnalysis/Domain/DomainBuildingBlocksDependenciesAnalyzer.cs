@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -6,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Operations;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain;
+using Serilog;
 
 namespace P3Model.Parser.CodeAnalysis.Domain;
 
@@ -54,32 +56,35 @@ public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSym
 
     public void Analyze(IInvocationOperation operation, ModelBuilder modelBuilder)
     {
-        var callingType = GetCallingType(operation);
-        var methodContainingType = GetMethodContainingType(operation);
-        if (callingType is null)
+        if (!TryGetContainingSymbols(operation, out var containingType, out var containingMethod))
             return;
-        if (CompilationIndependentSymbolEqualityComparer.Default.Equals(callingType, methodContainingType))
-            return;
-        modelBuilder.Add(elements => CreateRelations(callingType, methodContainingType, elements));
-        foreach (var parameterSymbol in operation.TargetMethod.Parameters)
+        var invokedMethod = operation.TargetMethod;
+        var invokedMethodContainingType = invokedMethod.ContainingType;
+        modelBuilder.Add(elements => CreateRelations(containingType, invokedMethod, elements));
+        modelBuilder.Add(elements => CreateRelations(containingType, invokedMethodContainingType, elements));
+        modelBuilder.Add(elements => CreateRelations(containingMethod, invokedMethod, elements));
+        modelBuilder.Add(elements => CreateRelations(containingMethod, invokedMethodContainingType, elements));
+        foreach (var parameter in invokedMethod.Parameters.Select(p => GetDestinationSymbol(p.Type)))
         {
-            var destinationSymbol = GetDestinationSymbol(parameterSymbol.Type);
-            modelBuilder.Add(elements => CreateRelations(callingType, destinationSymbol, elements));
+            modelBuilder.Add(elements => CreateRelations(containingType, parameter, elements));
+            modelBuilder.Add(elements => CreateRelations(containingMethod, parameter, elements));
         }
     }
 
-    private static ITypeSymbol? GetCallingType(IInvocationOperation operation) => operation.Instance switch
+    private static bool TryGetContainingSymbols(IOperation operation,
+        [NotNullWhen(true)] out INamedTypeSymbol? typeSymbol,
+        [NotNullWhen(true)] out IMethodSymbol? methodSymbol)
     {
-        IFieldReferenceOperation fieldReferenceOperation => fieldReferenceOperation.Field.ContainingType,
-        IPropertyReferenceOperation propertyReferenceOperation => propertyReferenceOperation.Property.ContainingType,
-        IInstanceReferenceOperation instanceReferenceOperation => instanceReferenceOperation.Type,
-        ILocalReferenceOperation localReferenceOperation => localReferenceOperation.Local.ContainingType,
-        // TODO: support for static method invocations
-        _ => null
-    };
-
-    private static ITypeSymbol GetMethodContainingType(IInvocationOperation operation) =>
-        operation.TargetMethod.ContainingType;
+        methodSymbol = operation.SemanticModel?.GetEnclosingSymbol(operation.Syntax.SpanStart) as IMethodSymbol;
+        if (methodSymbol is null)
+        {
+            Log.Warning($"Invocation operation: {operation.Syntax} has no enclosing method symbol");
+            typeSymbol = null;
+            return false;
+        }
+        typeSymbol = methodSymbol.ContainingType;
+        return true;
+    }
 
     private static ITypeSymbol GetDestinationSymbol(ITypeSymbol symbol)
     {
@@ -109,7 +114,7 @@ public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSym
     private static bool IsSystemTask(INamedTypeSymbol genericTypeSymbol) =>
         genericTypeSymbol.ContainingNamespace.ToDisplayString().StartsWith("System.Threading.Tasks") &&
         genericTypeSymbol is { Name: nameof(Task), TypeParameters.Length: 1 };
-    
+
     private static IEnumerable<Relation> CreateRelations(ISymbol sourceSymbol, ISymbol destinationSymbol,
         ElementsProvider elements)
     {

@@ -87,7 +87,8 @@ public class DomainBuildingBlockTests
             new DomainBuildingBlock.DependsOnBuildingBlock(useCase, factory),
             new DomainBuildingBlock.DependsOnBuildingBlock(useCase, repository),
             new DomainBuildingBlock.DependsOnBuildingBlock(useCase, valueObject),
-            new DomainBuildingBlock.DependsOnBuildingBlock(repository, aggregate));
+            new DomainBuildingBlock.DependsOnBuildingBlock(repository, aggregate),
+            new DomainBuildingBlock.DependsOnBuildingBlock(factory, entity));
     }
 
     [Test]
