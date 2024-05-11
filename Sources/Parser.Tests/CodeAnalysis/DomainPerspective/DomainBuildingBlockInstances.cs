@@ -4,7 +4,7 @@ using P3Model.Parser.ModelSyntax.Domain.Ddd;
 
 namespace P3Model.Parser.Tests.CodeAnalysis.DomainPerspective;
 
-public static class DomainBuildingBlocksInstances
+public static class DomainBuildingBlockInstances
 {
     public static readonly DomainBuildingBlock SampleDomainBuildingBlock = new(
         ElementId.Create<DomainBuildingBlock>("Domain.DomainBuildingBlocks.SampleModule.SampleBuildingBlock"),

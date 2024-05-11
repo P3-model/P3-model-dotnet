@@ -2,7 +2,7 @@ using NUnit.Framework;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain;
 using P3Model.Parser.ModelSyntax.Technology;
-using static P3Model.Parser.Tests.CodeAnalysis.DomainPerspective.DomainBuildingBlocksInstances;
+using static P3Model.Parser.Tests.CodeAnalysis.DomainPerspective.DomainBuildingBlockInstances;
 
 namespace P3Model.Parser.Tests.CodeAnalysis.DomainPerspective;
 
