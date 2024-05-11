@@ -99,6 +99,11 @@ public static class CSharpTypeInstances
         ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainModules.WithoutCode.NotModule.BuildingBlockFromNotModuleNamespace"),
         "BuildingBlockFromNotModuleNamespace",
         string.Empty);
+    
+    public static readonly CSharpType BuildingBlockFromSkippedNamespace = new(
+        ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainModules.NotModule.WithCode.SkippedWithAnnotation.BuildingBlockFromSkippedNamespace"),
+        "BuildingBlockFromSkippedNamespace",
+        string.Empty);
 
     public static readonly CSharpType Worker = new(
         ElementId.Create<CSharpType>("TestSamples.WorkerService.Worker"),

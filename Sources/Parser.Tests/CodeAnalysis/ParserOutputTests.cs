@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using NUnit.Framework;
 using P3Model.Parser.CodeAnalysis;
 using P3Model.Parser.Configuration;
@@ -24,8 +25,7 @@ public class ParserOutputTests
             .Analyzers(analyzers => analyzers
                 .UseDefaults(options => options
                     .TreatNamespacesAsDomainModules(namespaces => namespaces                        
-                        .RemoveRootNamespace("TestSamples")
-                        .RemoveNamespacePart("MainProject", "NotModule"))))
+                        .SkipNamespacePart("TestSamples", "MainProject", "NotModule"))))
             .OutputFormat(formatters => formatters
                 .Use(output))
             .Logger(logger => logger

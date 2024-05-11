@@ -27,6 +27,7 @@ public class CSharpTypeTests
         NamespaceInfo,
         SampleExternalSystemHttpIntegration,
         BuildingBlockFromNotModuleNamespace,
+        BuildingBlockFromSkippedNamespace,
         Worker
     );
 }

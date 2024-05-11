@@ -63,4 +63,8 @@ public static class DomainBuildingBlockInstances
     public static readonly DomainBuildingBlock BuildingBlockFromNotModuleNamespace = new(
         ElementId.Create<DomainBuildingBlock>("Domain.DomainModules.WithoutCode.BuildingBlockFromNotModuleNamespace"),
         "Building Block From Not Module Namespace");
+    
+    public static readonly DomainBuildingBlock BuildingBlockFromSkippedNamespace = new(
+        ElementId.Create<DomainBuildingBlock>("Domain.DomainModules.WithCode.BuildingBlockFromSkippedNamespace"),
+        "Building Block From Skipped Namespace");
 }

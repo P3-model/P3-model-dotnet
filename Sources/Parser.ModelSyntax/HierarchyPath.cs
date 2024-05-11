@@ -44,6 +44,7 @@ public readonly struct HierarchyPath : IEquatable<HierarchyPath>
         ? _value[.._value.LastIndexOf(_separator)]
         : string.Empty;
 
+    [PublicAPI]
     public string Root => _value.Contains(_separator)
         ? _value[.._value.IndexOf(_separator)]
         : _value;
@@ -56,7 +57,7 @@ public readonly struct HierarchyPath : IEquatable<HierarchyPath>
 
     [PublicAPI]
     public bool IsAncestorOf(HierarchyPath other) => other._value.Length < _value.Length &&
-                                                   other._value.StartsWith(_value);
+        other._value.StartsWith(_value);
 
     [PublicAPI]
     public bool IsDescendantOf(HierarchyPath other) => other.Level < Level && _value.StartsWith(other._value);

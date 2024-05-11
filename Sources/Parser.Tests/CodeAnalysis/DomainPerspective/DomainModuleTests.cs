@@ -45,7 +45,8 @@ public class DomainModuleTests
             new DomainModule.ContainsBuildingBlock(SampleModule, SampleDddValueObjectFromBaseInterface),
             new DomainModule.ContainsBuildingBlock(SampleModule, SampleExternalSystemIntegration),
             new DomainModule.ContainsBuildingBlock(SampleModule, SampleUseCase),
-            new DomainModule.ContainsBuildingBlock(WithoutCode, BuildingBlockFromNotModuleNamespace)
+            new DomainModule.ContainsBuildingBlock(WithoutCode, BuildingBlockFromNotModuleNamespace),
+            new DomainModule.ContainsBuildingBlock(WithCode, BuildingBlockFromSkippedNamespace)
         );
     }
 }

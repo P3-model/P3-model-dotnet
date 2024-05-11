@@ -22,7 +22,7 @@ public class AnalyzersBuilder
         _symbolAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<SymbolAnalyzer>());
         var options = builder.Build();
         var domainModuleFinder = new DomainModulesHierarchyResolvers(
-            new NamespaceBasedDomainModulesHierarchyResolver(options.NamespaceOptions.Filter));
+            new NamespaceBasedDomainModulesHierarchyResolver(options.NamespaceOptions.NamespacePartsToSkip));
         var domainModuleAnalyzer = new DomainModuleAnalyzer(domainModuleFinder);
         var domainBuildingBlockAnalyzer = new DomainBuildingBlockAnalyzer(domainModuleFinder);
         var dddAggregateAnalyzer = new DddAggregateAnalyzer(domainModuleFinder);

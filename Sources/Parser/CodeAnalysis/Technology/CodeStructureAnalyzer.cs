@@ -1,4 +1,3 @@
-using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;

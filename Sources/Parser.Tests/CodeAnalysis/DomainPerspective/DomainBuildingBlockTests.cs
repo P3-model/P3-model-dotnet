@@ -22,7 +22,8 @@ public class DomainBuildingBlockTests
         SampleDddValueObjectFromBaseInterface,
         SampleExternalSystemIntegration,
         SampleUseCase,
-        BuildingBlockFromNotModuleNamespace);
+        BuildingBlockFromNotModuleNamespace,
+        BuildingBlockFromSkippedNamespace);
     
     [Test]
     public void AllDependsOnRelationsArePresent()

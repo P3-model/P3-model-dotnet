@@ -20,7 +20,7 @@ await P3
     .Analyzers(analyzers => analyzers
         .UseDefaults(options => options
             .TreatNamespacesAsDomainModules(namespaces => namespaces
-                .RemoveRootNamespace("MyCompany.ECommerce"))))
+                .SkipNamespacePart("MyCompany.ECommerce"))))
     .OutputFormat(formatters => formatters
         .UseMermaid(options => options
             .Directory(Path.Combine(configuration["OutputPath"]!, "MermaidOutput"))
