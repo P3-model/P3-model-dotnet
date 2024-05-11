@@ -10,47 +10,58 @@ public class CSharpTypeTests
     [Test]
     public void AllTypesArePresent() => ParserOutput.AssertModelContainsOnlyElements(
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleBuildingBlock"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleBuildingBlock"),
             "SampleBuildingBlock",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregate"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregate"),
             "SampleDddAggregate",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregateFromBaseClass"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddAggregateFromBaseClass"),
             "SampleDddAggregateFromBaseClass",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddDomainService"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddDomainService"),
             "SampleDddDomainService",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddEntity"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddEntity"),
             "SampleDddEntity",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddFactory"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddFactory"),
             "SampleDddFactory",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddRepository"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddRepository"),
             "SampleDddRepository",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObject"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObject"),
             "SampleDddValueObject",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObjectFromBaseInterface"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleDddValueObjectFromBaseInterface"),
             "SampleDddValueObjectFromBaseInterface",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleExternalSystemIntegration"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleExternalSystemIntegration"),
             "SampleExternalSystemIntegration",
             string.Empty),
         new CSharpType(
-            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleUseCase"),
+            ElementId.Create<CSharpType>(
+                "TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule.SampleUseCase"),
             "SampleUseCase",
             string.Empty),
         new CSharpType(
@@ -80,6 +91,10 @@ public class CSharpTypeTests
         new CSharpType(
             ElementId.Create<CSharpType>("TestSamples.MainProject.NotDomain.SampleExternalSystemHttpIntegration"),
             "SampleExternalSystemHttpIntegration",
+            string.Empty),
+        new CSharpType(
+            ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainModules.WithoutCode.NotModule.BuildingBlockFromNotModuleNamespace"),
+            "BuildingBlockFromNotModuleNamespace",
             string.Empty),
         new CSharpType(
             ElementId.Create<CSharpType>("TestSamples.WorkerService.Worker"),

@@ -65,12 +65,12 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(
         AttributeData buildingBlockAttribute)
     {
         var name = GetName(symbol, buildingBlockAttribute);
-        if (modulesHierarchyResolver.TryFind(symbol, out var hierarchyId))
+        if (modulesHierarchyResolver.TryFind(symbol, out var hierarchyPath))
         {
-            var buildingBlock = CreateBuildingBlock($"{hierarchyId.Value.Full}.{name.Dehumanize()}", name);
+            var buildingBlock = CreateBuildingBlock($"{hierarchyPath.Value.Full}.{name.Dehumanize()}", name);
             var module = new DomainModule(
-                ElementId.Create<DomainModule>(hierarchyId.Value.Full),
-                hierarchyId.Value);
+                ElementId.Create<DomainModule>(hierarchyPath.Value.Full),
+                hierarchyPath.Value);
             return (buildingBlock, module);
         }
         else

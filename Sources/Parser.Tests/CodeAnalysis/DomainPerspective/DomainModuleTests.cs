@@ -1,6 +1,7 @@
 using NUnit.Framework;
-using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain;
+using static P3Model.Parser.Tests.CodeAnalysis.DomainPerspective.DomainBuildingBlocksInstances;
+using static P3Model.Parser.Tests.CodeAnalysis.DomainPerspective.DomainModuleInstances;
 
 namespace P3Model.Parser.Tests.CodeAnalysis.DomainPerspective;
 
@@ -9,68 +10,42 @@ public class DomainModuleTests
 {
     [Test]
     public void AllModulesArePresent() => ParserOutput.AssertModelContainsOnlyElements(
-        new DomainModule(
-            ElementId.Create<DomainModule>("Domain"),
-            HierarchyPath.FromValue("Domain")),
-        new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainBuildingBlocks"),
-            HierarchyPath.FromValue("Domain.DomainBuildingBlocks")),
-        new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainBuildingBlocks.SampleModule"),
-            HierarchyPath.FromValue("Domain.DomainBuildingBlocks.SampleModule")),
-        new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainModules"),
-            HierarchyPath.FromValue("Domain.DomainModules")),
-        new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainModules.WithCode"),
-            HierarchyPath.FromValue("Domain.DomainModules.WithCode")),
-        new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainModules.WithCode.WithCode"),
-            HierarchyPath.FromValue("Domain.DomainModules.WithCode.WithCode")),
-        new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainModules.WithoutCode"),
-            HierarchyPath.FromValue("Domain.DomainModules.WithoutCode")),
-        new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainModules.WithoutCode.WithCode"),
-            HierarchyPath.FromValue("Domain.DomainModules.WithoutCode.WithCode"))
+        Domain,
+        DomainBuildingBlocks,
+        SampleModule,
+        DomainModules,
+        WithCode,
+        WithCodeWithCode,
+        WithoutCode,
+        WithoutCodeWithCode);
+
+    [Test]
+    public void AllContainsDomainModuleRelationsArePresent() => ParserOutput.AssertModelContainsOnlyRelations(
+        new DomainModule.ContainsDomainModule(Domain, DomainBuildingBlocks),
+        new DomainModule.ContainsDomainModule(Domain, DomainModules),
+        new DomainModule.ContainsDomainModule(DomainBuildingBlocks, SampleModule),
+        new DomainModule.ContainsDomainModule(DomainModules, WithCode),
+        new DomainModule.ContainsDomainModule(DomainModules, WithoutCode),
+        new DomainModule.ContainsDomainModule(WithCode, WithCodeWithCode),
+        new DomainModule.ContainsDomainModule(WithoutCode, WithoutCodeWithCode)
     );
 
     [Test]
-    public void AllContainsDomainModuleRelationsArePresent()
+    public void AllContainsBuildingBlockRelationsArePresent()
     {
-        var domain = new DomainModule(
-            ElementId.Create<DomainModule>("Domain"),
-            HierarchyPath.FromValue("Domain"));
-        var domainBuildingBlocks = new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainBuildingBlocks"),
-            HierarchyPath.FromValue("Domain.DomainBuildingBlocks"));
-        var domainBuildingBlocksSampleModule = new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainBuildingBlocks.SampleModule"),
-            HierarchyPath.FromValue("Domain.DomainBuildingBlocks.SampleModule"));
-        var domainModules = new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainModules"),
-            HierarchyPath.FromValue("Domain.DomainModules"));
-        var domainModulesWithCode = new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainModules.WithCode"),
-            HierarchyPath.FromValue("Domain.DomainModules.WithCode"));
-        var domainModulesWithCodeWithCode = new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainModules.WithCode.WithCode"),
-            HierarchyPath.FromValue("Domain.DomainModules.WithCode.WithCode"));
-        var domainModulesWithoutCode = new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainModules.WithoutCode"),
-            HierarchyPath.FromValue("Domain.DomainModules.WithoutCode"));
-        var domainModulesWithoutCodeWithCode = new DomainModule(
-            ElementId.Create<DomainModule>("Domain.DomainModules.WithoutCode.WithCode"),
-            HierarchyPath.FromValue("Domain.DomainModules.WithoutCode.WithCode"));
-
         ParserOutput.AssertModelContainsOnlyRelations(
-            new DomainModule.ContainsDomainModule(domain, domainBuildingBlocks),
-            new DomainModule.ContainsDomainModule(domain, domainModules),
-            new DomainModule.ContainsDomainModule(domainBuildingBlocks, domainBuildingBlocksSampleModule),
-            new DomainModule.ContainsDomainModule(domainModules, domainModulesWithCode),
-            new DomainModule.ContainsDomainModule(domainModules, domainModulesWithoutCode),
-            new DomainModule.ContainsDomainModule(domainModulesWithCode, domainModulesWithCodeWithCode),
-            new DomainModule.ContainsDomainModule(domainModulesWithoutCode, domainModulesWithoutCodeWithCode)
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleDomainBuildingBlock),
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleDddAggregate),
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleDddAggregateFromBaseClass),
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleDddDomainService),
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleDddEntity),
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleDddFactory),
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleDddRepository),
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleDddValueObject),
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleDddValueObjectFromBaseInterface),
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleExternalSystemIntegration),
+            new DomainModule.ContainsBuildingBlock(SampleModule, SampleUseCase),
+            new DomainModule.ContainsBuildingBlock(WithoutCode, BuildingBlockFromNotModuleNamespace)
         );
     }
 }
