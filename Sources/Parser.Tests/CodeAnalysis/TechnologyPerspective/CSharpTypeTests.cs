@@ -28,6 +28,7 @@ public class CSharpTypeTests
         SampleExternalSystemHttpIntegration,
         BuildingBlockFromNotModuleNamespace,
         BuildingBlockFromSkippedNamespace,
+        SampleSqlRepository,
         Worker
     );
 }

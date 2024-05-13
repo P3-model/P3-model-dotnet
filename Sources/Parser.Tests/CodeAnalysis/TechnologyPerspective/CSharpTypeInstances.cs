@@ -104,6 +104,11 @@ public static class CSharpTypeInstances
         ElementId.Create<CSharpType>("TestSamples.MainProject.Domain.DomainModules.NotModule.WithCode.SkippedWithAnnotation.BuildingBlockFromSkippedNamespace"),
         "BuildingBlockFromSkippedNamespace",
         string.Empty);
+    
+    public static readonly CSharpType SampleSqlRepository = new(
+        ElementId.Create<CSharpType>("TestSamples.MainProject.NotDomain.SampleSqlRepository"),
+        "SampleSqlRepository",
+        string.Empty);
 
     public static readonly CSharpType Worker = new(
         ElementId.Create<CSharpType>("TestSamples.WorkerService.Worker"),

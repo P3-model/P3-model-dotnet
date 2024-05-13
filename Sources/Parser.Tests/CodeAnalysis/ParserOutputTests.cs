@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using NUnit.Framework;
 using P3Model.Parser.CodeAnalysis;
 using P3Model.Parser.Configuration;

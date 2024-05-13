@@ -11,6 +11,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\Annotations\Annotations.csproj" />
+      <ProjectReference Include="..\MainProject\MainProject.csproj" />
     </ItemGroup>
 
 </Project>
