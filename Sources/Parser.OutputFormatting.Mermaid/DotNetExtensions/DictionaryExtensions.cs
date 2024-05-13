@@ -1,4 +1,4 @@
-namespace DotNetExtensions;
+namespace P3Model.Parser.OutputFormatting.Mermaid.DotNetExtensions;
 
 public static class DictionaryExtensions
 {

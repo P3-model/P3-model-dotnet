@@ -1,5 +1,5 @@
-using DotNetExtensions;
 using P3Model.Parser.ModelSyntax;
+using P3Model.Parser.ModelSyntax.DotNetExtensions;
 using Serilog;
 
 namespace Parser.ModelQuerying;

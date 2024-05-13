@@ -1,4 +1,4 @@
-using DotNetExtensions;
+using P3Model.Parser.ModelSyntax.DotNetExtensions;
 
 namespace P3Model.Parser.ModelSyntax;
 

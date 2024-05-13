@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DotNetExtensions\DotNetExtensions.csproj" />
       <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />
     </ItemGroup>
 

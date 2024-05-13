@@ -1,4 +1,4 @@
-namespace DotNetExtensions;
+namespace P3Model.Parser.ModelSyntax.DotNetExtensions;
 
 public static class LinqExtensions
 {

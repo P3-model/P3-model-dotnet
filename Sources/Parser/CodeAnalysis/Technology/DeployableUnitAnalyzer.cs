@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using DotNetExtensions;
 using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
@@ -8,6 +7,7 @@ using P3Model.Annotations.Technology;
 using P3Model.Parser.CodeAnalysis.RoslynExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain;
+using P3Model.Parser.ModelSyntax.DotNetExtensions;
 using P3Model.Parser.ModelSyntax.Technology;
 using P3Model.Parser.ModelSyntax.Technology.CSharp;
 

@@ -1,7 +1,7 @@
-using DotNetExtensions;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain;
 using P3Model.Parser.ModelSyntax.People;
+using P3Model.Parser.OutputFormatting.Mermaid.DotNetExtensions;
 using P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
