@@ -4,6 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <LangVersion>default</LangVersion>
         <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>P3Model.Parser</AssemblyName>
         <RootNamespace>P3Model.Parser</RootNamespace>
         <IsPackable>true</IsPackable>
@@ -38,7 +39,6 @@
       <ProjectReference Include="..\Annotations\Annotations.csproj" />
       <ProjectReference Include="..\Parser.CodeAnalysis.Abstractions\Parser.CodeAnalysis.Abstractions.csproj" />
       <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />      
-      <ProjectReference Include="..\Parser.OutputFormatting.Json\Parser.OutputFormatting.Json.csproj" />      
       <ProjectReference Include="..\Parser.OutputFormatting.Abstractions\Parser.OutputFormatting.Abstractions.csproj" />
     </ItemGroup>
 
