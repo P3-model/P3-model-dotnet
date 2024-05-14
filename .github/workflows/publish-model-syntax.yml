@@ -1,4 +1,4 @@
-name: Publish Parser
+name: Publish Model Syntax
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Publish Parser
+name: Publish Code Analysis Abstractions
 
 on:
   push:

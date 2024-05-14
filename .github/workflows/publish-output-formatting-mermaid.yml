@@ -1,4 +1,4 @@
-name: Publish Parser
+name: Publish Output Formatting Mermaid
 
 on:
   push:
