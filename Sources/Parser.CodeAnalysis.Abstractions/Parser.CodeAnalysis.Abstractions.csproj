@@ -2,11 +2,26 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>default</LangVersion>
         <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>P3Model.Parser.CodeAnalysis.Abstractions</AssemblyName>
         <RootNamespace>P3Model.Parser.CodeAnalysis</RootNamespace>
-        <LangVersion>default</LangVersion>
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>0.1.0</Version>
+        <AssemblyVersion>0.1.0</AssemblyVersion>
+        <FileVersion>0.1.0</FileVersion>
+        <Title>P3 Model Code Analysis Anstractions</Title>
+        <Description>P3 Model Code Analysis Anstractions is a set of base abstractions to create custom code analyzers for P3 Model Parser.</Description>
+        <Authors>Marcin Markowski</Authors>
+        <Company>P3 Model</Company>
+        <PackageProjectUrl>https://github.com/P3-model/P3-model-dotnet</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/P3-model/P3-model-dotnet</RepositoryUrl>
+        <PackageLicenseExpression>CC-BY-SA-4.0</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageReleaseNotes>initial version</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,4 +32,12 @@
       <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Update="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\logo.png">
+            <Pack>True</Pack>
+            <PackagePath/>
+            <Link>logo.png</Link>
+        </None>
+    </ItemGroup>
 </Project>
