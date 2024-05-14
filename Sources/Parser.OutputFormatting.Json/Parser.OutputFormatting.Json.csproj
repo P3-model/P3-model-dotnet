@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Parser.OutputFormatting\Parser.OutputFormatting.csproj" />
+      <ProjectReference Include="..\Parser.OutputFormatting.Abstractions\Parser.OutputFormatting.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

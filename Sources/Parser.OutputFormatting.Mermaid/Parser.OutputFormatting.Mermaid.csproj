@@ -12,7 +12,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Parser.ModelQuerying\Parser.ModelQuerying.csproj" />
       <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />
-      <ProjectReference Include="..\Parser.OutputFormatting\Parser.OutputFormatting.csproj" />
+      <ProjectReference Include="..\Parser.OutputFormatting.Abstractions\Parser.OutputFormatting.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

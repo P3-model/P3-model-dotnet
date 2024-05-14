@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>default</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>P3Model.Parser.OutputFormatting.Abstractions</AssemblyName>
+        <RootNamespace>P3Model.Parser.OutputFormatting</RootNamespace>
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>0.1.0</Version>
+        <AssemblyVersion>0.1.0</AssemblyVersion>
+        <FileVersion>0.1.0</FileVersion>
+        <Title>P3 Model Code Analysis Anstractions</Title>
+        <Description>P3 Model Output Formatting Anstractions is a set of base abstractions to create extensions for P3 Model Parser.</Description>
+        <Authors>Marcin Markowski</Authors>
+        <Company>P3 Model</Company>
+        <PackageProjectUrl>https://github.com/P3-model/P3-model-dotnet</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/P3-model/P3-model-dotnet</RepositoryUrl>
+        <PackageLicenseExpression>CC-BY-SA-4.0</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageReleaseNotes>initial version</PackageReleaseNotes>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />
+    </ItemGroup>
+
+</Project>

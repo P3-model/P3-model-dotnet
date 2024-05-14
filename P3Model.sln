@@ -47,7 +47,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.ModelSyntax", "Sourc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.OutputFormatting.Mermaid", "Sources\Parser.OutputFormatting.Mermaid\Parser.OutputFormatting.Mermaid.csproj", "{E974E541-1B5D-4C7E-B010-06468F035377}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.OutputFormatting", "Sources\Parser.OutputFormatting\Parser.OutputFormatting.csproj", "{E15A4F5F-48EF-4F0F-8E93-97B8B394D38A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.OutputFormatting.Abstractions", "Sources\Parser.OutputFormatting.Abstractions\Parser.OutputFormatting.Abstractions.csproj", "{E15A4F5F-48EF-4F0F-8E93-97B8B394D38A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.ModelQuerying", "Sources\Parser.ModelQuerying\Parser.ModelQuerying.csproj", "{39D333C9-79FF-4D75-9648-1AF113323D55}"
 EndProject
