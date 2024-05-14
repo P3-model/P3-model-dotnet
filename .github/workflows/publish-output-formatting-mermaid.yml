@@ -1,0 +1,31 @@
+name: Publish Parser
+
+on:
+  push:
+    tags:
+      - 'output-formatting-mermaid/*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract tag
+        id: extract
+        run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/})"      
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --no-build --output ./artifacts ./Sources/Parser.OutputFormatting.Mermaid/Parser.OutputFormatting.Mermaid.csproj
+
+      - name: Publish NuGet package
+        run: |          
+          PACKAGE_VERSION=$(echo ${{ steps.extract.outputs.tag }} | cut -d/ -f2)
+          if [ -n "$PACKAGE_VERSION" ]; then
+          dotnet nuget push ./artifacts/P3Model.Parser.OutputFormatting.Mermaid.${PACKAGE_VERSION}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+          fi
