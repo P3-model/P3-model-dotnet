@@ -35,6 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{
 		.github\workflows\run-tests.yml = .github\workflows\run-tests.yml
 		.github\workflows\publish-code-analysis-abstractions.yml = .github\workflows\publish-code-analysis-abstractions.yml
 		.github\workflows\publish-output-formatting-abstractions.yml = .github\workflows\publish-output-formatting-abstractions.yml
+		.github\workflows\publish-model-syntax.yml = .github\workflows\publish-model-syntax.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{DE5D3D76-BE2D-424B-B4E6-FA288299D27F}"
