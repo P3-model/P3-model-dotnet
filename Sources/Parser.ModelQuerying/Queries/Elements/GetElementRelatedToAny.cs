@@ -1,7 +1,7 @@
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DotNetExtensions;
 
-namespace Parser.ModelQuerying.Queries.Elements;
+namespace P3Model.Parser.ModelQuerying.Queries.Elements;
 
 public class GetElementRelatedToAny<TSource, TDestination, TRelation> : ElementQuery<TSource>
     where TSource : class, Element

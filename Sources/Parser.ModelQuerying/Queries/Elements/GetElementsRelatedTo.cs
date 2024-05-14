@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using P3Model.Parser.ModelSyntax;
 
-namespace Parser.ModelQuerying.Queries.Elements;
+namespace P3Model.Parser.ModelQuerying.Queries.Elements;
 
 [SuppressMessage("ReSharper", "UnusedTypeParameter", Justification = "Marker argument for ModelGraph methods")]
 public class GetElementsRelatedTo<TSource, TDestination, TRelation> : ElementsQuery<TSource>

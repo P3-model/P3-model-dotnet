@@ -2,7 +2,7 @@ using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.DotNetExtensions;
 using Serilog;
 
-namespace Parser.ModelQuerying;
+namespace P3Model.Parser.ModelQuerying;
 
 public class Hierarchy<TElement>
     where TElement : class, HierarchyElement

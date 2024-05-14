@@ -1,6 +1,6 @@
 using P3Model.Parser.ModelSyntax;
 
-namespace Parser.ModelQuerying.Queries.Traits;
+namespace P3Model.Parser.ModelQuerying.Queries.Traits;
 
 public class GetTraits<TTrait> : TraitsQuery<TTrait>
     where TTrait : Trait

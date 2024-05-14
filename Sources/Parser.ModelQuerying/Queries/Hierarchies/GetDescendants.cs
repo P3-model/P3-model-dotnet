@@ -1,7 +1,7 @@
+using P3Model.Parser.ModelQuerying.Queries.Elements;
 using P3Model.Parser.ModelSyntax;
-using Parser.ModelQuerying.Queries.Elements;
 
-namespace Parser.ModelQuerying.Queries.Hierarchies;
+namespace P3Model.Parser.ModelQuerying.Queries.Hierarchies;
 
 public class GetDescendants<TElement, TRelation> : ElementsQuery<TElement>
     where TElement : class, HierarchyElement 

@@ -1,4 +1,4 @@
-using Parser.ModelQuerying;
+using P3Model.Parser.ModelQuerying;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid;
 

@@ -1,12 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
+using P3Model.Parser.ModelQuerying.Queries.Elements;
+using P3Model.Parser.ModelQuerying.Queries.Hierarchies;
+using P3Model.Parser.ModelQuerying.Queries.Relations;
+using P3Model.Parser.ModelQuerying.Queries.Traits;
 using P3Model.Parser.ModelSyntax;
-using Parser.ModelQuerying.Queries.Elements;
-using Parser.ModelQuerying.Queries.Hierarchies;
-using Parser.ModelQuerying.Queries.Relations;
-using Parser.ModelQuerying.Queries.Traits;
 
-namespace Parser.ModelQuerying.Queries;
+namespace P3Model.Parser.ModelQuerying.Queries;
 
 [SuppressMessage("Performance", "CA1822", Justification = "Needed for builder pattern")]
 public class QueryBuilder

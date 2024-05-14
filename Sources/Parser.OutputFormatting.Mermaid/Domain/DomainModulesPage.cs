@@ -1,6 +1,6 @@
+using P3Model.Parser.ModelQuerying;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain;
-using Parser.ModelQuerying;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.Domain;
 

@@ -1,6 +1,6 @@
 using P3Model.Parser.ModelSyntax;
 
-namespace Parser.ModelQuerying.Queries.Elements;
+namespace P3Model.Parser.ModelQuerying.Queries.Elements;
 
 public class GetElementsWithRelation<TSource, TRelation> : ElementsQuery<TSource>
     where TSource : class, Element

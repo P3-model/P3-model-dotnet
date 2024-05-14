@@ -1,12 +1,12 @@
 using JetBrains.Annotations;
+using P3Model.Parser.ModelQuerying.Queries;
+using P3Model.Parser.ModelQuerying.Queries.Elements;
+using P3Model.Parser.ModelQuerying.Queries.Hierarchies;
+using P3Model.Parser.ModelQuerying.Queries.Relations;
+using P3Model.Parser.ModelQuerying.Queries.Traits;
 using P3Model.Parser.ModelSyntax;
-using Parser.ModelQuerying.Queries;
-using Parser.ModelQuerying.Queries.Elements;
-using Parser.ModelQuerying.Queries.Hierarchies;
-using Parser.ModelQuerying.Queries.Relations;
-using Parser.ModelQuerying.Queries.Traits;
 
-namespace Parser.ModelQuerying;
+namespace P3Model.Parser.ModelQuerying;
 
 public class ModelGraph
 {

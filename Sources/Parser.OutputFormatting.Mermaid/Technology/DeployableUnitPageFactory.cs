@@ -1,9 +1,9 @@
 using JetBrains.Annotations;
+using P3Model.Parser.ModelQuerying;
 using P3Model.Parser.ModelSyntax.Domain;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
 using P3Model.Parser.ModelSyntax.Technology.CSharp;
-using Parser.ModelQuerying;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid.Technology;
 

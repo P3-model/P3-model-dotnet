@@ -1,6 +1,6 @@
 using P3Model.Parser.ModelSyntax;
 
-namespace Parser.ModelQuerying.Queries.Relations;
+namespace P3Model.Parser.ModelQuerying.Queries.Relations;
 
 public class GetRelations<TRelation> : RelationsQuery<TRelation>
     where TRelation : Relation
