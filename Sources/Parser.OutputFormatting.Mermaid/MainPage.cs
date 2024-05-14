@@ -2,9 +2,9 @@ using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain;
 using P3Model.Parser.ModelSyntax.People;
 using P3Model.Parser.ModelSyntax.Technology;
-using P3Model.Parser.OutputFormatting.Mermaid.DomainPerspective;
-using P3Model.Parser.OutputFormatting.Mermaid.PeoplePerspective;
-using P3Model.Parser.OutputFormatting.Mermaid.TechnologyPerspective;
+using P3Model.Parser.OutputFormatting.Mermaid.Domain;
+using P3Model.Parser.OutputFormatting.Mermaid.People;
+using P3Model.Parser.OutputFormatting.Mermaid.Technology;
 
 namespace P3Model.Parser.OutputFormatting.Mermaid;
 
