@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;

@@ -1,5 +1,3 @@
-using System;
-
 namespace P3Model.Parser.CodeAnalysis.Configuration.Analyzers;
 
 public class DefaultAnalyzersOptionsBuilder

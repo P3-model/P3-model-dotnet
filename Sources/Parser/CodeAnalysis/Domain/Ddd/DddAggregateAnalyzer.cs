@@ -1,4 +1,3 @@
-using System;
 using JetBrains.Annotations;
 using P3Model.Annotations.Domain.DDD;
 using P3Model.Parser.ModelSyntax;

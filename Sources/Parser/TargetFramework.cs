@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace P3Model.Parser;
 
 // ReSharper disable once NotAccessedPositionalProperty.Global

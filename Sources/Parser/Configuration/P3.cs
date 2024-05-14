@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using P3Model.Parser.CodeAnalysis;
 using P3Model.Parser.CodeAnalysis.Configuration.Analyzers;
 using P3Model.Parser.CodeAnalysis.Configuration.Repositories;

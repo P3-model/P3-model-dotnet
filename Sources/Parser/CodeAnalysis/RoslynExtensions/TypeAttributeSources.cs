@@ -1,5 +1,3 @@
-using System;
-
 namespace P3Model.Parser.CodeAnalysis.RoslynExtensions;
 
 [Flags]

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
 using P3Model.Parser.CodeAnalysis.Domain;
 using P3Model.Parser.CodeAnalysis.Domain.Ddd;
