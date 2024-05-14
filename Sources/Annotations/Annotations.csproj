@@ -33,7 +33,7 @@
       <None Update="README.md" Pack="true" PackagePath="\" />
       <None Include="..\..\logo.png">
         <Pack>True</Pack>
-        <PackagePath></PackagePath>
+        <PackagePath/>
         <Link>logo.png</Link>
       </None>
     </ItemGroup>

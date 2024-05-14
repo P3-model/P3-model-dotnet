@@ -28,4 +28,16 @@
       <ProjectReference Include="..\Parser.ModelSyntax\Parser.ModelSyntax.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Update="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\logo.png">
+            <Pack>True</Pack>
+            <PackagePath/>
+            <Link>logo.png</Link>
+        </None>
+        <None Update="README.md">
+          <Pack>true</Pack>
+          <PackagePath>/</PackagePath>
+        </None>
+    </ItemGroup>
 </Project>
