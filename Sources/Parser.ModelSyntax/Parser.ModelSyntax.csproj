@@ -9,9 +9,9 @@
         <RootNamespace>P3Model.Parser.ModelSyntax</RootNamespace>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.1.1</Version>
-        <AssemblyVersion>0.1.1</AssemblyVersion>
-        <FileVersion>0.1.1</FileVersion>
+        <Version>0.1.2</Version>
+        <AssemblyVersion>0.1.2</AssemblyVersion>
+        <FileVersion>0.1.2</FileVersion>
         <Title>P3 Model Syntax</Title>
         <Description>P3 Model Syntax contains all default elements and relations and base abstractions to extend the model. It's base for both code analysis and output formatting.</Description>
         <Authors>Marcin Markowski</Authors>
@@ -21,7 +21,7 @@
         <PackageLicenseExpression>CC-BY-SA-4.0</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>logo.png</PackageIcon>
-        <PackageReleaseNotes>ElementId comparison fix</PackageReleaseNotes>
+        <PackageReleaseNotes>SourceCodePath typo fix</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
