@@ -9,13 +9,13 @@ public class CSharpNamespace(ElementId id, HierarchyPath hierarchyPath, string s
 {
     public override Perspective Perspective => Perspective.Technology;
     public HierarchyPath HierarchyPath { get; } = hierarchyPath;
-    public string SourceCodeSourceCodePath { get; } = sourceCodePath;
+    public string SourceCodePath { get; } = sourceCodePath;
 
     public override bool DataEquals(Element? other) =>
         base.DataEquals(other) &&
         other is CSharpNamespace otherCSharpNamespace &&
         HierarchyPath.Equals(otherCSharpNamespace.HierarchyPath) &&
-        SourceCodeSourceCodePath == otherCSharpNamespace.SourceCodeSourceCodePath;
+        SourceCodePath == otherCSharpNamespace.SourceCodePath;
 
     public override string ToString() => $"{base.ToString()} | HierarchyPath: {HierarchyPath}";
 

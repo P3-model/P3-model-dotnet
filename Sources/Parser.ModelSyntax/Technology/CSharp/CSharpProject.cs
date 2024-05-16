@@ -4,12 +4,12 @@ public class CSharpProject(ElementId id, string name, string sourceCodePath) : E
 {
     public override Perspective Perspective => Perspective.Technology;
 
-    public string SourceCodeSourceCodePath { get; } = sourceCodePath;
+    public string SourceCodePath { get; } = sourceCodePath;
 
     public override bool DataEquals(Element? other) =>
         base.DataEquals(other) &&
         other is CSharpProject otherCSharpProject &&
-        SourceCodeSourceCodePath == otherCSharpProject.SourceCodeSourceCodePath;
+        SourceCodePath == otherCSharpProject.SourceCodePath;
 
     public class ReferencesProject(CSharpProject source, CSharpProject destination)
         : HierarchyRelation<CSharpProject>(source, destination);
