@@ -123,12 +123,18 @@ public class DomainBuildingBlockPage : MermaidPageBase
             .Distinct()
             .OrderBy(p => p)
             .ToList();
-        if (sourceCodePaths.Count == 0)
-            mermaidWriter.WriteLine("No source code files were found.");
-        if (sourceCodePaths.Count == 1)
-            mermaidWriter.WriteLine(FormatSourceCodeLink(sourceCodePaths[0]));
-        else
-            mermaidWriter.WriteUnorderedList(sourceCodePaths, FormatSourceCodeLink);
+        switch (sourceCodePaths.Count)
+        {
+            case 0:
+                mermaidWriter.WriteLine("No source code files were found.");
+                break;
+            case 1:
+                mermaidWriter.WriteLine(FormatSourceCodeLink(sourceCodePaths[0]));
+                break;
+            default:
+                mermaidWriter.WriteUnorderedList(sourceCodePaths, FormatSourceCodeLink);
+                break;
+        }
     }
 
     private string FormatSourceCodeLink(string path) => MermaidWriter

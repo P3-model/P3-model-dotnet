@@ -145,11 +145,24 @@ public class DomainModulePage : MermaidPageBase
             });
         }
         mermaidWriter.WriteHeading("Source code", 3);
-        if (_codeStructures.Count == 1)
-            mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
-        else
-            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.SourceCodePath),
-                FormatSourceCodeLink);
+        var sourceCodePaths = _codeStructures
+            .Where(s => !string.IsNullOrWhiteSpace(s.SourceCodePath))
+            .Select(s => s.SourceCodePath)
+            .Distinct()
+            .OrderBy(p => p)
+            .ToList();
+        switch (sourceCodePaths.Count)
+        {
+            case 0:
+                mermaidWriter.WriteLine("No source code files were found.");
+                break;
+            case 1:
+                mermaidWriter.WriteLine(FormatSourceCodeLink(sourceCodePaths[0]));
+                break;
+            default:
+                mermaidWriter.WriteUnorderedList(sourceCodePaths, FormatSourceCodeLink);
+                break;
+        }
 
         mermaidWriter.WriteHeading("People Perspective", 2);
         mermaidWriter.WriteHeading("Engaged people", 3);
@@ -177,8 +190,8 @@ public class DomainModulePage : MermaidPageBase
         }
     }
 
-    private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
-        .FormatLink(codeStructure.Name, GetPathRelativeToPageFile(codeStructure.SourceCodePath));
+    private string FormatSourceCodeLink(string path) => MermaidWriter
+        .FormatLink(Path.GetFileName(path), GetPathRelativeToPageFile(path));
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {
