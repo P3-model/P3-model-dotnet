@@ -148,7 +148,7 @@ public class DomainModulePage : MermaidPageBase
         if (_codeStructures.Count == 1)
             mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
         else
-            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.SourceCodeSourceCodePath),
+            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.SourceCodePath),
                 FormatSourceCodeLink);
 
         mermaidWriter.WriteHeading("People Perspective", 2);
@@ -178,7 +178,7 @@ public class DomainModulePage : MermaidPageBase
     }
 
     private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
-        .FormatLink(codeStructure.Name, GetPathRelativeToPageFile(codeStructure.SourceCodeSourceCodePath));
+        .FormatLink(codeStructure.Name, GetPathRelativeToPageFile(codeStructure.SourceCodePath));
 
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {

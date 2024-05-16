@@ -109,7 +109,7 @@ public class UseCasePage : MermaidPageBase
         if (_codeStructures.Count == 1)
             mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
         else
-            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.SourceCodeSourceCodePath), FormatSourceCodeLink);
+            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.SourceCodePath), FormatSourceCodeLink);
 
         mermaidWriter.WriteHeading("People Perspective", 2);
         if (_actors.Count == 0 && _developmentTeams.Count == 0 && _organizationalUnits.Count == 0)
@@ -144,7 +144,7 @@ public class UseCasePage : MermaidPageBase
     }
 
     private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
-        .FormatLink(Path.GetFileName(codeStructure.SourceCodeSourceCodePath), GetPathRelativeToPageFile(codeStructure.SourceCodeSourceCodePath));
+        .FormatLink(Path.GetFileName(codeStructure.SourceCodePath), GetPathRelativeToPageFile(codeStructure.SourceCodePath));
     
     protected override bool IncludeInZoomInPages(MermaidPage page) => page switch
     {

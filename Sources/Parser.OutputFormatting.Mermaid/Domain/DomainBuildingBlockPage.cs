@@ -15,7 +15,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
 
     public DomainBuildingBlockPage(string outputDirectory, DomainBuildingBlock buildingBlock, DomainModule? module,
         IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usingElements,
-        IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usedElements, 
+        IReadOnlySet<(DomainBuildingBlock, DomainModule?)> usedElements,
         IReadOnlySet<CodeStructure> codeStructures) : base(outputDirectory)
     {
         _buildingBlock = buildingBlock;
@@ -33,7 +33,9 @@ public class DomainBuildingBlockPage : MermaidPageBase
 
     public override string RelativeFilePath => _module is null
         ? Path.Combine("Domain", "Modules", $"{_buildingBlock.Name.Dehumanize()}.md")
-        : Path.Combine("Domain", "Modules", Path.Combine(_module.HierarchyPath.Parts.ToArray()),
+        : Path.Combine("Domain",
+            "Modules",
+            Path.Combine(_module.HierarchyPath.Parts.ToArray()),
             $"{_buildingBlock.Name.Dehumanize()}.md");
 
     public override ElementBase MainElement => _buildingBlock;
@@ -45,7 +47,7 @@ public class DomainBuildingBlockPage : MermaidPageBase
             mermaidWriter.WriteHeading("User defined description", 2);
             mermaidWriter.WriteLine(_buildingBlock.ShortDescription);
         }
-        
+
         mermaidWriter.WriteHeading("Domain Perspective", 2);
         mermaidWriter.WriteHeading("Dependencies", 3);
 
@@ -65,13 +67,13 @@ public class DomainBuildingBlockPage : MermaidPageBase
                     if (group.Key is null)
                         usingElementIds.AddRange(WriteDependencies(group, flowchartWriter));
                     else
-                        usingElementIds.Add(flowchartWriter.WriteSubgraph(group.Key.HierarchyPath.Full, 
+                        usingElementIds.Add(flowchartWriter.WriteSubgraph(group.Key.HierarchyPath.Full,
                             subgraphWriter => WriteDependencies(group, subgraphWriter)));
                 }
                 var buildingBlockId = _module is null
                     ? flowchartWriter.WriteRectangle(_buildingBlock.Name, Style.DomainPerspective)
-                    : flowchartWriter.WriteSubgraph(_module.HierarchyPath.Full, subGraphWriter => subGraphWriter
-                        .WriteRectangle(_buildingBlock.Name, Style.DomainPerspective));
+                    : flowchartWriter.WriteSubgraph(_module.HierarchyPath.Full,
+                        subGraphWriter => subGraphWriter.WriteRectangle(_buildingBlock.Name, Style.DomainPerspective));
                 var usedElementIds = new List<string>();
                 foreach (var group in _usedElements
                              .GroupBy(t => t.Module, t => t.BuildingBlock)
@@ -80,8 +82,8 @@ public class DomainBuildingBlockPage : MermaidPageBase
                     if (group.Key is null)
                         usedElementIds.AddRange(WriteDependencies(group, flowchartWriter));
                     else
-                        usedElementIds.Add(flowchartWriter.WriteSubgraph(group.Key.HierarchyPath.Full, subgraphWriter =>
-                            WriteDependencies(group, subgraphWriter)));
+                        usedElementIds.Add(flowchartWriter.WriteSubgraph(group.Key.HierarchyPath.Full,
+                            subgraphWriter => WriteDependencies(group, subgraphWriter)));
                 }
                 foreach (var usingElementId in usingElementIds)
                     flowchartWriter.WriteArrow(usingElementId, buildingBlockId, "depends on");
@@ -112,17 +114,25 @@ public class DomainBuildingBlockPage : MermaidPageBase
                 }
             });
         }
-        
+
         mermaidWriter.WriteHeading("Technology Perspective", 2);
         mermaidWriter.WriteHeading("Source code", 3);
-        if (_codeStructures.Count == 1)
-            mermaidWriter.WriteLine(FormatSourceCodeLink(_codeStructures.First()));
+        var sourceCodePaths = _codeStructures
+            .Where(s => !string.IsNullOrWhiteSpace(s.SourceCodePath))
+            .Select(s => s.SourceCodePath)
+            .Distinct()
+            .OrderBy(p => p)
+            .ToList();
+        if (sourceCodePaths.Count == 0)
+            mermaidWriter.WriteLine("No source code files were found.");
+        if (sourceCodePaths.Count == 1)
+            mermaidWriter.WriteLine(FormatSourceCodeLink(sourceCodePaths[0]));
         else
-            mermaidWriter.WriteUnorderedList(_codeStructures.OrderBy(s => s.SourceCodeSourceCodePath), FormatSourceCodeLink);
+            mermaidWriter.WriteUnorderedList(sourceCodePaths, FormatSourceCodeLink);
     }
 
-    private string FormatSourceCodeLink(CodeStructure codeStructure) => MermaidWriter
-        .FormatLink(Path.GetFileName(codeStructure.SourceCodeSourceCodePath), GetPathRelativeToPageFile(codeStructure.SourceCodeSourceCodePath));
+    private string FormatSourceCodeLink(string path) => MermaidWriter
+        .FormatLink(Path.GetFileName(path), GetPathRelativeToPageFile(path));
 
     private static IEnumerable<string> WriteDependencies(IEnumerable<DomainBuildingBlock> dependencies,
         FlowchartElementsWriter flowchartWriter) => dependencies
