@@ -12,5 +12,4 @@ namespace P3Model.Annotations.Domain.DDD;
 /// </para>
 /// </summary>
 [PublicAPI]
-public class DddAggregateAttribute([CallerMemberName] string? name = null)
-    : DomainBuildingBlockAttribute(name), DomainPerspectiveAttribute;
+public class DddAggregateAttribute([CallerMemberName] string? name = null) : DomainBuildingBlockAttribute(name);
