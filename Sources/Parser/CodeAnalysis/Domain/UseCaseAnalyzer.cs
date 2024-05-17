@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using P3Model.Annotations.Domain;
@@ -21,27 +21,12 @@ public class UseCaseAnalyzer(DomainModulesHierarchyResolver modulesHierarchyReso
         AttributeData buildingBlockAttribute, ModelBuilder modelBuilder)
     {
         base.AddElementsAndRelations(useCase, module, symbol, buildingBlockAttribute, modelBuilder);
-        modelBuilder.Add(elements => GetRelationsToProcesses(useCase, buildingBlockAttribute, elements));
-    }
-
-    private static IEnumerable<Relation> GetRelationsToProcesses(UseCase useCase, AttributeData useCaseAttribute,
-        ElementsProvider elements)
-    {
-        if (!TryGetProcessName(useCaseAttribute, out var processName))
-            yield break;
-        foreach (var process in elements
-                     .OfType<Process>()
-                     .Where(p => p.Name.Equals(processName, StringComparison.InvariantCulture)))
-            yield return new Process.ContainsUseCase(process, useCase);
-    }
-
-    private static bool TryGetProcessName(AttributeData useCaseAttribute,
-        [NotNullWhen(true)] out string? processName)
-    {
-        if (useCaseAttribute.TryGetConstructorArgumentValue(nameof(UseCaseAttribute.Process), out processName))
-            return true;
-        if (useCaseAttribute.TryGetNamedArgumentValue(nameof(UseCaseAttribute.Process), out processName))
-            return true;
-        return false;
+        if (!buildingBlockAttribute.TryGetArgumentValue(nameof(UseCaseAttribute.Process), out string? processName))
+            return;
+        var process = new Process(
+            ElementId.Create<Process>(processName.Dehumanize()),
+            processName.Humanize(LetterCasing.Title));
+        modelBuilder.Add(process);
+        modelBuilder.Add(new Process.ContainsUseCase(process, useCase));
     }
 }

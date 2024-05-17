@@ -4,7 +4,7 @@ namespace TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule;
 
 public class SampleUseCase(SampleDddRepository repository)
 {
-    [UseCase(nameof(SampleUseCase))]
+    [UseCase(nameof(SampleUseCase), "SampleProcess")]
     public async Task Execute()
     {
         var sampleAggregate = await repository.GetSampleAggregate();
