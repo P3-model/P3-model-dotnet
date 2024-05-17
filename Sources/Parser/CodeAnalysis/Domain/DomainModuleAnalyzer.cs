@@ -54,50 +54,40 @@ public class DomainModuleAnalyzer(DomainModulesHierarchyResolver modulesHierarch
     {
         if (!symbol.IsExplicitlyIncludedInDomainModel())
             return;
-        foreach (var namespaceSymbol in GetFullHierarchy(symbol))
+        DomainModule? previousModule = null;
+        while (symbol is { IsGlobalNamespace: false })
         {
-            if (!namespaceSymbol.IsExplicitlyIncludedInDomainModel())
+            if (!symbol.IsExplicitlyIncludedInDomainModel())
             {
                 Log.Warning("Namespace {namespace} implementing a part of domain modules hierarchy doesn't belong to domain model.",
-                    namespaceSymbol.ToDisplayString());
+                    symbol.ToDisplayString());
+                symbol = symbol.ContainingNamespace;
                 continue;
             }
-            if (!modulesHierarchyResolver.TryFind(namespaceSymbol, out var hierarchyPath))
+            if (!modulesHierarchyResolver.TryFind(symbol, out var hierarchyPath))
+            {
+                symbol = symbol.ContainingNamespace;
                 continue;
+            }
+            if (hierarchyPath.Equals(previousModule?.HierarchyPath))
+            {
+                symbol = symbol.ContainingNamespace;
+                continue;
+            }
             var module = new DomainModule(
                 ElementId.Create<DomainModule>(hierarchyPath.Value.Full),
                 hierarchyPath.Value);
-            modelBuilder.Add(module, namespaceSymbol);
+            modelBuilder.Add(module, symbol);
+            if (previousModule != null)
+                modelBuilder.Add(new DomainModule.ContainsDomainModule(module, previousModule));
             // TODO: relation to teams and business units defined at namespace level
             //  Requires parsing types within the namespace annotated with DevelopmentOwnerAttribute and ApplyOnNamespace == true.
-            modelBuilder.Add(elements => GetRelationToParent(namespaceSymbol, module, elements));
-            modelBuilder.Add(elements => GetRelationsToCodeStructures(namespaceSymbol, module, elements));
-        }
-    }
-
-    private static IEnumerable<INamespaceSymbol> GetFullHierarchy(INamespaceSymbol symbol)
-    {
-        while (symbol is { IsGlobalNamespace: false })
-        {
-            yield return symbol;
+            var currentSymbol = symbol;
+            modelBuilder.Add(elements => GetRelationsToCodeStructures(currentSymbol, module, elements));
+            
+            previousModule = module;
             symbol = symbol.ContainingNamespace;
         }
-    }
-
-    private static IEnumerable<Relation> GetRelationToParent(ISymbol symbol, DomainModule module,
-        ElementsProvider elements)
-    {
-        // TODO: warning logging if more than one
-        var parentModule = elements
-            .OfType<ElementInfo<DomainModule>>()
-            // TODO: Checking up the hierarchy because some namespaces can be filtered out (e.g. layer name) 
-            .Where(info => info.Symbols.Contains(symbol.ContainingNamespace))
-            .Select(info => info.Element)
-            .SingleOrDefault();
-        if (module.Equals(parentModule))
-            Log.Warning($"Domain module: {module} has relation: {nameof(DomainModule.ContainsDomainModule)} to itself");
-        else if (parentModule != null)
-            yield return new DomainModule.ContainsDomainModule(parentModule, module);
     }
 
     private static IEnumerable<Relation> GetRelationsToCodeStructures(ISymbol symbol, DomainModule module,
