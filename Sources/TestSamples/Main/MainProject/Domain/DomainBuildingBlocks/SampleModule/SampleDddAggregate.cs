@@ -12,5 +12,7 @@ namespace TestSamples.MainProject.Domain.DomainBuildingBlocks.SampleModule;
                   """)]
 public class SampleDddAggregate
 {
+    private readonly SampleDddValueObject _valueObject = new();
+    
     public void BehaviorDependantOnDomainService(SampleDddDomainService domainService) { }
 }

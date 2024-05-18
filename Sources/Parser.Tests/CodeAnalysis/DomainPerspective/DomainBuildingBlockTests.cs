@@ -30,6 +30,7 @@ public class DomainBuildingBlockTests
     {
         ParserOutput.AssertModelContainsOnlyRelations(
             new DomainBuildingBlock.DependsOnBuildingBlock(SampleDddAggregate, SampleDddDomainService),
+            new DomainBuildingBlock.DependsOnBuildingBlock(SampleDddAggregate, SampleDddValueObject),
             new DomainBuildingBlock.DependsOnBuildingBlock(SampleUseCase, SampleDddAggregate),
             new DomainBuildingBlock.DependsOnBuildingBlock(SampleUseCase, SampleDddDomainService),
             new DomainBuildingBlock.DependsOnBuildingBlock(SampleUseCase, SampleDddEntity),

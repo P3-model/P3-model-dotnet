@@ -19,35 +19,36 @@ public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSym
     public void Analyze(IFieldSymbol symbol, ModelBuilder modelBuilder)
     {
         var sourceSymbol = symbol.ContainingType;
-        var destinationSymbol = GetDestinationSymbol(symbol.Type);
+        var destinationSymbol = UnwrapFromCollectionAndNullable(symbol.Type);
         modelBuilder.Add(elements => CreateRelations(sourceSymbol, destinationSymbol, elements));
     }
 
     public void Analyze(IMethodSymbol symbol, ModelBuilder modelBuilder)
     {
         var sourceSymbol = symbol.ContainingType;
-        var destinationSymbol = GetDestinationSymbol(symbol.ReturnType); // Parameters are analyzed separately through IParameterSymbol
+        // Only return type is needed because parameters are analyzed separately through IParameterSymbol.
+        var destinationSymbol = UnwrapFromCollectionAndNullable(symbol.ReturnType);
         modelBuilder.Add(elements => CreateRelations(sourceSymbol, destinationSymbol, elements));
     }
 
     public void Analyze(ILocalSymbol symbol, ModelBuilder modelBuilder)
     {
         var sourceSymbol = symbol.ContainingType;
-        var destinationSymbol = GetDestinationSymbol(symbol.Type);
+        var destinationSymbol = UnwrapFromCollectionAndNullable(symbol.Type);
         modelBuilder.Add(elements => CreateRelations(sourceSymbol, destinationSymbol, elements));
     }
 
     public void Analyze(IParameterSymbol symbol, ModelBuilder modelBuilder)
     {
         var sourceSymbol = symbol.ContainingType;
-        var destinationSymbol = GetDestinationSymbol(symbol.Type);
+        var destinationSymbol = UnwrapFromCollectionAndNullable(symbol.Type);
         modelBuilder.Add(elements => CreateRelations(sourceSymbol, destinationSymbol, elements));
     }
 
     public void Analyze(IPropertySymbol symbol, ModelBuilder modelBuilder)
     {
         var sourceSymbol = symbol.ContainingType;
-        var destinationSymbol = GetDestinationSymbol(symbol.Type);
+        var destinationSymbol = UnwrapFromCollectionAndNullable(symbol.Type);
         modelBuilder.Add(elements => CreateRelations(sourceSymbol, destinationSymbol, elements));
     }
 
@@ -61,7 +62,7 @@ public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSym
         modelBuilder.Add(elements => CreateRelations(containingType, invokedMethodContainingType, elements));
         modelBuilder.Add(elements => CreateRelations(containingMethod, invokedMethod, elements));
         modelBuilder.Add(elements => CreateRelations(containingMethod, invokedMethodContainingType, elements));
-        foreach (var parameter in invokedMethod.Parameters.Select(p => GetDestinationSymbol(p.Type)))
+        foreach (var parameter in invokedMethod.Parameters.Select(p => UnwrapFromCollectionAndNullable(p.Type)))
         {
             modelBuilder.Add(elements => CreateRelations(containingType, parameter, elements));
             modelBuilder.Add(elements => CreateRelations(containingMethod, parameter, elements));
@@ -75,7 +76,8 @@ public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSym
         methodSymbol = operation.SemanticModel?.GetEnclosingSymbol(operation.Syntax.SpanStart) as IMethodSymbol;
         if (methodSymbol is null)
         {
-            Log.Warning($"Invocation operation: {operation.Syntax} has no enclosing method symbol");
+            // This can happen when the operation is a field initializer.
+            // Fields are analyzed separately through IFieldSymbol.
             typeSymbol = null;
             return false;
         }
@@ -83,7 +85,7 @@ public class DomainBuildingBlocksDependenciesAnalyzer : SymbolAnalyzer<IFieldSym
         return true;
     }
 
-    private static ITypeSymbol GetDestinationSymbol(ITypeSymbol symbol)
+    private static ITypeSymbol UnwrapFromCollectionAndNullable(ITypeSymbol symbol)
     {
         while (true)
         {
