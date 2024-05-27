@@ -1,10 +1,10 @@
 using NUnit.Framework;
 using P3Model.Parser.ModelSyntax.Technology;
-using static P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective.CSharpProjectInstances;
-using static P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective.DatabaseInstances;
-using static P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective.DeployableUnitInstances;
+using static P3Model.Parser.Tests.CodeAnalysis.Technology.CSharpProjectInstances;
+using static P3Model.Parser.Tests.CodeAnalysis.Technology.DatabaseInstances;
+using static P3Model.Parser.Tests.CodeAnalysis.Technology.DeployableUnitInstances;
 
-namespace P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective;
+namespace P3Model.Parser.Tests.CodeAnalysis.Technology;
 
 [TestFixture]
 public class DeployableUnitTests

@@ -1,16 +1,16 @@
 using NUnit.Framework;
 using P3Model.Parser.ModelSyntax.Domain;
-using static P3Model.Parser.Tests.CodeAnalysis.DomainPerspective.DomainBuildingBlockInstances;
-using static P3Model.Parser.Tests.CodeAnalysis.DomainPerspective.DomainModuleInstances;
+using static P3Model.Parser.Tests.CodeAnalysis.Domain.DomainBuildingBlockInstances;
+using static P3Model.Parser.Tests.CodeAnalysis.Domain.DomainModuleInstances;
 
-namespace P3Model.Parser.Tests.CodeAnalysis.DomainPerspective;
+namespace P3Model.Parser.Tests.CodeAnalysis.Domain;
 
 [TestFixture]
 public class DomainModuleTests
 {
     [Test]
     public void AllModulesArePresent() => ParserOutput.AssertModelContainsOnlyElements(
-        Domain,
+        DomainModuleInstances.Domain,
         DomainBuildingBlocks,
         SampleModule,
         DomainModules,
@@ -21,8 +21,8 @@ public class DomainModuleTests
 
     [Test]
     public void AllContainsDomainModuleRelationsArePresent() => ParserOutput.AssertModelContainsOnlyRelations(
-        new DomainModule.ContainsDomainModule(Domain, DomainBuildingBlocks),
-        new DomainModule.ContainsDomainModule(Domain, DomainModules),
+        new DomainModule.ContainsDomainModule(DomainModuleInstances.Domain, DomainBuildingBlocks),
+        new DomainModule.ContainsDomainModule(DomainModuleInstances.Domain, DomainModules),
         new DomainModule.ContainsDomainModule(DomainBuildingBlocks, SampleModule),
         new DomainModule.ContainsDomainModule(DomainModules, WithCode),
         new DomainModule.ContainsDomainModule(DomainModules, WithoutCode),

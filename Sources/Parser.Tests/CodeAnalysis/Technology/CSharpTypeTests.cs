@@ -1,7 +1,7 @@
 using NUnit.Framework;
-using static P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective.CSharpTypeInstances;
+using static P3Model.Parser.Tests.CodeAnalysis.Technology.CSharpTypeInstances;
 
-namespace P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective;
+namespace P3Model.Parser.Tests.CodeAnalysis.Technology;
 
 [TestFixture]
 public class CSharpTypeTests

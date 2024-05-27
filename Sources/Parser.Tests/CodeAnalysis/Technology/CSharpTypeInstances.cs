@@ -1,7 +1,7 @@
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Technology.CSharp;
 
-namespace P3Model.Parser.Tests.CodeAnalysis.TechnologyPerspective;
+namespace P3Model.Parser.Tests.CodeAnalysis.Technology;
 
 public static class CSharpTypeInstances
 {

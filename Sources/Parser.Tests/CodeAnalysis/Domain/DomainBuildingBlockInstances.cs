@@ -2,7 +2,7 @@ using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain;
 using P3Model.Parser.ModelSyntax.Domain.Ddd;
 
-namespace P3Model.Parser.Tests.CodeAnalysis.DomainPerspective;
+namespace P3Model.Parser.Tests.CodeAnalysis.Domain;
 
 public static class DomainBuildingBlockInstances
 {
