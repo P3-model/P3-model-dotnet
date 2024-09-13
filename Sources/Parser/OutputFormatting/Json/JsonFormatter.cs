@@ -11,12 +11,13 @@ public class JsonFormatter(string fileFullName) : OutputFormatter
         return Task.CompletedTask;
     }
 
-    public Task Write(Model model)
+    public async Task Write(Model model)
     {
         var directory = Path.GetDirectoryName(fileFullName);
         if (directory != null)
             Directory.CreateDirectory(directory);
-        var fileStream = File.Create(fileFullName);
-        return P3ModelSerializer.Serialize(fileStream, model);
+        await using var fileStream = File.Create(fileFullName);
+        await P3ModelSerializer.Serialize(fileStream, model);
+        await fileStream.FlushAsync();
     }
 }
