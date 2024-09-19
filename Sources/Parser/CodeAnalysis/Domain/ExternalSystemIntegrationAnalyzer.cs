@@ -10,8 +10,9 @@ using P3Model.Parser.ModelSyntax.Technology;
 namespace P3Model.Parser.CodeAnalysis.Domain;
 
 [UsedImplicitly]
-public class ExternalSystemIntegrationAnalyzer(DomainModulesHierarchyResolver modulesHierarchyResolver)
-    : DomainBuildingBlockAnalyzerBase<ExternalSystemIntegration>(modulesHierarchyResolver)
+public class ExternalSystemIntegrationAnalyzer(ModelBoundaryAnalyzer modelBoundaryAnalyzer, 
+    DomainModuleAnalyzer domainModuleAnalyzer)
+    : DomainBuildingBlockAnalyzerBase<ExternalSystemIntegration>(modelBoundaryAnalyzer, domainModuleAnalyzer)
 {
     protected override Type AttributeType => typeof(ExternalSystemIntegrationAttribute);
 

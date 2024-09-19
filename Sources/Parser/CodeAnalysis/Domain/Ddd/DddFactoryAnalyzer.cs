@@ -6,8 +6,9 @@ using P3Model.Parser.ModelSyntax.Domain.Ddd;
 namespace P3Model.Parser.CodeAnalysis.Domain.Ddd;
 
 [UsedImplicitly]
-public class DddFactoryAnalyzer(DomainModulesHierarchyResolver modulesHierarchyResolver)
-    : DomainBuildingBlockAnalyzerBase<DddFactory>(modulesHierarchyResolver)
+public class DddFactoryAnalyzer(ModelBoundaryAnalyzer modelBoundaryAnalyzer, 
+    DomainModuleAnalyzer domainModuleAnalyzer)
+    : DomainBuildingBlockAnalyzerBase<DddFactory>(modelBoundaryAnalyzer, domainModuleAnalyzer)
 {
     protected override Type AttributeType => typeof(DddFactoryAttribute);
 

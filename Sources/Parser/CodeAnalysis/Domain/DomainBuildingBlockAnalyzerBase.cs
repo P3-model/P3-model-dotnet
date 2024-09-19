@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis;
 using P3Model.Annotations;
 using P3Model.Annotations.Domain;
 using P3Model.Parser.CodeAnalysis.RoslynExtensions;
-using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain;
 using P3Model.Parser.ModelSyntax.Technology;
 using Serilog;
@@ -11,7 +10,8 @@ using Serilog;
 namespace P3Model.Parser.CodeAnalysis.Domain;
 
 public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(
-    DomainModulesHierarchyResolver modulesHierarchyResolver)
+    ModelBoundaryAnalyzer modelBoundaryAnalyzer,
+    DomainModuleAnalyzer domainModuleAnalyzer)
     : SymbolAnalyzer<INamedTypeSymbol>, SymbolAnalyzer<IMethodSymbol>
     where TBuildingBlock : DomainBuildingBlock
 {
@@ -36,7 +36,7 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(
             return;
         }
         // TODO: Support for duplicated symbols (partial classes)
-        var (buildingBlock, module) = GetBuildingBlock(symbol, buildingBlockAttribute);
+        var (buildingBlock, module) = GetBuildingBlock(symbol, buildingBlockAttribute, modelBuilder);
         SetProperties(buildingBlock, symbol);
         AddElementsAndRelations(buildingBlock, module, symbol, buildingBlockAttribute, modelBuilder);
     }
@@ -53,21 +53,18 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(
         if (symbol.IsExplicitlyExcludedFromDomainModel())
             LogSymbolExcludedFromDomainModel(symbol);
         // TODO: Support for duplicated symbols (partial classes)
-        var (buildingBlock, module) = GetBuildingBlock(symbol, buildingBlockAttribute);
+        var (buildingBlock, module) = GetBuildingBlock(symbol, buildingBlockAttribute, modelBuilder);
         SetProperties(buildingBlock, symbol);
         AddElementsAndRelations(buildingBlock, module, symbol, buildingBlockAttribute, modelBuilder);
     }
 
     private (TBuildingBlock, DomainModule?) GetBuildingBlock(ISymbol symbol,
-        AttributeData buildingBlockAttribute)
+        AttributeData buildingBlockAttribute, ModelBuilder modelBuilder)
     {
         var name = GetName(symbol, buildingBlockAttribute);
-        if (modulesHierarchyResolver.TryFind(symbol, out var hierarchyPath))
+        if (domainModuleAnalyzer.TryResolve(symbol, modelBuilder, out var module))
         {
-            var buildingBlock = CreateBuildingBlock($"{hierarchyPath.Value.Full}.{name.Dehumanize()}", name);
-            var module = new DomainModule(
-                ElementId.Create<DomainModule>(hierarchyPath.Value.Full),
-                hierarchyPath.Value);
+            var buildingBlock = CreateBuildingBlock($"{module.HierarchyPath.Full}.{name.Dehumanize()}", name);
             return (buildingBlock, module);
         }
         else
@@ -105,10 +102,9 @@ public abstract class DomainBuildingBlockAnalyzerBase<TBuildingBlock>(
     {
         modelBuilder.Add(buildingBlock, symbol);
         if (module != null)
-        {
-            modelBuilder.Add(module, symbol);
             modelBuilder.Add(new DomainModule.ContainsBuildingBlock(module, buildingBlock));
-        }
+        else if (modelBoundaryAnalyzer.TryResolve(symbol, modelBuilder, out var modelBoundary))
+            modelBuilder.Add(new ModelBoundary.ContainsBuildingBlock(modelBoundary, buildingBlock));
         modelBuilder.Add(elements => elements
             .For(symbol)
             .OfType<CodeStructure>()

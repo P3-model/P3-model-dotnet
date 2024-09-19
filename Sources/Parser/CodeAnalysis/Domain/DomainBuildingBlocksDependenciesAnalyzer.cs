@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Operations;
 using P3Model.Parser.ModelSyntax;
 using P3Model.Parser.ModelSyntax.Domain;
-using Serilog;
 
 namespace P3Model.Parser.CodeAnalysis.Domain;
 

@@ -6,6 +6,9 @@ public class BusinessOrganizationalUnit(ElementId id, string name) : ElementBase
 {
     public override Perspective Perspective => Perspective.People;
 
+    public class OwnsModelBoundary(BusinessOrganizationalUnit source, ModelBoundary destination) :
+        RelationBase<BusinessOrganizationalUnit, ModelBoundary>(source, destination);
+    
     public class OwnsDomainModule(BusinessOrganizationalUnit source, DomainModule destination) :
         RelationBase<BusinessOrganizationalUnit, DomainModule>(source, destination);
 }

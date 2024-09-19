@@ -8,46 +8,46 @@ namespace P3Model.Parser.CodeAnalysis.Domain;
 
 public static class DomainModelResolver
 {
-    private static readonly ConcurrentDictionary<INamespaceSymbol, Result> Cache =
+    private static readonly ConcurrentDictionary<INamespaceSymbol, SymbolDomainModelStatus> Cache =
         new(SymbolEqualityComparer.Default);
 
     [PublicAPI]
     public static bool IsExplicitlyIncludedInDomainModel(this ISymbol symbol) =>
-        GetResult(symbol) == Result.IsIncluded;
+        CheckStatus(symbol) == SymbolDomainModelStatus.Included;
 
     [PublicAPI]
     public static bool IsExplicitlyExcludedFromDomainModel(this ISymbol symbol) =>
-        GetResult(symbol) == Result.IsExcluded;
+        CheckStatus(symbol) == SymbolDomainModelStatus.Excluded;
 
     [PublicAPI]
     public static bool IsExplicitlyIncludedInDomainModel(this INamespaceSymbol namespaceSymbol) =>
-        GetResult(namespaceSymbol) == Result.IsIncluded;
+        CheckStatus(namespaceSymbol) == SymbolDomainModelStatus.Included;
 
     [PublicAPI]
     public static bool IsExplicitlyExcludedFromDomainModel(this INamespaceSymbol namespaceSymbol) =>
-        GetResult(namespaceSymbol) == Result.IsExcluded;
+        CheckStatus(namespaceSymbol) == SymbolDomainModelStatus.Excluded;
 
-    private static Result GetResult(this ISymbol symbol)
+    private static SymbolDomainModelStatus CheckStatus(this ISymbol symbol)
     {
         if (symbol is INamespaceSymbol namespaceSymbol)
-            return namespaceSymbol.GetResult();
+            return namespaceSymbol.CheckStatus();
         if (symbol.TryGetAttribute(typeof(NotDomainModelAttribute), out var attributeData) &&
             (!attributeData.TryGetNamedArgumentValue<bool>(
                     nameof(NotDomainModelAttribute.ApplyOnNamespace),
                     out var applyOnNamespace) ||
                 !applyOnNamespace))
-            return Result.IsExcluded;
+            return SymbolDomainModelStatus.Excluded;
         if (symbol.TryGetAttribute(typeof(DomainModelAttribute), out attributeData) &&
             (!attributeData.TryGetNamedArgumentValue(
                     nameof(NotDomainModelAttribute.ApplyOnNamespace),
                     out applyOnNamespace) ||
                 !applyOnNamespace))
-            return Result.IsIncluded;
+            return SymbolDomainModelStatus.Included;
         namespaceSymbol = symbol.ContainingNamespace;
-        return namespaceSymbol.GetResult();
+        return namespaceSymbol.CheckStatus();
     }
 
-    private static Result GetResult(this INamespaceSymbol namespaceSymbol)
+    private static SymbolDomainModelStatus CheckStatus(this INamespaceSymbol namespaceSymbol)
     {
         if (Cache.TryGetValue(namespaceSymbol, out var cachedResult))
             return cachedResult;
@@ -56,29 +56,29 @@ public static class DomainModelResolver
         {
             if (currentSymbol.TryGetAttribute(typeof(NotDomainModelAttribute), out _))
             {
-                Cache.TryAdd(namespaceSymbol, Result.IsExcluded);
-                return Result.IsExcluded;
+                Cache.TryAdd(namespaceSymbol, SymbolDomainModelStatus.Excluded);
+                return SymbolDomainModelStatus.Excluded;
             }
             if (currentSymbol.TryGetAttribute(typeof(DomainModelAttribute), out _))
             {
-                Cache.TryAdd(namespaceSymbol, Result.IsIncluded);
-                return Result.IsIncluded;
+                Cache.TryAdd(namespaceSymbol, SymbolDomainModelStatus.Included);
+                return SymbolDomainModelStatus.Included;
             }
             currentSymbol = currentSymbol.ContainingNamespace;
         }
         if (namespaceSymbol.TryGetAssemblyAttribute(typeof(DomainModelAttribute), out _))
         {
-            Cache.TryAdd(namespaceSymbol, Result.IsIncluded);
-            return Result.IsIncluded;
+            Cache.TryAdd(namespaceSymbol, SymbolDomainModelStatus.Included);
+            return SymbolDomainModelStatus.Included;
         }
-        Cache.TryAdd(namespaceSymbol, Result.Unspecified);
-        return Result.Unspecified;
+        Cache.TryAdd(namespaceSymbol, SymbolDomainModelStatus.Unspecified);
+        return SymbolDomainModelStatus.Unspecified;
     }
 
-    private enum Result
+    private enum SymbolDomainModelStatus
     {
         Unspecified,
-        IsIncluded,
-        IsExcluded
+        Included,
+        Excluded
     }
 }

@@ -18,19 +18,22 @@ public class AnalyzersBuilder
         configure?.Invoke(builder);
         _symbolAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<SymbolAnalyzer>());
         var options = builder.Build();
-        var domainModuleFinder = new DomainModulesHierarchyResolvers(
-            new NamespaceBasedDomainModulesHierarchyResolver(options.NamespaceOptions.NamespacePartsToSkip));
-        var domainModuleAnalyzer = new DomainModuleAnalyzer(domainModuleFinder);
-        var domainBuildingBlockAnalyzer = new DomainBuildingBlockAnalyzer(domainModuleFinder);
-        var dddAggregateAnalyzer = new DddAggregateAnalyzer(domainModuleFinder);
-        var dddDomainServiceAnalyzer = new DddDomainServiceAnalyzer(domainModuleFinder);
-        var dddEntityAnalyzer = new DddEntityAnalyzer(domainModuleFinder);
-        var dddFactoryAnalyzer = new DddFactoryAnalyzer(domainModuleFinder);
-        var dddRepositoryAnalyzer = new DddRepositoryAnalyzer(domainModuleFinder);
-        var dddValueObjectAnalyzer = new DddValueObjectAnalyzer(domainModuleFinder);
-        var externalSystemIntegrationAnalyzer = new ExternalSystemIntegrationAnalyzer(domainModuleFinder);
-        var useCaseAnalyzer = new UseCaseAnalyzer(domainModuleFinder);
-        _symbolAnalyzers.Add(domainModuleAnalyzer);
+        var modelBoundaryAnalyzer = new ModelBoundaryAnalyzer();
+        var namespaceBasedDomainModuleAnalyzer = new NamespaceBasedDomainModuleAnalyzer(
+            options.NamespaceOptions.NamespacePartsToSkip);
+        var domainModuleAnalyzers = new DomainModuleAnalyzers(namespaceBasedDomainModuleAnalyzer);
+        var domainBuildingBlockAnalyzer = new DomainBuildingBlockAnalyzer(modelBoundaryAnalyzer, domainModuleAnalyzers);
+        var dddAggregateAnalyzer = new DddAggregateAnalyzer(modelBoundaryAnalyzer, domainModuleAnalyzers);
+        var dddDomainServiceAnalyzer = new DddDomainServiceAnalyzer(modelBoundaryAnalyzer, domainModuleAnalyzers);
+        var dddEntityAnalyzer = new DddEntityAnalyzer(modelBoundaryAnalyzer, domainModuleAnalyzers);
+        var dddFactoryAnalyzer = new DddFactoryAnalyzer(modelBoundaryAnalyzer, domainModuleAnalyzers);
+        var dddRepositoryAnalyzer = new DddRepositoryAnalyzer(modelBoundaryAnalyzer, domainModuleAnalyzers);
+        var dddValueObjectAnalyzer = new DddValueObjectAnalyzer(modelBoundaryAnalyzer, domainModuleAnalyzers);
+        var externalSystemIntegrationAnalyzer = new ExternalSystemIntegrationAnalyzer(modelBoundaryAnalyzer, 
+            domainModuleAnalyzers);
+        var useCaseAnalyzer = new UseCaseAnalyzer(modelBoundaryAnalyzer, domainModuleAnalyzers);
+        _symbolAnalyzers.Add(modelBoundaryAnalyzer);
+        _symbolAnalyzers.Add(namespaceBasedDomainModuleAnalyzer);
         _symbolAnalyzers.Add(domainBuildingBlockAnalyzer);
         _symbolAnalyzers.Add(dddAggregateAnalyzer);
         _symbolAnalyzers.Add(dddDomainServiceAnalyzer);
@@ -41,7 +44,6 @@ public class AnalyzersBuilder
         _symbolAnalyzers.Add(externalSystemIntegrationAnalyzer);
         _symbolAnalyzers.Add(useCaseAnalyzer);
         _fileAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<FileAnalyzer>());
-        _fileAnalyzers.Add(domainModuleAnalyzer);
         _operationAnalyzers.AddRange(CreateAnalyzersWithParameterlessConstructor<OperationAnalyzer>());
         return this;
     }

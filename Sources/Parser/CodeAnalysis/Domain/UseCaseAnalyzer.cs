@@ -9,8 +9,9 @@ using P3Model.Parser.ModelSyntax.Domain;
 namespace P3Model.Parser.CodeAnalysis.Domain;
 
 [UsedImplicitly]
-public class UseCaseAnalyzer(DomainModulesHierarchyResolver modulesHierarchyResolver)
-    : DomainBuildingBlockAnalyzerBase<UseCase>(modulesHierarchyResolver)
+public class UseCaseAnalyzer(ModelBoundaryAnalyzer modelBoundaryAnalyzer, 
+    DomainModuleAnalyzer domainModuleAnalyzer)
+    : DomainBuildingBlockAnalyzerBase<UseCase>(modelBoundaryAnalyzer, domainModuleAnalyzer)
 {
     protected override Type AttributeType => typeof(UseCaseAttribute);
 

@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
@@ -93,6 +92,10 @@ internal class DefaultModelBuilder(DocumentedSystem system) : ModelBuilder
         ? elements
         : Enumerable.Empty<Element>();
 
+    public IEnumerable<Element> Where(Func<ISymbol, bool> predicate) => _symbolToElements
+        .Where(pair => predicate(pair.Key))
+        .SelectMany(pair => pair.Value);
+
     IEnumerable<TElement> ElementsProvider.OfType<TElement>() => _elements.Keys.OfType<TElement>();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -110,15 +113,8 @@ internal class DefaultModelBuilder(DocumentedSystem system) : ModelBuilder
             Add(trait);
 
         return new Model(system,
-            _elements.Keys
-                .OrderBy(e => e.GetType().FullName)
-                .ThenBy(e => e.Name)
-                .ToImmutableArray(),
-            _relations
-                .OrderBy(r => r.GetType().Name)
-                .ToImmutableArray(),
-            _traits
-                .OrderBy(t => t.GetType().Name)
-                .ToImmutableArray());
+            [.._elements.Keys.OrderBy(e => e.GetType().FullName).ThenBy(e => e.Name)],
+            [.._relations.OrderBy(r => r.GetType().Name)],
+            [.._traits.OrderBy(t => t.GetType().Name)]);
     }
 }
