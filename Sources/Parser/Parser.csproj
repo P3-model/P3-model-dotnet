@@ -9,9 +9,9 @@
         <RootNamespace>P3Model.Parser</RootNamespace>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.4.0</Version>
-        <AssemblyVersion>0.4.0</AssemblyVersion>
-        <FileVersion>0.4.0</FileVersion>
+        <Version>0.5.0-preview1</Version>
+        <AssemblyVersion>0.5.0</AssemblyVersion>
+        <FileVersion>0.5.0</FileVersion>
         <Title>P3 Model Parser</Title>
         <Description>P3 Model Parser is a tool that generate documentation from C# source code enriched with metadata like: annotations, markdown files and more.</Description>
         <Authors>Marcin Markowski</Authors>
@@ -21,8 +21,7 @@
         <PackageLicenseExpression>CC-BY-SA-4.0</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>logo.png</PackageIcon>
-        <PackageReleaseNotes>analyzine relation between use case and process
-small fixes</PackageReleaseNotes>
+        <PackageReleaseNotes>new model boundary and domain module analysis</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>      

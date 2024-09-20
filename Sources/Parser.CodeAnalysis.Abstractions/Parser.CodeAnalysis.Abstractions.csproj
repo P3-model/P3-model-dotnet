@@ -9,9 +9,9 @@
         <RootNamespace>P3Model.Parser.CodeAnalysis</RootNamespace>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.1.0</Version>
-        <AssemblyVersion>0.1.0</AssemblyVersion>
-        <FileVersion>0.1.0</FileVersion>
+        <Version>0.2.0</Version>
+        <AssemblyVersion>0.2.0</AssemblyVersion>
+        <FileVersion>0.2.0</FileVersion>
         <Title>P3 Model Code Analysis Anstractions</Title>
         <Description>P3 Model Code Analysis Anstractions is a set of base abstractions to build custom code analyzers for P3 Model Parser.</Description>
         <Authors>Marcin Markowski</Authors>
@@ -21,7 +21,7 @@
         <PackageLicenseExpression>CC-BY-SA-4.0</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>logo.png</PackageIcon>
-        <PackageReleaseNotes>initial version</PackageReleaseNotes>
+        <PackageReleaseNotes>filtering Elements with predicate</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
